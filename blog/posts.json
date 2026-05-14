@@ -1,5 +1,21 @@
 [
   {
+    "id": "010",
+    "date": "2026-05-15",
+    "zh": {
+      "title": "2026年5月AI行业全景：92%教师用AI教学、算力账单压顶、国产模型密集出击",
+      "summary": "2026年5月AI行业深度解读：中国92.3%教师已将AI融入课堂、字节2000亿算力投入、DeepSeek启动外部融资、大模型企业集体下海变现、CPU成AI性能新瓶颈。",
+      "tags": ["新闻", "行业", "教育"],
+      "file": "posts/010-ai-landscape-may-2026-part2.zh.html"
+    },
+    "en": {
+      "title": "AI Landscape May 2026: Record Funding, Agentic AI Regulation, Apple Opens Siri to Third Parties",
+      "summary": "May 2026 AI landscape overview: OpenAI's record $122B round, Anthropic's $40B Google deal and SpaceX Colossus partnership, Apple iOS 27 opens to third-party AI, White House pre-release safety reviews, CISA agentic AI guidance.",
+      "tags": ["news", "industry", "funding"],
+      "file": "posts/010-ai-landscape-may-2026-part2.en.html"
+    }
+  },
+  {
     "id": "009",
     "date": "2026-05-14",
     "zh": {
