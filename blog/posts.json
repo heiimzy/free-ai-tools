@@ -1,5 +1,21 @@
 [
   {
+    "id": "007",
+    "date": "2026-05-14",
+    "zh": {
+      "title": "2026年5月AI工具推荐：30款精选工具重构你的工作流",
+      "summary": "2026年5月最新AI工具精选推荐：国产AI自动化工具实测对比、AI视频生成工具选型、GitHub热门开源项目、Claude生态专用工具爆发。附场景化选型指南。",
+      "tags": ["工具", "评测"],
+      "file": "posts/007-ai-tools-may-2026.zh.html"
+    },
+    "en": {
+      "title": "Best AI Tools of May 2026: 30 Essential Tools to Supercharge Your Workflow",
+      "summary": "Best AI tools of May 2026: GitHub trending open-source projects (mempalace, graphify, caveman), Needle 26M on-device model, Cursor vs Copilot review, Claude vs GPT-5.4 vs Gemini comparison, team-tested productivity picks.",
+      "tags": ["tools", "reviews"],
+      "file": "posts/007-ai-tools-may-2026.en.html"
+    }
+  },
+  {
     "id": "006",
     "date": "2026-05-14",
     "zh": {
