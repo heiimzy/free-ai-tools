@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>正则表达式测试工具 - 在线Regex调试 | Free AI Tools</title>
+  <meta name="description" content="免费在线正则表达式测试工具，支持实时匹配、替换、分组提取、语法高亮。预设常用正则模板，适合前端开发者、爬虫工程师和数据分析师。">
+  <meta name="keywords" content="正则表达式测试,Regex在线工具,正则调试,正则匹配,正则替换,Regex tester">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .regex-layout { display: grid; gap: 1rem; }
+    .regex-row { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+    .regex-row label { color: var(--text-muted); font-size: 0.85rem; min-width: 60px; }
+    .regex-row input[type="text"], .regex-row input[type="number"] { flex: 1; padding: 0.65rem 0.8rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: monospace; font-size: 0.9rem; min-width: 100px; }
+    .regex-row input:focus { outline: none; border-color: var(--primary); }
+    .flag-btn { padding: 0.4rem 0.65rem; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); cursor: pointer; font-size: 0.8rem; font-family: monospace; transition: 0.15s; }
+    .flag-btn.active { background: linear-gradient(135deg, rgba(167,139,250,0.2), rgba(244,114,182,0.1)); border-color: var(--primary); color: var(--primary); }
+    .regex-textarea { width: 100%; padding: 0.75rem 0.8rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: monospace; font-size: 0.85rem; resize: vertical; min-height: 120px; box-sizing: border-box; line-height: 1.5; }
+    .regex-textarea:focus { outline: none; border-color: var(--primary); }
+    .match-stats { display: flex; gap: 1rem; margin: 0.5rem 0; flex-wrap: wrap; }
+    .match-stat { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem 1rem; font-size: 0.85rem; }
+    .match-stat .num { font-weight: 700; color: var(--primary); font-family: monospace; }
+    .match-list { max-height: 300px; overflow-y: auto; margin-top: 0.75rem; }
+    .match-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem 0.75rem; margin-bottom: 0.4rem; font-family: monospace; font-size: 0.8rem; word-break: break-all; }
+    .match-item .match-idx { color: var(--text-muted); font-size: 0.7rem; font-family: sans-serif; }
+    .match-item .match-val { color: #34d399; }
+    .match-item .match-pos { color: var(--text-muted); font-size: 0.7rem; }
+    .highlighted-text { white-space: pre-wrap; word-break: break-word; line-height: 1.8; font-family: monospace; font-size: 0.85rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem; max-height: 300px; overflow-y: auto; }
+    .highlighted-text .hl { background: rgba(167,139,250,0.35); border-radius: 3px; padding: 0 1px; }
+    .highlighted-text .hl-alt { background: rgba(244,114,182,0.35); border-radius: 3px; padding: 0 1px; }
+    .preset-grid { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.75rem; }
+    .preset-btn { padding: 0.35rem 0.7rem; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); cursor: pointer; font-size: 0.75rem; transition: 0.15s; }
+    .preset-btn:hover { border-color: var(--primary); background: rgba(167,139,250,0.1); }
+    .replace-section { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/text-rewriter.html">AI改写</a><a href="../tools/regex-tester.html">正则测试</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>正则表达式测试工具</h1>
+      <p>编写、测试和调试正则表达式，支持实时匹配与替换。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="regex-layout">
+        <div>
+          <label>常用模板</label>
+          <div class="preset-grid" id="presetGrid"></div>
+        </div>
+
+        <div class="regex-row">
+          <label>表达式</label>
+          <input type="text" id="patternInput" value="\b\w+@\w+\.\w+\b" placeholder="输入正则表达式" spellcheck="false" oninput="runTest()">
+        </div>
+
+        <div class="regex-row">
+          <label>标志</label>
+          <button class="flag-btn active" data-flag="g" onclick="toggleFlag(this)">g</button>
+          <button class="flag-btn" data-flag="i" onclick="toggleFlag(this)">i</button>
+          <button class="flag-btn" data-flag="m" onclick="toggleFlag(this)">m</button>
+          <button class="flag-btn" data-flag="s" onclick="toggleFlag(this)">s</button>
+          <button class="flag-btn" data-flag="u" onclick="toggleFlag(this)">u</button>
+          <button class="flag-btn" data-flag="y" onclick="toggleFlag(this)">y</button>
+        </div>
+
+        <div>
+          <label>测试文本</label>
+          <textarea class="regex-textarea" id="testInput" oninput="runTest()">联系我们：support@example.com 或 hello@test.org.cn
+技术团队：dev@company.com, admin@website.org
+网址：https://example.com 或 https://test.org
+
+紧急联系：urgent@mail.com ｜ 电话：+86 138-0000-0000
+
+订单号：ORD-2026-0001, ORD-2026-0002
+IP地址：192.168.1.1, 10.0.0.255</textarea>
+        </div>
+
+        <div class="match-stats">
+          <div class="match-stat">匹配: <span class="num" id="matchCount">0</span></div>
+          <div class="match-stat">耗时: <span class="num" id="matchTime">0</span>ms</div>
+        </div>
+
+        <div>
+          <label>匹配结果 <span style="font-weight:400;color:var(--text-muted);font-size:0.8rem;">（点击复制）</span></label>
+          <div class="highlighted-text" id="highlightedOutput"></div>
+          <div class="match-list" id="matchList"></div>
+        </div>
+
+        <div class="replace-section">
+          <div class="regex-row">
+            <label>替换为</label>
+            <input type="text" id="replaceInput" placeholder="替换文本（支持 $1 捕获组引用）" oninput="runReplace()" spellcheck="false">
+            <button class="btn btn-secondary" onclick="doReplace()" style="flex-shrink:0;">替换</button>
+          </div>
+          <textarea class="regex-textarea" id="replaceOutput" readonly placeholder="替换结果" style="min-height:80px;"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">[广告位] Google AdSense</div>
+  </main>
+  <footer><div class="container"><p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a></p></div></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+    const presets = [
+      {label:'邮箱',p:'\\b\\w+@\\w+\\.\\w+\\b'},
+      {label:'网址',p:'https?://[\\w./]+'},
+      {label:'手机号',p:'1[3-9]\\d{9}'},
+      {label:'IP地址',p:'\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}'},
+      {label:'日期(YYYY-MM-DD)',p:'\\d{4}-\\d{2}-\\d{2}'},
+      {label:'订单号',p:'[A-Z]+-\\d{4}-\\d{4}'},
+      {label:'中文',p:'[\\u4e00-\\u9fff]+'},
+      {label:'空行',p:'^\\s*$[\r\n]*'},
+    ];
+
+    const flagOrder = ['g','i','m','s','u','y'];
+
+    function getFlags(){
+      return flagOrder.filter(f=>document.querySelector(`.flag-btn[data-flag="${f}"]`).classList.contains('active')).join('');
+    }
+
+    function toggleFlag(el){
+      el.classList.toggle('active');
+      runTest();
+    }
+
+    function runTest(){
+      const pattern=document.getElementById('patternInput').value;
+      const testStr=document.getElementById('testInput').value;
+      const flags=getFlags()||'g';
+      const hlContainer=document.getElementById('highlightedOutput');
+      const matchList=document.getElementById('matchList');
+      const countEl=document.getElementById('matchCount');
+      const timeEl=document.getElementById('matchTime');
+
+      if(!pattern.trim()){hlContainer.innerHTML='<span style="color:var(--text-muted)">输入正则表达式开始测试</span>';matchList.innerHTML='';countEl.textContent='0';timeEl.textContent='0';return;}
+
+      const start=performance.now();
+      let regex,matches=[];
+      try{
+        regex=new RegExp(pattern,flags.includes('g')?flags:flags+'g');
+        let m;
+        while((m=regex.exec(testStr))!==null){
+          matches.push({full:m[0],groups:m.slice(1),index:m.index,lastIndex:regex.lastIndex});
+          if(m[0].length===0){regex.lastIndex++;}
+          if(matches.length>5000) break;
+        }
+      }catch(e){
+        hlContainer.innerHTML=`<span style="color:#f87171">正则错误: ${e.message}</span>`;
+        matchList.innerHTML='';
+        countEl.textContent='0';
+        timeEl.textContent='0';
+        return;
+      }
+      const elapsed=performance.now()-start;
+
+      countEl.textContent=matches.length;
+      timeEl.textContent=elapsed.toFixed(1);
+
+      // Highlight matches in text
+      if(matches.length===0){
+        hlContainer.innerHTML=testStr.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      }else{
+        let last=0;
+        let html='';
+        for(let i=0;i<matches.length;i++){
+          const m=matches[i];
+          const before=testStr.slice(last,m.index);
+          html+=before.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+          const cls=i%2===0?'hl':'hl-alt';
+          html+=`<span class="${cls}">${m.full.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>`;
+          last=m.index+m.full.length;
+        }
+        html+=testStr.slice(last).replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        hlContainer.innerHTML=html;
+      }
+
+      // Match details
+      if(matches.length===0){
+        matchList.innerHTML='<div style="color:var(--text-muted);font-size:0.85rem;">无匹配结果</div>';
+      }else{
+        matchList.innerHTML=matches.map((m,i)=>{
+          let detail=m.full;
+          if(m.groups.length>0) detail+=` → [${m.groups.map((g,gi)=>`$${gi+1}: ${g||'—'}`).join(', ')}]`;
+          return `<div class="match-item" onclick="copyMatch('${detail.replace(/'/g,"\\'")}')"><span class="match-idx">#${i+1}</span> <span class="match-val">${m.full.replace(/</g,'&lt;')}</span> <span class="match-pos">(${m.index}-${m.lastIndex})</span></div>`;
+        }).join('');
+      }
+    }
+
+    function copyMatch(t){navigator.clipboard.writeText(t).then(()=>showToast('已复制')).catch(()=>{});}
+
+    function runReplace(){
+      const pattern=document.getElementById('patternInput').value;
+      const testStr=document.getElementById('testInput').value;
+      const replaceVal=document.getElementById('replaceInput').value;
+      const flags=getFlags();
+      try{
+        const regex=new RegExp(pattern,flags.includes('g')?flags:flags+'g');
+        const result=testStr.replace(regex,replaceVal);
+        document.getElementById('replaceOutput').value=result;
+      }catch(e){
+        document.getElementById('replaceOutput').value='正则错误: '+e.message;
+      }
+    }
+
+    function doReplace(){
+      runReplace();
+      showToast('替换完成');
+    }
+
+    // Presets
+    function initPresets(){
+      const grid=document.getElementById('presetGrid');
+      grid.innerHTML=presets.map(p=>`<button class="preset-btn" onclick="applyPreset('${p.p.replace(/'/g,"\\'")}')">${p.label}</button>`).join('');
+    }
+
+    function applyPreset(p){
+      document.getElementById('patternInput').value=p;
+      runTest();
+    }
+
+    // Enter to run
+    document.getElementById('patternInput').addEventListener('keydown',function(e){if(e.key==='Enter')runTest();});
+    document.getElementById('replaceInput').addEventListener('keydown',function(e){if(e.key==='Enter')doReplace();});
+
+    // init
+    initPresets();
+    runTest();
+  </script>
+</body>
+</html>
