@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>URL 编码解码工具 - 在线URL转义 | Free AI Tools</title>
+  <meta name="description" content="免费在线URL编码解码工具，支持URL完整编码、组件编码、查询参数解析。实时转换，一键复制，适合Web开发和API调试场景。">
+  <meta name="keywords" content="URL编码,URL解码,URL转义,URL Encode,URL Decode,在线URL工具">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .url-layout { display: grid; gap: 1.5rem; }
+    .url-textarea { width: 100%; min-height: 120px; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: monospace; font-size: 0.85rem; resize: vertical; box-sizing: border-box; line-height: 1.5; }
+    .url-textarea:focus { outline: none; border-color: var(--primary); }
+    .url-textarea::placeholder { color: var(--text-muted); opacity: 0.5; }
+    .url-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .url-params { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 0; max-height: 300px; overflow-y: auto; margin-top: 0.75rem; }
+    .url-param-row { display: flex; padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); font-family: monospace; font-size: 0.82rem; }
+    .url-param-row:last-child { border-bottom: none; }
+    .url-param-row .p-key { color: var(--primary); min-width: 120px; word-break: break-all; }
+    .url-param-row .p-val { color: var(--text); word-break: break-all; }
+    .url-param-row .p-idx { color: var(--text-muted); margin-right: 0.5rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/text-rewriter.html">AI改写</a><a href="../tools/url-encoder.html">URL工具</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>URL 编码 / 解码</h1>
+      <p>URL 编码解码、查询参数解析，支持完整URL和组件两种模式。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="url-layout">
+        <div>
+          <label>输入文本</label>
+          <textarea class="url-textarea" id="inputText" placeholder="输入要编码或解码的 URL 文本...">https://example.com/search?q=hello world&lang=中文&tag=AI+工具</textarea>
+        </div>
+
+        <div class="url-actions">
+          <button class="btn btn-primary" onclick="encodeURL()">🔐 URL 编码</button>
+          <button class="btn btn-secondary" onclick="encodeComponent()">🔐 组件编码</button>
+          <button class="btn btn-secondary" onclick="decodeURL()">🔓 URL 解码</button>
+          <button class="btn btn-secondary" onclick="parseParams()">🔍 解析参数</button>
+          <button class="btn btn-secondary" onclick="clearAll()">🗑️ 清空</button>
+        </div>
+
+        <div>
+          <label>结果</label>
+          <textarea class="url-textarea" id="outputText" readonly placeholder="结果将显示在这里..."></textarea>
+          <button class="btn btn-success" onclick="copyResult()" style="margin-top:0.5rem;">📋 复制结果</button>
+        </div>
+
+        <div id="paramSection" style="display:none;">
+          <label>查询参数解析</label>
+          <div class="url-params" id="paramList"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">[广告位] Google AdSense</div>
+  </main>
+  <footer><div class="container"><p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a></p></div></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+    function encodeURL(){
+      const v=document.getElementById('inputText').value;
+      document.getElementById('outputText').value=encodeURI(v);
+      document.getElementById('paramSection').style.display='none';
+      showToast('URL 编码完成');
+    }
+
+    function encodeComponent(){
+      const v=document.getElementById('inputText').value;
+      document.getElementById('outputText').value=encodeURIComponent(v);
+      document.getElementById('paramSection').style.display='none';
+      showToast('组件编码完成');
+    }
+
+    function decodeURL(){
+      const v=document.getElementById('inputText').value;
+      try{
+        document.getElementById('outputText').value=decodeURI(v);
+        showToast('URL 解码完成');
+      }catch(e){
+        try{
+          document.getElementById('outputText').value=decodeURIComponent(v);
+          showToast('使用组件解码完成');
+        }catch(e2){
+          document.getElementById('outputText').value='解码失败: 无效的 URL 编码';
+        }
+      }
+      document.getElementById('paramSection').style.display='none';
+    }
+
+    function parseParams(){
+      const v=document.getElementById('inputText').value;
+      const section=document.getElementById('paramSection');
+      const list=document.getElementById('paramList');
+
+      // Try to extract query string
+      const qIdx=v.indexOf('?');
+      if(qIdx===-1){
+        list.innerHTML='<div style="padding:0.75rem;color:var(--text-muted)">未找到查询参数（需要包含 ?）</div>';
+        section.style.display='block';
+        document.getElementById('outputText').value='';
+        return;
+      }
+
+      const qs=v.slice(qIdx+1);
+      const params=new URLSearchParams(qs);
+      if([...params].length===0){
+        list.innerHTML='<div style="padding:0.75rem;color:var(--text-muted)">未找到查询参数</div>';
+      }else{
+        let html='';
+        let i=0;
+        for(const [key,val] of params){
+          html+=`<div class="url-param-row"><span class="p-idx">#${++i}</span><span class="p-key">${esc(key)}</span><span class="p-val">= ${esc(val)}</span></div>`;
+        }
+        list.innerHTML=html;
+      }
+      section.style.display='block';
+      document.getElementById('outputText').value='';
+      showToast('已解析 '+([...params].length)+' 个参数');
+    }
+
+    function esc(s){return s.replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+    function clearAll(){
+      document.getElementById('inputText').value='';
+      document.getElementById('outputText').value='';
+      document.getElementById('paramSection').style.display='none';
+      showToast('已清空');
+    }
+
+    function copyResult(){
+      const v=document.getElementById('outputText').value;
+      if(!v){showToast('没有内容可复制');return;}
+      navigator.clipboard.writeText(v).then(()=>showToast('已复制')).catch(()=>{});
+    }
+  </script>
+</body>
+</html>

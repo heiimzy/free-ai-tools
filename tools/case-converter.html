@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>大小写转换工具 - 在线文本格式转换 | Free AI Tools</title>
+  <meta name="description" content="免费在线英文大小写转换工具，支持大写、小写、首字母大写、驼峰式、蛇形式、烤串式、帕斯卡式实时转换。适合程序员和文案编辑使用。">
+  <meta name="keywords" content="大小写转换,大写转小写,驼峰转换,Snake Case,Camel Case,文本格式转换">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .case-layout { display: grid; gap: 1rem; }
+    .case-textarea { width: 100%; min-height: 150px; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: monospace; font-size: 0.85rem; resize: vertical; box-sizing: border-box; line-height: 1.5; }
+    .case-textarea:focus { outline: none; border-color: var(--primary); }
+    .case-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .case-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 0.75rem 1rem; cursor: pointer; transition: 0.15s; }
+    .case-card:hover { border-color: var(--primary); }
+    .case-card .cc-name { color: var(--text-muted); font-size: 0.75rem; margin-bottom: 0.25rem; }
+    .case-card .cc-val { font-family: monospace; font-size: 0.9rem; color: var(--text); word-break: break-all; }
+    .case-card .cc-desc { color: var(--text-muted); font-size: 0.7rem; margin-top: 0.2rem; }
+    @media (max-width: 768px) { .case-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/text-rewriter.html">AI改写</a><a href="../tools/case-converter.html">大小写转换</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>大小写转换 / 命名格式转换</h1>
+      <p>实时转换文本大小写和命名风格，支持 9 种格式。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="case-layout">
+        <div>
+          <label>输入文本</label>
+          <textarea class="case-textarea" id="inputText" placeholder="输入要转换的文本..." oninput="convert()">hello world from AI tools</textarea>
+        </div>
+
+        <div class="case-grid" id="caseGrid"></div>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">[广告位] Google AdSense</div>
+  </main>
+  <footer><div class="container"><p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a></p></div></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+    function toWords(s){
+      // Split by spaces, underscores, hyphens, and camelCase boundaries
+      const parts=s.match(/[A-Z]?[a-z]+|[A-Z]+(?=[A-Z][a-z]|\d|\b|\s|[_-])|\d+|./g);
+      return (parts||[s]).map(p=>p.replace(/[^a-zA-Z0-9]/g,'')).filter(Boolean);
+    }
+
+    function convert(){
+      const input=document.getElementById('inputText').value;
+      const grid=document.getElementById('caseGrid');
+      if(!input.trim()){
+        grid.innerHTML='<div style="color:var(--text-muted);grid-column:1/-1;padding:1rem;">输入文本开始转换</div>';
+        return;
+      }
+      const words=toWords(input);
+      if(!words.length){
+        grid.innerHTML='<div style="color:var(--text-muted);grid-column:1/-1;padding:1rem;">无法识别可转换的单词</div>';
+        return;
+      }
+
+      const cases=[
+        {name:'大写',fn:()=>input.toUpperCase(),desc:'UPPER CASE'},
+        {name:'小写',fn:()=>input.toLowerCase(),desc:'lower case'},
+        {name:'首字母大写',fn:()=>{
+          const w=toWords(input);
+          return w.map(w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(' ');
+        },desc:'Title Case'},
+        {name:'每个单词首字母大写',fn:()=>input.replace(/\b\w/g,c=>c.toUpperCase()),desc:'Each Word Capitalized'},
+        {name:'驼峰式',fn:()=>{
+          const w=toWords(input);
+          return w.map((w,i)=>i===0?w.toLowerCase():w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join('');
+        },desc:'camelCase'},
+        {name:'帕斯卡式',fn:()=>{
+          const w=toWords(input);
+          return w.map(w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join('');
+        },desc:'PascalCase'},
+        {name:'蛇形式',fn:()=>toWords(input).map(w=>w.toLowerCase()).join('_'),desc:'snake_case'},
+        {name:'常量式',fn:()=>toWords(input).map(w=>w.toUpperCase()).join('_'),desc:'UPPER_SNAKE_CASE'},
+        {name:'烤串式',fn:()=>toWords(input).map(w=>w.toLowerCase()).join('-'),desc:'kebab-case'},
+      ];
+
+      grid.innerHTML=cases.map(c=>{
+        let val;
+        try{val=c.fn();}catch(e){val='(错误)';}
+        const escaped=val.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        return `<div class="case-card" onclick="copyCase('${escaped.replace(/'/g,"\\'")}')" title="点击复制">
+          <div class="cc-name">${c.name}</div>
+          <div class="cc-val">${escaped}</div>
+          <div class="cc-desc">${c.desc}</div>
+        </div>`;
+      }).join('');
+    }
+
+    function copyCase(v){
+      navigator.clipboard.writeText(v).then(()=>showToast('已复制: '+v)).catch(()=>{});
+    }
+
+    // init
+    convert();
+  </script>
+</body>
+</html>
