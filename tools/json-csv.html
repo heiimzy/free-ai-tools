@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JSON CSV 互转工具 - 在线JSON与CSV格式转换 | Free AI Tools</title>
+  <meta name="description" content="免费在线JSON与CSV格式互转工具，支持JSON数组转CSV表格、CSV转JSON、自定义分隔符和引号符，一键复制结果，适合数据分析师和开发者使用。">
+  <meta name="keywords" content="JSON转CSV,CSV转JSON,数据格式转换,JSON格式化,CSV表格,在线转换工具">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .jc-layout { display: grid; gap: 1.5rem; }
+    .jc-textarea { width: 100%; min-height: 200px; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: monospace; font-size: 0.82rem; resize: vertical; box-sizing: border-box; line-height: 1.5; }
+    .jc-textarea:focus { outline: none; border-color: var(--primary); }
+    .jc-textarea::placeholder { color: var(--text-muted); opacity: 0.5; }
+    .jc-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; }
+    .jc-actions select { background: var(--bg-card); color: var(--text); border: 1px solid var(--border); padding: 0.45rem 0.75rem; border-radius: 6px; font-size: 0.85rem; }
+    .jc-actions select:focus { outline: none; border-color: var(--primary); }
+    .jc-output-wrap { position: relative; }
+    .jc-preview { overflow-x: auto; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; max-height: 400px; overflow-y: auto; }
+    .jc-preview table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    .jc-preview th { background: rgba(167,139,250,0.1); color: var(--primary); font-weight: 600; text-align: left; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--border); position: sticky; top: 0; }
+    .jc-preview td { padding: 0.4rem 0.75rem; border-bottom: 1px solid var(--border); color: var(--text); }
+    .jc-preview tr:hover td { background: rgba(167,139,250,0.03); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/json-csv.html">JSON/CSV</a><a href="../tools/text-rewriter.html">AI改写</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>JSON CSV 互转工具</h1>
+      <p>JSON ↔ CSV 双向格式转换，支持数据预览、自定义分隔符。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="jc-layout">
+        <div>
+          <label>输入</label>
+          <textarea class="jc-textarea" id="inputText" placeholder='例如 JSON 数组或 CSV 文本...'>[{"name":"Alice","age":30,"city":"New York"},{"name":"Bob","age":25,"city":"London"},{"name":"Charlie","age":35,"city":"Tokyo"}]</textarea>
+        </div>
+
+        <div class="jc-actions">
+          <button class="btn btn-primary" onclick="convert('json2csv')">JSON → CSV</button>
+          <button class="btn btn-secondary" onclick="convert('csv2json')">CSV → JSON</button>
+          <button class="btn btn-secondary" onclick="clearAll()">🗑️ 清空</button>
+          <span style="color:var(--text-muted);font-size:0.8rem;">分隔符:</span>
+          <select id="delimiter" onchange="autoConvert()">
+            <option value=",">逗号 (,)</option>
+            <option value=";">分号 (;)</option>
+            <option value="\t">制表符 (\t)</option>
+            <option value="|">管道 (|)</option>
+          </select>
+        </div>
+
+        <div>
+          <label>结果 <span id="rowCount" style="color:var(--text-muted);font-size:0.75rem;"></span></label>
+          <div class="jc-output-wrap">
+            <textarea class="jc-textarea" id="outputText" readonly placeholder="转换结果将显示在这里..." style="min-height:150px;"></textarea>
+          </div>
+          <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+            <button class="btn btn-success" onclick="copyResult()">📋 复制结果</button>
+            <button class="btn btn-secondary" onclick="showPreview()">👁️ 表格预览</button>
+          </div>
+        </div>
+
+        <div id="previewSection" style="display:none;">
+          <label>数据预览</label>
+          <div class="jc-preview" id="previewTable"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">[广告位] Google AdSense</div>
+  </main>
+  <footer><div class="container"><p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a></p></div></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+    let lastMode = null;
+
+    function getDelim(){
+      const v=document.getElementById('delimiter').value;
+      return v==='\\t'?'\t':v;
+    }
+
+    function autoConvert(){
+      if(lastMode) convert(lastMode);
+    }
+
+    function convert(mode){
+      lastMode = mode;
+      const input=document.getElementById('inputText').value.trim();
+      const out=document.getElementById('outputText');
+      const rowCount=document.getElementById('rowCount');
+      document.getElementById('previewSection').style.display='none';
+
+      if(!input){out.value='';rowCount.textContent='';return;}
+
+      const delim=getDelim();
+
+      try{
+        if(mode==='json2csv'){
+          const data=JSON.parse(input);
+          const arr=Array.isArray(data)?data:[data];
+          if(!arr.length){out.value='(空数组)';rowCount.textContent='';return;}
+          const keys=[...new Set(arr.flatMap(Object.keys))];
+          const esc=(s)=>String(s).replace(/"/g,'""');
+          const rows=[keys.map(k=>`"${esc(k)}"`).join(delim)];
+          arr.forEach(row=>{
+            rows.push(keys.map(k=>`"${esc(row[k]??'')}"`).join(delim));
+          });
+          out.value=rows.join('\n');
+          rowCount.textContent=`(${arr.length} 行 × ${keys.length} 列)`;
+          showToast(`JSON → CSV 完成，共 ${arr.length} 行`);
+        }else{
+          const lines=input.split(/\r?\n/).filter(Boolean);
+          if(!lines.length){out.value='(空数据)';rowCount.textContent='';return;}
+          const parseRow=(line)=>{
+            const result=[];let cur='',inQ=false;
+            for(let i=0;i<line.length;i++){
+              const c=line[i];
+              if(c==='"'){if(inQ&&line[i+1]==='"'){cur+='"';i++;}else inQ=!inQ;}
+              else if(c===delim&&!inQ){result.push(cur.trim());cur='';}
+              else cur+=c;
+            }
+            result.push(cur.trim());
+            return result;
+          };
+          const headers=parseRow(lines[0]);
+          const json=[];
+          for(let i=1;i<lines.length;i++){
+            const vals=parseRow(lines[i]);
+            const obj={};
+            headers.forEach((h,j)=>{obj[h]=vals[j]||'';});
+            json.push(obj);
+          }
+          out.value=JSON.stringify(json,null,2);
+          rowCount.textContent=`(${json.length} 条记录)`;
+          showToast(`CSV → JSON 完成，共 ${json.length} 条记录`);
+        }
+      }catch(e){
+        out.value='转换错误: '+e.message;
+        rowCount.textContent='';
+      }
+    }
+
+    function showPreview(){
+      const out=document.getElementById('outputText').value.trim();
+      const section=document.getElementById('previewSection');
+      const table=document.getElementById('previewTable');
+
+      if(!out){showToast('没有数据可预览');return;}
+
+      // Try JSON
+      try{
+        const data=JSON.parse(out);
+        const arr=Array.isArray(data)?data:[data];
+        if(!arr.length){table.innerHTML='<div style="padding:1rem;color:var(--text-muted)">空数据集</div>';section.style.display='block';return;}
+        const keys=Object.keys(arr[0]);
+        let html='<table><thead><tr>'+keys.map(k=>`<th>${escHtml(k)}</th>`).join('')+'</tr></thead><tbody>';
+        arr.slice(0,100).forEach(row=>{
+          html+='<tr>'+keys.map(k=>`<td>${escHtml(String(row[k]??''))}</td>`).join('')+'</tr>';
+        });
+        if(arr.length>100) html+=`<tr><td colspan="${keys.length}" style="color:var(--text-muted);text-align:center;">... 仅显示前 100 行</td></tr>`;
+        html+='</tbody></table>';
+        table.innerHTML=html;
+        section.style.display='block';
+        return;
+      }catch(e){}
+
+      // Try CSV
+      const lines=out.split(/\r?\n/).filter(Boolean);
+      if(lines.length<1){showToast('无法预览');return;}
+      const delim=getDelim();
+      const parseRow=(line)=>{
+        const result=[];let cur='',inQ=false;
+        for(let i=0;i<line.length;i++){
+          const c=line[i];
+          if(c==='"'){if(inQ&&line[i+1]==='"'){cur+='"';i++;}else inQ=!inQ;}
+          else if(c===delim&&!inQ){result.push(cur);cur='';}
+          else cur+=c;
+        }
+        result.push(cur);
+        return result;
+      };
+      let html='<table>';
+      lines.slice(0,101).forEach((line,i)=>{
+        const cells=parseRow(line);
+        html+='<tr>'+cells.map(c=>i===0?`<th>${escHtml(c)}</th>`:`<td>${escHtml(c)}</td>`).join('')+'</tr>';
+      });
+      if(lines.length>101) html+=`<tr><td colspan="10" style="color:var(--text-muted);text-align:center;">... 仅显示前 100 行</td></tr>`;
+      html+='</table>';
+      table.innerHTML=html;
+      section.style.display='block';
+    }
+
+    function escHtml(s){return s.replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+    function clearAll(){
+      document.getElementById('inputText').value='';
+      document.getElementById('outputText').value='';
+      document.getElementById('rowCount').textContent='';
+      document.getElementById('previewSection').style.display='none';
+      showToast('已清空');
+    }
+
+    function copyResult(){
+      const v=document.getElementById('outputText').value;
+      if(!v){showToast('没有内容可复制');return;}
+      navigator.clipboard.writeText(v).then(()=>showToast('已复制')).catch(()=>{});
+    }
+  </script>
+</body>
+</html>
