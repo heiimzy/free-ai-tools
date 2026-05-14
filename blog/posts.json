@@ -1,5 +1,21 @@
 [
   {
+    "id": "006",
+    "date": "2026-05-14",
+    "zh": {
+      "title": "2026年5月AI大事件盘点：大模型混战、人形机器人突破、太空算力时代到来",
+      "summary": "2026年5月AI领域大事件：OpenAI发布GPT-5.5-Cyber、Google新Gemini即将亮相、DeepSeek-V4落地医疗、成都人形机器人世界模型发布、Anthropic租用SpaceX超级计算机、中国量子纠缠新突破。",
+      "tags": ["新闻", "行业"],
+      "file": "posts/006-ai-news-may-2026.zh.html"
+    },
+    "en": {
+      "title": "AI News May 2026: GPT-5.5-Cyber, Google I/O, Orbital Computing & Healthcare Breakthroughs",
+      "summary": "May 2026 AI news roundup: OpenAI launches GPT-5.5-Cyber, Anthropic leases SpaceX supercomputer, Google Gemini expansion, AI detects heart disease from bone scans, Harvard ER study, UK Sovereign AI fund.",
+      "tags": ["news", "industry"],
+      "file": "posts/006-ai-news-may-2026.en.html"
+    }
+  },
+  {
     "id": "005",
     "date": "2026-05-14",
     "zh": {
