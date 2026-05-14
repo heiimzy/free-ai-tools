@@ -1,5 +1,21 @@
 [
   {
+    "id": "011",
+    "date": "2026-05-15",
+    "zh": {
+      "title": "2026年5月AI工具实战选型指南：10大场景×30款工具横评",
+      "summary": "2026年5月最新AI工具选型指南：AI视频生成（即梦/可灵/Runway）、AI PPT、国产自动化工具十款横评、AI编程助手对比、开源工作流工具推荐，附场景化选型建议和成本分析。",
+      "tags": ["工具", "评测", "选型"],
+      "file": "posts/011-ai-tools-may-2026-guide.zh.html"
+    },
+    "en": {
+      "title": "May 2026 AI Tools Guide: New Model Releases, Developer Platforms & Best Picks",
+      "summary": "May 2026 AI tools roundup: Claude Opus 4.7 & Mythos, GPT-5.5 Instant, Gemini 3.1 Pro, AWS Kiro, Cursor 3, Perplexity PC, Kling 3.0, Nano Banana Pro, Claude Design, Amazon Bedrock AI payments, and 30+ tool picks by use case.",
+      "tags": ["tools", "reviews", "guide"],
+      "file": "posts/011-ai-tools-may-2026-guide.en.html"
+    }
+  },
+  {
     "id": "010",
     "date": "2026-05-15",
     "zh": {
