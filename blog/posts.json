@@ -1,5 +1,21 @@
 [
   {
+    "id": "008",
+    "date": "2026-05-14",
+    "zh": {
+      "title": "2026年AI变现完全指南：普通人也能上手的7种赚钱方法",
+      "summary": "2026年5月最新AI变现方法：AI短剧创作首月6800元、零基础宝妈收益2.5万、AI绘本单月18万、短视频自动化流水线、AI工具代运营。附真实案例和落地步骤。",
+      "tags": ["变现", "副业"],
+      "file": "posts/008-ai-monetization-guide-2026.zh.html"
+    },
+    "en": {
+      "title": "How to Make Money with AI in 2026: 7 Proven Side Hustles & Real Earnings",
+      "summary": "Proven AI monetization strategies for 2026: AI Automation Agency ($5K-$15K/mo), selling AI agents as subscriptions ($47-$197/mo), AI consulting ($100-$300/hr), vibe coding, Faceless YouTube, and real earnings data from practitioners.",
+      "tags": ["monetization", "side-hustle"],
+      "file": "posts/008-ai-monetization-guide-2026.en.html"
+    }
+  },
+  {
     "id": "007",
     "date": "2026-05-14",
     "zh": {
