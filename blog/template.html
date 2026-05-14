@@ -1,16 +1,19 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="{{LANG}}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{TITLE}} - AI日报</title>
+  <title>{{TITLE}} - AI Daily</title>
   <meta name="description" content="{{SUMMARY}}">
   <meta name="keywords" content="{{KEYWORDS}}">
+  <link rel="alternate" hreflang="zh" href="https://heiimzy.github.io/free-ai-tools/blog/posts/{{ZH_FILE}}">
+  <link rel="alternate" hreflang="en" href="https://heiimzy.github.io/free-ai-tools/blog/posts/{{EN_FILE}}">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/blog/posts/{{FILE}}">
   <link rel="stylesheet" href="../../style.css">
   <style>
     .post-article { max-width: 800px; margin: 0 auto; padding: 2rem 1rem 4rem; }
     .post-article .post-date { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.5rem; }
-    .post-article .post-tags { display: flex; gap: 0.4rem; margin-bottom: 1.5rem; }
+    .post-article .post-tags { display: flex; gap: 0.4rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
     .post-article .post-tags .tag { background: rgba(99,102,241,0.1); color: var(--primary); padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.75rem; }
     .post-article h1 { font-size: 1.8rem; margin-bottom: 0.5rem; line-height: 1.4; }
     .post-article h2 { font-size: 1.3rem; margin: 1.5rem 0 0.75rem; padding-bottom: 0.3rem; border-bottom: 1px solid var(--border); }
@@ -21,6 +24,9 @@
     .post-article blockquote { border-left: 4px solid var(--primary); padding: 0.5rem 1rem; margin: 1rem 0; background: rgba(99,102,241,0.05); border-radius: 0 8px 8px 0; color: var(--text-muted); }
     .post-article a { color: var(--secondary); }
     .post-article hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+    .post-article .lang-switch { text-align: right; margin-bottom: 1rem; }
+    .post-article .lang-switch a { display: inline-block; background: var(--bg-card); border: 1px solid var(--border); padding: 0.3rem 0.8rem; border-radius: 4px; font-size: 0.85rem; text-decoration: none; color: var(--text); }
+    .post-article .lang-switch a:hover { border-color: var(--primary); }
     .post-article .back-link { display: inline-block; margin-bottom: 2rem; color: var(--text-muted); text-decoration: none; font-size: 0.9rem; }
     .post-article .back-link:hover { color: var(--primary); }
     @media (max-width: 768px) { .post-article h1 { font-size: 1.4rem; } }
@@ -29,13 +35,16 @@
 <body>
   <header>
     <div class="container">
-      <a href="../../index.html" class="logo">Free AI Tools <span>免费</span></a>
-      <nav><a href="../../index.html">工具</a><a href="../index.html">博客</a></nav>
+      <a href="../../index.html" class="logo">Free AI Tools <span>{{LOGO_TEXT}}</span></a>
+      <nav><a href="../../index.html">{{NAV_TOOLS}}</a><a href="../index.html">{{NAV_BLOG}}</a><a href="../en/index.html">English</a></nav>
     </div>
   </header>
 
   <article class="post-article">
-    <a href="../index.html" class="back-link">← 返回博客首页</a>
+    <a href="../index.html" class="back-link">{{BACK_LINK}}← {{BACK_TEXT}}</a>
+    <div class="lang-switch">
+      <a href="{{OTHER_LANG_FILE}}">{{OTHER_LANG_LABEL}}</a>
+    </div>
     <div class="post-date">{{DATE}}</div>
     <div class="post-tags">{{TAGS_HTML}}</div>
     <h1>{{TITLE}}</h1>
@@ -45,7 +54,7 @@
 
   <footer>
     <div class="container">
-      <p>AI日报 &copy; 2026 | <a href="../../index.html">工具站</a> | <a href="../index.html">博客首页</a> | <a href="../rss.xml">RSS订阅</a></p>
+      <p>{{FOOTER_TEXT}} | <a href="../../index.html">{{FOOTER_TOOLS}}</a> | <a href="../index.html">{{FOOTER_BLOG}}</a> | <a href="../en/index.html">English</a> | <a href="../rss.xml">RSS</a></p>
     </div>
   </footer>
 </body>

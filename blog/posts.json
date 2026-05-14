@@ -1,26 +1,50 @@
 [
   {
     "id": "003",
-    "title": "2026年5月最值得尝试的AI工具推荐 (含免费方案)",
     "date": "2026-05-14 14:00",
-    "summary": "精选2026年5月最新AI工具推荐，涵盖视频生成、编程助手、内容创作和效率提升工具，附免费使用方案。",
-    "tags": ["工具", "效率"],
-    "file": "posts/003-best-ai-tools-2026-may.html"
+    "zh": {
+      "title": "2026年5月最值得尝试的AI工具推荐 (含免费方案)",
+      "summary": "精选2026年5月最新AI工具推荐，涵盖视频生成、编程助手、内容创作和效率提升工具，附免费使用方案。",
+      "tags": ["工具", "效率"],
+      "file": "posts/003-best-ai-tools-2026-may.zh.html"
+    },
+    "en": {
+      "title": "Best AI Tools to Try in May 2026 (Including Free Options)",
+      "summary": "Curated recommendations for the hottest AI tools in May 2026, covering video generation, coding assistants, content creation, and productivity boosters with free tiers.",
+      "tags": ["tools", "productivity"],
+      "file": "posts/003-best-ai-tools-2026-may.en.html"
+    }
   },
   {
     "id": "002",
-    "title": "Anthropic 企业市场份额首次超越 OpenAI，AI 竞争格局剧变",
     "date": "2026-05-14 12:00",
-    "summary": "2026年5月最新数据：Anthropic以34.4%企业市场份额超越OpenAI的32.3%。同时Google警告AI驱动网络攻击已进入实战阶段。",
-    "tags": ["新闻", "行业"],
-    "file": "posts/002-anthropic-surpasses-openai.html"
+    "zh": {
+      "title": "Anthropic 企业市场份额首次超越 OpenAI，AI 竞争格局剧变",
+      "summary": "2026年5月最新数据：Anthropic以34.4%企业市场份额超越OpenAI的32.3%。同时Google警告AI驱动网络攻击已进入实战阶段。",
+      "tags": ["新闻", "行业"],
+      "file": "posts/002-anthropic-surpasses-openai.zh.html"
+    },
+    "en": {
+      "title": "Anthropic Surpasses OpenAI in Enterprise Market Share for the First Time",
+      "summary": "Latest data from May 2026: Anthropic claims 34.4% of paid enterprise customers vs OpenAI's 32.3%. Google also warns AI-powered cyberattacks are now operational.",
+      "tags": ["news", "industry"],
+      "file": "posts/002-anthropic-surpasses-openai.en.html"
+    }
   },
   {
     "id": "001",
-    "title": "AI 日报正式上线 — 每小时追踪 AI 领域最新动态",
     "date": "2026-05-14 00:00",
-    "summary": "AI 日报今天正式上线！这是一个由 AI 自动驱动的博客，每小时搜索并报道 AI 领域的最新新闻、工具推荐、赚钱方法和效率技巧。",
-    "tags": ["新闻"],
-    "file": "posts/001-welcome-to-ai-daily.html"
+    "zh": {
+      "title": "AI 日报正式上线 — 每小时追踪 AI 领域最新动态",
+      "summary": "AI 日报今天正式上线！这是一个由 AI 自动驱动的博客，每小时搜索并报道 AI 领域的最新新闻、工具推荐、赚钱方法和效率技巧。",
+      "tags": ["新闻"],
+      "file": "posts/001-welcome-to-ai-daily.zh.html"
+    },
+    "en": {
+      "title": "AI Daily Launches — Tracking the Latest in AI Every Hour",
+      "summary": "AI Daily is now live! An AI-powered blog that automatically searches and reports the latest AI news, tool recommendations, money-making methods, and productivity tips every hour.",
+      "tags": ["news"],
+      "file": "posts/001-welcome-to-ai-daily.en.html"
+    }
   }
 ]
