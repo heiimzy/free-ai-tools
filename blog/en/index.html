@@ -10,6 +10,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="manifest" href="../../manifest.json">
+  <link rel="icon" type="image/svg+xml" href="../../icon.svg">
   <link rel="stylesheet" href="../../style.css">
   <style>
     .blog-header { text-align: center; padding: 3rem 1rem 2rem; position: relative; }
@@ -192,6 +194,39 @@
       <p>AI Daily &copy; 2026 | <a href="../../index.html">Free AI Tools</a> | <a href="../index.html">中文版</a> | <a href="rss.xml">RSS</a></p>
     </div>
   </footer>
+
+  <!-- PWA Install Banner -->
+  <div class="pwa-install-banner" id="pwaInstallBanner">
+    <span>📱</span>
+    <span>Add AI Daily to your home screen for quick access</span>
+    <button class="pwa-install-btn" onclick="installPWA()">Install</button>
+    <button class="pwa-close-btn" onclick="dismissPWA()">✕</button>
+  </div>
+
+  <!-- Bookmark FAB -->
+  <button class="bookmark-fab" id="bookmarkFab" onclick="showBookmarkModal()" title="Bookmark this site">
+    ⭐
+    <span class="tooltip">Bookmark</span>
+  </button>
+
+  <!-- Bookmark Modal -->
+  <div class="bookmark-overlay" id="bookmarkOverlay" onclick="closeBookmarkModal(event)">
+    <div class="bookmark-modal" onclick="event.stopPropagation()">
+      <button class="close-btn" onclick="hideBookmarkModal()">✕</button>
+      <div class="icon-big">⭐</div>
+      <h2>Bookmark AI Daily</h2>
+      <p>Never miss the latest AI news and insights</p>
+      <div class="shortcut">
+        <kbd>Ctrl</kbd> + <kbd>D</kbd> or <kbd>⌘</kbd> + <kbd>D</kbd>
+      </div>
+      <p style="font-size:0.8rem;">Press the shortcut to add this site to your bookmarks</p>
+      <div class="value-list">
+        <div class="item"><span class="dot"></span>Auto-updated every hour</div>
+        <div class="item"><span class="dot"></span>AI News · Tools · Monetization · Productivity</div>
+        <div class="item"><span class="dot"></span>Free to read, no registration</div>
+      </div>
+    </div>
+  </div>
 
   <script>
     const POSTS_PER_PAGE = 20;
@@ -380,6 +415,96 @@
     const particleCount = Math.min(50, Math.floor(window.innerWidth / 20));
     initParticles(particleCount);
     animateParticles();
+  </script>
+
+  <!-- PWA Install Banner -->
+  <div class="pwa-install-banner" id="pwaInstallBanner">
+    <span>📱</span>
+    <span>Add AI Daily to your home screen for quick access</span>
+    <button class="pwa-install-btn" onclick="installPWA()">Install</button>
+    <button class="pwa-close-btn" onclick="dismissPWA()">✕</button>
+  </div>
+
+  <script>
+    // Service Worker registration
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('../../sw.js').catch(function(err) {
+          console.warn('SW registration failed:', err);
+        });
+      });
+    }
+
+    // Bookmark modal
+    function showBookmarkModal() { document.getElementById('bookmarkOverlay').classList.add('show'); }
+    function hideBookmarkModal() { document.getElementById('bookmarkOverlay').classList.remove('show'); }
+    function closeBookmarkModal(e) { if (e.target === e.currentTarget) hideBookmarkModal(); }
+
+    // Notification check
+    (function checkNewPosts() {
+      var posts = (typeof allPosts !== 'undefined' && allPosts.length) ? allPosts : null;
+      function showNotif(postsData) {
+        if (!postsData || !postsData.length) return;
+        var latest = postsData[0];
+        var lastSeen = localStorage.getItem('fat_lastPostId');
+        if (latest.id !== lastSeen) {
+          var en = latest.en;
+          if (en && !lastSeen) {
+            localStorage.setItem('fat_lastPostId', latest.id);
+            return;
+          }
+          if (en && lastSeen && latest.id !== lastSeen) {
+            localStorage.setItem('fat_lastPostId', latest.id);
+            var banner = document.createElement('div');
+            banner.className = 'notif-banner show';
+            banner.innerHTML =
+              '<span class="notif-icon">📢</span>' +
+              '<span class="notif-text">New post: <a href="../' + en.file + '">' + en.title + '</a></span>' +
+              '<button class="notif-close" onclick="this.parentElement.remove()">✕</button>';
+
+            var container = document.querySelector('.container');
+            if (container) {
+              container.insertBefore(banner, container.firstChild);
+            }
+
+            if ('Notification' in window && Notification.permission === 'granted') {
+              try { new Notification('📢 AI Daily Update', { body: en.title, icon: '../../icon.svg' }); } catch(e) {}
+            }
+          }
+        }
+      }
+
+      if (posts) {
+        showNotif(posts);
+      } else {
+        fetch('../posts.json?_=' + Date.now())
+          .then(function(r) { return r.ok ? r.json() : null; })
+          .then(showNotif)
+          .catch(function() {});
+      }
+    })();
+
+    // PWA install
+    var deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', function(e) {
+      e.preventDefault();
+      deferredPrompt = e;
+      var b = document.getElementById('pwaInstallBanner');
+      if (b) b.classList.add('show');
+    });
+    function installPWA() {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(function() {
+        deferredPrompt = null;
+        var b = document.getElementById('pwaInstallBanner');
+        if (b) b.classList.remove('show');
+      });
+    }
+    function dismissPWA() {
+      var b = document.getElementById('pwaInstallBanner');
+      if (b) b.classList.remove('show');
+    }
   </script>
 </body>
 </html>

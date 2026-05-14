@@ -10,6 +10,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="manifest" href="../manifest.json">
+  <link rel="icon" type="image/svg+xml" href="../icon.svg">
   <link rel="stylesheet" href="../style.css">
   <style>
     .blog-header { text-align: center; padding: 3rem 1rem 2rem; position: relative; }
@@ -196,6 +198,39 @@
       <p>AI日报 &copy; 2026 | <a href="../index.html">工具站</a> | <a href="rss.xml">RSS订阅</a></p>
     </div>
   </footer>
+
+  <!-- PWA Install Banner -->
+  <div class="pwa-install-banner" id="pwaInstallBanner">
+    <span>📱</span>
+    <span>安装到主屏幕，及时获取 AI 日报更新</span>
+    <button class="pwa-install-btn" onclick="installPWA()">安装</button>
+    <button class="pwa-close-btn" onclick="dismissPWA()">✕</button>
+  </div>
+
+  <!-- Bookmark FAB -->
+  <button class="bookmark-fab" id="bookmarkFab" onclick="showBookmarkModal()" title="收藏本站">
+    ⭐
+    <span class="tooltip">收藏本站</span>
+  </button>
+
+  <!-- Bookmark Modal -->
+  <div class="bookmark-overlay" id="bookmarkOverlay" onclick="closeBookmarkModal(event)">
+    <div class="bookmark-modal" onclick="event.stopPropagation()">
+      <button class="close-btn" onclick="hideBookmarkModal()">✕</button>
+      <div class="icon-big">⭐</div>
+      <h2>收藏 AI 日报</h2>
+      <p>一键收藏，不错过任何 AI 前沿动态</p>
+      <div class="shortcut">
+        <kbd>Ctrl</kbd> + <kbd>D</kbd> 或 <kbd>⌘</kbd> + <kbd>D</kbd>
+      </div>
+      <p style="font-size:0.8rem;">将 AI 日报加入浏览器收藏夹</p>
+      <div class="value-list">
+        <div class="item"><span class="dot"></span>每小时自动更新</div>
+        <div class="item"><span class="dot"></span>AI 新闻 · 工具 · 变现 · 提效</div>
+        <div class="item"><span class="dot"></span>免费阅读，无需注册</div>
+      </div>
+    </div>
+  </div>
 
   <script>
     const POSTS_PER_PAGE = 20;
@@ -393,6 +428,89 @@
     const particleCount = Math.min(50, Math.floor(window.innerWidth / 20));
     initParticles(particleCount);
     animateParticles();
+  </script>
+
+  <script>
+    // Service Worker registration
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('../sw.js').catch(function(err) {
+          console.warn('SW registration failed:', err);
+        });
+      });
+    }
+
+    // Bookmark modal
+    function showBookmarkModal() { document.getElementById('bookmarkOverlay').classList.add('show'); }
+    function hideBookmarkModal() { document.getElementById('bookmarkOverlay').classList.remove('show'); }
+    function closeBookmarkModal(e) { if (e.target === e.currentTarget) hideBookmarkModal(); }
+
+    // Notification check: look for new posts on load
+    (function checkNewPosts() {
+      // Use posts.json that's already loaded if available, otherwise fetch it
+      var posts = (typeof allPosts !== 'undefined' && allPosts.length) ? allPosts : null;
+      function showNotif(postsData) {
+        if (!postsData || !postsData.length) return;
+        var latest = postsData[0];
+        var lastSeen = localStorage.getItem('fat_lastPostId');
+        if (latest.id !== lastSeen) {
+          var zh = latest.zh;
+          if (zh && !lastSeen) {
+            localStorage.setItem('fat_lastPostId', latest.id);
+            return;
+          }
+          if (zh && lastSeen && latest.id !== lastSeen) {
+            localStorage.setItem('fat_lastPostId', latest.id);
+            var banner = document.createElement('div');
+            banner.className = 'notif-banner show';
+            banner.innerHTML =
+              '<span class="notif-icon">📢</span>' +
+              '<span class="notif-text">新文章发布：<a href="' + zh.file + '">' + zh.title + '</a></span>' +
+              '<button class="notif-close" onclick="this.parentElement.remove()">✕</button>';
+
+            var container = document.querySelector('.container');
+            if (container) {
+              container.insertBefore(banner, container.firstChild);
+            }
+
+            if ('Notification' in window && Notification.permission === 'granted') {
+              try { new Notification('📢 AI 日报更新', { body: zh.title, icon: '../icon.svg' }); } catch(e) {}
+            }
+          }
+        }
+      }
+
+      if (posts) {
+        showNotif(posts);
+      } else {
+        fetch('posts.json?_=' + Date.now())
+          .then(function(r) { return r.ok ? r.json() : null; })
+          .then(showNotif)
+          .catch(function() {});
+      }
+    })();
+
+    // PWA install
+    var deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', function(e) {
+      e.preventDefault();
+      deferredPrompt = e;
+      var b = document.getElementById('pwaInstallBanner');
+      if (b) b.classList.add('show');
+    });
+    function installPWA() {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(function() {
+        deferredPrompt = null;
+        var b = document.getElementById('pwaInstallBanner');
+        if (b) b.classList.remove('show');
+      });
+    }
+    function dismissPWA() {
+      var b = document.getElementById('pwaInstallBanner');
+      if (b) b.classList.remove('show');
+    }
   </script>
 </body>
 </html>
