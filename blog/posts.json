@@ -1,5 +1,21 @@
 [
   {
+    "id": "012",
+    "date": "2026-05-15",
+    "zh": {
+      "title": "2026年AI变现全攻略：六大赚钱路径+实操案例，普通人也能月入过万",
+      "summary": "2026年最新AI变现方法全攻略：AI智能体工作流变现、AI短剧创作首月6800元实案、AI自媒体IP打造、AI轻服务接单、AI出海变现、AI一人公司。附工具推荐和避坑指南。",
+      "tags": ["变现", "副业", "赚钱"],
+      "file": "posts/012-ai-monetization-2026-guide.zh.html"
+    },
+    "en": {
+      "title": "AI Monetization 2026: 7 Proven Ways to Make Money with AI — From Side Hustle to Full-Time Income",
+      "summary": "2026 AI monetization guide: 7 proven ways to make money with AI including freelancing, automation services, faceless YouTube, selling AI prompts, no-code Micro SaaS, AI consulting, and digital products. Real earnings data included.",
+      "tags": ["monetization", "side-hustle", "freelancing"],
+      "file": "posts/012-ai-monetization-2026-guide.en.html"
+    }
+  },
+  {
     "id": "011",
     "date": "2026-05-15",
     "zh": {
