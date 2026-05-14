@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>图片压缩工具 - 免费在线图片压缩 | Free AI Tools</title>
+  <meta name="description" content="免费在线图片压缩工具，无需上传服务器，浏览器本地压缩JPEG、PNG、WebP图片，自定义压缩质量，批量处理，保护隐私。">
+  <meta name="keywords" content="图片压缩,在线压缩,图片瘦身,JPG压缩,PNG压缩,WebP压缩,免费压缩工具">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/image-compressor.html">图片压缩</a><a href="../tools/text-rewriter.html">AI改写</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>图片压缩工具</h1>
+      <p>浏览器本地压缩图片，不上传服务器，保护你的隐私。支持 JPEG、PNG、WebP 格式。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="form-group">
+        <label for="imageInput">选择图片</label>
+        <input type="file" id="imageInput" accept="image/jpeg,image/png,image/webp" onchange="loadImage()">
+        <div class="help-text">支持 JPG、PNG、WebP，单张最大 20MB</div>
+      </div>
+
+      <div class="form-row" style="margin-bottom:1rem;">
+        <div class="form-group">
+          <label for="qualitySlider">压缩质量: <span id="qualityLabel">80%</span></label>
+          <input type="range" id="qualitySlider" min="10" max="100" value="80" oninput="updateQuality()">
+          <div class="help-text">数值越低，文件越小，画质损失越大</div>
+        </div>
+        <div class="form-group">
+          <label for="formatSelect">输出格式</label>
+          <select id="formatSelect" onchange="compress()">
+            <option value="image/jpeg">JPEG</option>
+            <option value="image/png">PNG</option>
+            <option value="image/webp">WebP</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group" id="previewArea" style="display:none;">
+        <div class="stats-row" id="statsRow"></div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem; margin:1rem 0;">
+          <div style="text-align:center;">
+            <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.3rem;">压缩前</div>
+            <canvas id="originalCanvas" style="max-width:100%;border-radius:8px;border:1px solid var(--border);"></canvas>
+            <div id="originalInfo" style="font-size:0.8rem;color:var(--text-muted);margin-top:0.3rem;"></div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.3rem;">压缩后</div>
+            <canvas id="compressedCanvas" style="max-width:100%;border-radius:8px;border:1px solid var(--border);"></canvas>
+            <div id="compressedInfo" style="font-size:0.8rem;color:var(--text-muted);margin-top:0.3rem;"></div>
+          </div>
+        </div>
+        <button class="btn btn-success" onclick="downloadImage()">⬇️ 下载压缩图片</button>
+      </div>
+
+      <div id="dropZone" style="border:2px dashed var(--border);border-radius:12px;padding:3rem;text-align:center;color:var(--text-muted);cursor:pointer;transition:all 0.3s;margin-top:1rem;" ondragover="event.preventDefault();this.style.borderColor='var(--primary)';this.style.background='rgba(167,139,250,0.05)';" ondragleave="this.style.borderColor='var(--border)';this.style.background='transparent';" ondrop="handleDrop(event)">
+        📁 或将图片拖拽到此处
+      </div>
+    </div>
+
+    <div class="ad-placeholder">[广告位] Google AdSense</div>
+  </main>
+
+  <footer><div class="container"><p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="image-compressor.html">图片压缩</a></p></div></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let originalFile = null;
+    let originalImage = null;
+    let compressedBlob = null;
+    let originalSize = 0;
+
+    function showToast(m) {
+      const t = document.getElementById('toast');
+      t.textContent = m; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    function updateQuality() {
+      const v = document.getElementById('qualitySlider').value;
+      document.getElementById('qualityLabel').textContent = v + '%';
+    }
+
+    function formatBytes(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    }
+
+    function loadImage() {
+      const file = document.getElementById('imageInput').files[0];
+      if (!file) return;
+      if (file.size > 20 * 1024 * 1024) { showToast('图片超过20MB限制'); return; }
+      originalFile = file;
+      originalSize = file.size;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          originalImage = img;
+          document.getElementById('previewArea').style.display = 'block';
+          drawPreview(img);
+          compress();
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      document.getElementById('dropZone').style.borderColor = 'var(--border)';
+      document.getElementById('dropZone').style.background = 'transparent';
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.match(/image\/(jpeg|png|webp)/)) {
+        document.getElementById('imageInput').files = e.dataTransfer.files;
+        loadImage();
+      } else {
+        showToast('请拖入图片文件 (JPG/PNG/WebP)');
+      }
+    }
+
+    function drawPreview(img) {
+      const oc = document.getElementById('originalCanvas');
+      const ctx = oc.getContext('2d');
+      const maxW = 300;
+      const scale = Math.min(maxW / img.width, 1);
+      oc.width = img.width * scale;
+      oc.height = img.height * scale;
+      ctx.drawImage(img, 0, 0, oc.width, oc.height);
+      document.getElementById('originalInfo').innerHTML =
+        `${img.width}×${img.height} · ${formatBytes(originalSize)}`;
+    }
+
+    function compress() {
+      if (!originalImage) return;
+      const quality = parseInt(document.getElementById('qualitySlider').value) / 100;
+      const format = document.getElementById('formatSelect').value;
+
+      const cc = document.getElementById('compressedCanvas');
+      const cctx = cc.getContext('2d');
+
+      // Determine max dimension for output
+      let targetW = originalImage.width;
+      let targetH = originalImage.height;
+
+      // If image is very large (>2000px), scale down proportionally
+      const MAX_DIM = 2000;
+      if (targetW > MAX_DIM || targetH > MAX_DIM) {
+        const ratio = Math.min(MAX_DIM / targetW, MAX_DIM / targetH);
+        targetW = Math.round(targetW * ratio);
+        targetH = Math.round(targetH * ratio);
+      }
+
+      cc.width = targetW;
+      cc.height = targetH;
+      cctx.drawImage(originalImage, 0, 0, targetW, targetH);
+
+      cc.toBlob(function(blob) {
+        compressedBlob = blob;
+        const ci = document.getElementById('compressedInfo');
+        const saving = originalSize - blob.size;
+        const pct = ((saving / originalSize) * 100).toFixed(1);
+
+        // Draw compressed preview at smaller size
+        const maxW = 300;
+        const scale = Math.min(maxW / targetW, 1);
+        const displayCC = document.createElement('canvas');
+        displayCC.width = targetW * scale;
+        displayCC.height = targetH * scale;
+        const dctx = displayCC.getContext('2d');
+        dctx.drawImage(cc, 0, 0, displayCC.width, displayCC.height);
+
+        cc.width = displayCC.width;
+        cc.height = displayCC.height;
+        cctx.drawImage(displayCC, 0, 0);
+
+        ci.innerHTML = `${targetW}×${targetH} · ${formatBytes(blob.size)}`;
+        if (saving > 0) ci.innerHTML += ` · <span style="color:var(--success);">缩小 ${pct}%</span>`;
+        else ci.innerHTML += ` · <span style="color:var(--warning);">未缩小</span>`;
+
+        // Update stats
+        document.getElementById('statsRow').innerHTML = `
+          <div class="stat-box"><div class="value">${formatBytes(originalSize)}</div><div class="label">原始大小</div></div>
+          <div class="stat-box"><div class="value">${formatBytes(blob.size)}</div><div class="label">压缩后大小</div></div>
+          <div class="stat-box"><div class="value" style="color:${saving > 0 ? 'var(--success)' : 'var(--warning)'}">${pct}%</div><div class="label">缩小比例</div></div>
+          <div class="stat-box"><div class="value">${originalImage.width}×${originalImage.height}</div><div class="label">原始尺寸</div></div>
+        `;
+      }, format, quality);
+    }
+
+    function downloadImage() {
+      if (!compressedBlob) { showToast('请先压缩图片'); return; }
+      const ext = document.getElementById('formatSelect').value.split('/')[1];
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(compressedBlob);
+      a.download = `compressed-${Date.now()}.${ext}`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      showToast('✅ 下载成功');
+    }
+
+    // Listen for quality/format changes
+    document.getElementById('qualitySlider').addEventListener('input', compress);
+    document.getElementById('formatSelect').addEventListener('change', compress);
+  </script>
+</body>
+</html>

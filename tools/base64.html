@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Base64编解码 - 免费在线Base64编码解码 | Free AI Tools</title>
+  <meta name="description" content="免费在线Base64编码解码工具，支持文本和文件编码解码。实时转换，支持UTF-8多语言，一键复制结果。">
+  <meta name="keywords" content="Base64编码,Base64解码,Base64在线工具,base64加密解密,在线编码工具">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .tab-nav { display:flex; gap:0; margin-bottom:1.5rem; border-bottom:2px solid var(--border); }
+    .tab-nav button { background:transparent; border:none; color:var(--text-muted); padding:0.6rem 1.5rem; cursor:pointer; font-family:inherit; font-size:0.9rem; border-bottom:2px solid transparent; margin-bottom:-2px; transition:all 0.2s; }
+    .tab-nav button:hover { color:var(--text); }
+    .tab-nav button.active { color:var(--primary); border-bottom-color:var(--primary); }
+    .tab-panel { display:none; }
+    .tab-panel.active { display:block; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/base64.html">Base64</a><a href="../tools/text-rewriter.html">AI改写</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>Base64 编解码工具</h1>
+      <p>免费在线 Base64 编码与解码，支持文本和文件，实时转换。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="tab-nav" id="tabNav">
+        <button class="active" data-tab="encode">🔐 编码</button>
+        <button data-tab="decode">🔓 解码</button>
+        <button data-tab="file">📁 文件编码</button>
+      </div>
+
+      <!-- Encode Tab -->
+      <div class="tab-panel active" id="tab-encode">
+        <div class="form-group">
+          <label for="encodeInput">输入文本</label>
+          <textarea id="encodeInput" placeholder="输入要编码为 Base64 的文本..." rows="6"></textarea>
+        </div>
+        <button class="btn btn-primary" onclick="encodeText()">编码 →</button>
+        <div class="form-group" style="margin-top:1rem;">
+          <label>Base64 结果</label>
+          <div class="result-box" id="encodeResult"><div class="empty-state">输入文本后点击编码</div></div>
+          <button class="btn btn-success" onclick="copyResult('encodeResult')" id="encodeCopyBtn" disabled style="margin-top:0.75rem;">📋 复制结果</button>
+        </div>
+      </div>
+
+      <!-- Decode Tab -->
+      <div class="tab-panel" id="tab-decode">
+        <div class="form-group">
+          <label for="decodeInput">输入 Base64</label>
+          <textarea id="decodeInput" placeholder="输入 Base64 字符串进行解码..." rows="6"></textarea>
+        </div>
+        <button class="btn btn-primary" onclick="decodeText()">解码 →</button>
+        <div class="form-group" style="margin-top:1rem;">
+          <label>解码结果</label>
+          <div class="result-box" id="decodeResult"><div class="empty-state">输入 Base64 后点击解码</div></div>
+          <button class="btn btn-success" onclick="copyResult('decodeResult')" id="decodeCopyBtn" disabled style="margin-top:0.75rem;">📋 复制结果</button>
+        </div>
+      </div>
+
+      <!-- File Tab -->
+      <div class="tab-panel" id="tab-file">
+        <div class="form-group">
+          <label for="fileInput">选择文件</label>
+          <input type="file" id="fileInput" onchange="encodeFile()">
+          <div class="help-text">选择任意文件，将其编码为 Base64 字符串</div>
+        </div>
+        <div class="form-group" id="fileResultGroup" style="display:none;">
+          <label>文件信息</label>
+          <div id="fileInfo" style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.5rem;"></div>
+          <label>Base64 结果</label>
+          <div class="result-box" id="fileResult" style="font-family:'Courier New',monospace;font-size:0.8rem;max-height:200px;overflow:auto;"><div class="empty-state">等待文件选择...</div></div>
+          <button class="btn btn-success" onclick="copyResult('fileResult')" id="fileCopyBtn" disabled style="margin-top:0.75rem;">📋 复制 Base64</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">[广告位] Google AdSense</div>
+  </main>
+
+  <footer><div class="container"><p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="base64.html">Base64工具</a></p></div></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // Tab switching
+    document.getElementById('tabNav').addEventListener('click', function(e) {
+      if (e.target.tagName === 'BUTTON') {
+        document.querySelectorAll('#tabNav button').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        e.target.classList.add('active');
+        document.getElementById('tab-' + e.target.dataset.tab).classList.add('active');
+      }
+    });
+
+    function showToast(m) {
+      const t = document.getElementById('toast');
+      t.textContent = m; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    function encodeText() {
+      const input = document.getElementById('encodeInput').value;
+      if (!input) { showToast('请输入要编码的文本'); return; }
+      try {
+        const encoded = btoa(unescape(encodeURIComponent(input)));
+        document.getElementById('encodeResult').textContent = encoded;
+        document.getElementById('encodeCopyBtn').disabled = false;
+        showToast('✅ 编码完成');
+      } catch(e) {
+        document.getElementById('encodeResult').innerHTML = '<span style="color:var(--danger);">编码失败：请检查文本</span>';
+      }
+    }
+
+    function decodeText() {
+      const input = document.getElementById('decodeInput').value.trim();
+      if (!input) { showToast('请输入 Base64 字符串'); return; }
+      try {
+        const decoded = decodeURIComponent(escape(atob(input)));
+        document.getElementById('decodeResult').textContent = decoded;
+        document.getElementById('decodeCopyBtn').disabled = false;
+        showToast('✅ 解码完成');
+      } catch(e) {
+        document.getElementById('decodeResult').innerHTML = '<span style="color:var(--danger);">解码失败：无效的 Base64 字符串</span>';
+      }
+    }
+
+    function encodeFile() {
+      const file = document.getElementById('fileInput').files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const base64 = e.target.result.split(',')[1];
+        document.getElementById('fileResult').textContent = base64;
+        document.getElementById('fileCopyBtn').disabled = false;
+        document.getElementById('fileInfo').innerHTML =
+          `文件名: ${file.name} · 大小: ${formatBytes(file.size)} · 类型: ${file.type || '未知'}`;
+        document.getElementById('fileResultGroup').style.display = 'block';
+        showToast('✅ 文件编码完成');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function formatBytes(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    }
+
+    function copyResult(id) {
+      const el = document.getElementById(id);
+      const text = el.textContent;
+      if (text && text !== '输入文本后点击编码' && text !== '输入 Base64 后点击解码' && text !== '等待文件选择...') {
+        navigator.clipboard.writeText(text).then(() => showToast('✅ 已复制'));
+      }
+    }
+
+    // Auto-trigger encode/decode on Ctrl+Enter
+    document.getElementById('encodeInput').addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'Enter') encodeText();
+    });
+    document.getElementById('decodeInput').addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.key === 'Enter') decodeText();
+    });
+  </script>
+</body>
+</html>
