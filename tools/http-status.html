@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTTP状态码查询 - 在线HTTP状态码大全/含义查询 | Free AI Tools</title>
+  <meta name="description" content="免费在线HTTP状态码查询工具，收录100+个HTTP状态码的完整说明，支持分类浏览（1xx/2xx/3xx/4xx/5xx）和关键词搜索，适合Web开发者和后端调试使用。">
+  <meta name="keywords" content="HTTP状态码,HTTP状态码大全,404,500,301,502,HTTP Status Code,Web开发调试">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .http-layout { display: grid; gap: 1.5rem; }
+    .http-search { width: 100%; padding: 0.65rem 1rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-size: 0.9rem; box-sizing: border-box; }
+    .http-search:focus { outline: none; border-color: var(--primary); }
+    .http-search::placeholder { color: var(--text-muted); opacity: 0.5; }
+    .http-tabs { display: flex; gap: 0.25rem; flex-wrap: wrap; }
+    .http-tab { padding: 0.4rem 0.9rem; border-radius: 8px 8px 0 0; border: 1px solid var(--border); border-bottom: none; background: var(--bg-card); color: var(--text-muted); cursor: pointer; font-size: 0.82rem; transition: 0.15s; }
+    .http-tab.active { color: var(--primary); border-color: var(--primary); background: rgba(167,139,250,0.05); }
+    .http-tab:hover { color: var(--primary); }
+    .http-list { display: grid; gap: 0.5rem; }
+    .http-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem 1rem; transition: 0.15s; cursor: pointer; }
+    .http-item:hover { border-color: var(--primary); }
+    .http-item .h-code { font-family: monospace; font-size: 1.1rem; font-weight: 700; color: var(--primary); }
+    .http-item .h-name { color: var(--text); font-size: 0.9rem; margin-left: 0.5rem; }
+    .http-item .h-desc { color: var(--text-muted); font-size: 0.8rem; margin-top: 0.3rem; line-height: 1.5; }
+    .http-item .h-cat { display: inline-block; font-size: 0.7rem; padding: 0.1rem 0.5rem; border-radius: 10px; margin-right: 0.3rem; }
+    .http-count { color: var(--text-muted); font-size: 0.8rem; }
+    @media (max-width: 768px) { .http-tabs { gap: 0.15rem; } .http-tab { padding: 0.3rem 0.6rem; font-size: 0.75rem; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/http-status.html">HTTP状态码</a><a href="../tools/json-formatter.html">JSON工具</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>HTTP 状态码查询</h1>
+      <p>查询所有 HTTP 状态码含义、说明及使用场景，支持分类浏览和搜索。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="http-layout">
+        <input class="http-search" id="searchInput" type="text" placeholder="🔍 搜索状态码或描述..." oninput="filterCodes()">
+
+        <div class="http-tabs" id="tabBar">
+          <button class="http-tab active" data-cat="all">全部</button>
+          <button class="http-tab" data-cat="1xx">1xx 信息</button>
+          <button class="http-tab" data-cat="2xx">2xx 成功</button>
+          <button class="http-tab" data-cat="3xx">3xx 重定向</button>
+          <button class="http-tab" data-cat="4xx">4xx 客户端错误</button>
+          <button class="http-tab" data-cat="5xx">5xx 服务端错误</button>
+        </div>
+
+        <div class="http-count" id="countDisplay"></div>
+        <div class="http-list" id="codeList"></div>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">[广告位] Google AdSense</div>
+  </main>
+  <footer><div class="container"><p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a></p></div></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const codes=[
+      {code:'100',name:'Continue',cat:'1xx',desc:'服务器已收到请求头，客户端应继续发送请求体。用于减少大请求的无效传输。'},
+      {code:'101',name:'Switching Protocols',cat:'1xx',desc:'服务器同意客户端切换协议的请求，如从HTTP/1.1升级到WebSocket。'},
+      {code:'102',name:'Processing',cat:'1xx',desc:'服务器已收到并正在处理请求，但无响应可用。防止客户端超时。'},
+      {code:'103',name:'Early Hints',cat:'1xx',desc:'服务器在最终响应前发送的提示，帮助客户端预加载资源。'},
+
+      {code:'200',name:'OK',cat:'2xx',desc:'请求成功。GET获取资源、POST返回创建结果、PUT返回更新状态等标准成功响应。'},
+      {code:'201',name:'Created',cat:'2xx',desc:'请求已完成并创建了新资源。常用于POST/PUT请求的响应。'},
+      {code:'202',name:'Accepted',cat:'2xx',desc:'请求已被接受但尚未处理完成。用于异步操作场景。'},
+      {code:'203',name:'Non-Authoritative Information',cat:'2xx',desc:'返回的元信息不是来自原始服务器，而是来自第三方副本。'},
+      {code:'204',name:'No Content',cat:'2xx',desc:'请求成功但无内容返回。常用于DELETE操作或表单提交后的空响应。'},
+      {code:'205',name:'Reset Content',cat:'2xx',desc:'请求成功，要求客户端重置文档视图。常用于表单提交后清空表单。'},
+      {code:'206',name:'Partial Content',cat:'2xx',desc:'服务器返回了资源的部分内容。用于断点续传和分段下载。'},
+      {code:'207',name:'Multi-Status',cat:'2xx',desc:'返回多个独立操作的状态码。用于WebDAV批量操作。'},
+
+      {code:'300',name:'Multiple Choices',cat:'3xx',desc:'请求的资源有多个表示方式，客户端需选择其一。'},
+      {code:'301',name:'Moved Permanently',cat:'3xx',desc:'资源已永久移动到新URL。搜索引擎会更新索引到新地址。常用于域名变更和HTTPS跳转。'},
+      {code:'302',name:'Found',cat:'3xx',desc:'资源临时移动到新URL。客户端应继续使用原URL进行后续请求。常用于临时页面跳转。'},
+      {code:'303',name:'See Other',cat:'3xx',desc:'应当用GET方法访问另一个URL获取响应。用于POST提交后重定向到结果页。'},
+      {code:'304',name:'Not Modified',cat:'3xx',desc:'资源未修改，客户端可使用缓存的版本。通过ETag或Last-Modified头判断。'},
+      {code:'307',name:'Temporary Redirect',cat:'3xx',desc:'临时重定向，要求保持请求方法不变。与302类似但强制保持HTTP方法。'},
+      {code:'308',name:'Permanent Redirect',cat:'3xx',desc:'永久重定向，要求保持请求方法不变。与301类似但强制保持HTTP方法。'},
+
+      {code:'400',name:'Bad Request',cat:'4xx',desc:'服务器无法理解请求，通常因语法错误、参数格式错误或请求头过大导致。'},
+      {code:'401',name:'Unauthorized',cat:'4xx',desc:'请求未包含有效的认证凭证。客户端需提供有效的Authorization头。'},
+      {code:'402',name:'Payment Required',cat:'4xx',desc:'保留用于未来的数字支付系统。目前极少使用。'},
+      {code:'403',name:'Forbidden',cat:'4xx',desc:'服务器理解请求但拒绝执行。用户已认证但无权限访问资源。'},
+      {code:'404',name:'Not Found',cat:'4xx',desc:'服务器找不到请求的资源。可能是URL错误、资源已被删除或从未存在。'},
+      {code:'405',name:'Method Not Allowed',cat:'4xx',desc:'请求方法不被资源支持。如对只读接口发送POST请求。'},
+      {code:'406',name:'Not Acceptable',cat:'4xx',desc:'服务器无法生成客户端Accept头中指定的内容类型。'},
+      {code:'407',name:'Proxy Authentication Required',cat:'4xx',desc:'需先通过代理服务器的身份验证。'},
+      {code:'408',name:'Request Timeout',cat:'4xx',desc:'服务器等待客户端发送请求时超时。'},
+      {code:'409',name:'Conflict',cat:'4xx',desc:'请求与资源当前状态冲突。常见于编辑冲突或资源已存在。'},
+      {code:'410',name:'Gone',cat:'4xx',desc:'请求的资源已永久删除，且服务器知道该地址不再可用。与404的区别在于服务器明确知道资源曾存在。'},
+      {code:'411',name:'Length Required',cat:'4xx',desc:'服务器要求请求包含Content-Length头。'},
+      {code:'412',name:'Precondition Failed',cat:'4xx',desc:'请求头中的前置条件（如If-Match）未通过验证。'},
+      {code:'413',name:'Payload Too Large',cat:'4xx',desc:'请求体超过服务器允许的最大大小。'},
+      {code:'414',name:'URI Too Long',cat:'4xx',desc:'请求URL超过服务器允许的最大长度。'},
+      {code:'415',name:'Unsupported Media Type',cat:'4xx',desc:'请求体的媒体类型不被服务器支持。'},
+      {code:'416',name:'Range Not Satisfiable',cat:'4xx',desc:'请求的Range头指定的范围无效。'},
+      {code:'417',name:'Expectation Failed',cat:'4xx',desc:'Expect请求头中的期望不能被服务器满足。'},
+      {code:'418',name:"I'm a Teapot",cat:'4xx',desc:'1998年愚人节RFC的超文本咖啡壶控制协议。实际开发中偶尔用作彩蛋。'},
+      {code:'422',name:'Unprocessable Entity',cat:'4xx',desc:'请求格式正确但语义错误。常用于REST API的验证错误响应。'},
+      {code:'423',name:'Locked',cat:'4xx',desc:'请求的资源被锁定。用于WebDAV场景。'},
+      {code:'425',name:'Too Early',cat:'4xx',desc:'服务器不愿处理可能被重放的请求。用于防止重放攻击。'},
+      {code:'426',name:'Upgrade Required',cat:'4xx',desc:'服务器要求客户端升级协议。'},
+      {code:'429',name:'Too Many Requests',cat:'4xx',desc:'客户端在指定时间内发送了太多请求。常与Retry-After头配合使用。'},
+      {code:'431',name:'Request Header Fields Too Large',cat:'4xx',desc:'请求头字段过大，服务器无法处理。'},
+      {code:'451',name:'Unavailable For Legal Reasons',cat:'4xx',desc:'因法律原因资源不可访问。如内容被政府屏蔽导致的HTTP响应码。'},
+
+      {code:'500',name:'Internal Server Error',cat:'5xx',desc:'服务器遇到意外错误，无法完成请求。通用错误码，表示服务器端代码异常。'},
+      {code:'501',name:'Not Implemented',cat:'5xx',desc:'服务器不支持请求所需的功能。常用于不支持的HTTP方法。'},
+      {code:'502',name:'Bad Gateway',cat:'5xx',desc:'代理或网关从上游服务器收到无效响应。Nginx/反向代理常见错误。'},
+      {code:'503',name:'Service Unavailable',cat:'5xx',desc:'服务器暂时无法处理请求（过载或维护中）。常与Retry-After头配合使用。'},
+      {code:'504',name:'Gateway Timeout',cat:'5xx',desc:'代理或网关等待上游服务器响应时超时。'},
+      {code:'505',name:'HTTP Version Not Supported',cat:'5xx',desc:'服务器不支持请求中使用的HTTP协议版本。'},
+      {code:'506',name:'Variant Also Negotiates',cat:'5xx',desc:'服务器存在内部配置错误，导致循环引用。'},
+      {code:'507',name:'Insufficient Storage',cat:'5xx',desc:'服务器存储空间不足，无法完成请求。用于WebDAV场景。'},
+      {code:'508',name:'Loop Detected',cat:'5xx',desc:'服务器在处理请求时检测到无限循环。'},
+      {code:'509',name:'Bandwidth Limit Exceeded',cat:'5xx',desc:'服务器带宽限制已超。'},
+      {code:'510',name:'Not Extended',cat:'5xx',desc:'服务器需要扩展策略才能处理请求。'},
+      {code:'511',name:'Network Authentication Required',cat:'5xx',desc:'客户端需进行网络认证。常用于WiFi门户登录页面。'},
+    ];
+
+    let currentCat='all';
+
+    document.getElementById('tabBar').addEventListener('click',function(e){
+      if(e.target.classList.contains('http-tab')){
+        document.querySelectorAll('.http-tab').forEach(t=>t.classList.remove('active'));
+        e.target.classList.add('active');
+        currentCat=e.target.dataset.cat;
+        filterCodes();
+      }
+    });
+
+    function filterCodes(){
+      const q=document.getElementById('searchInput').value.toLowerCase();
+      const filtered=codes.filter(c=>{
+        if(currentCat!=='all'&&c.cat!==currentCat)return false;
+        if(q&&!c.code.includes(q)&&!c.name.toLowerCase().includes(q)&&!c.desc.toLowerCase().includes(q))return false;
+        return true;
+      });
+      renderCodes(filtered);
+    }
+
+    function renderCodes(list){
+      const el=document.getElementById('codeList');
+      document.getElementById('countDisplay').textContent=`显示 ${list.length} 个状态码`;
+      el.innerHTML=list.map(c=>{
+        const catColors={'1xx':'#60a5fa','2xx':'#34d399','3xx':'#fbbf24','4xx':'#fb923c','5xx':'#fb7185'};
+        return `<div class="http-item" onclick="copyCode(${c.code})" title="点击复制状态码">
+          <span class="h-cat" style="background:${catColors[c.cat]}22;color:${catColors[c.cat]}">${c.cat}</span>
+          <span class="h-code">${c.code}</span>
+          <span class="h-name">${c.name}</span>
+          <div class="h-desc">${c.desc}</div>
+        </div>`;
+      }).join('');
+    }
+
+    function copyCode(v){
+      navigator.clipboard.writeText(String(v)).then(()=>showToast('已复制: '+v)).catch(()=>{});
+    }
+
+    function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+    filterCodes();
+  </script>
+</body>
+</html>

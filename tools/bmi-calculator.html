@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BMI计算器 - 在线身体质量指数计算/健康体重检测 | Free AI Tools</title>
+  <meta name="description" content="免费在线BMI计算器，根据身高体重计算身体质量指数（BMI），自动评估偏瘦/正常/超重/肥胖等级，支持公制和英制单位切换。适合关注健康和健身的人群使用。">
+  <meta name="keywords" content="BMI计算器,BMI指数,身体质量指数,体重检测,健康体重,BMI标准,在线BMI,肥胖指数">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .bmi-layout { display: grid; gap: 1.5rem; max-width: 500px; margin: 0 auto; }
+    .bmi-row { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+    .bmi-row label { color: var(--text-muted); font-size: 0.85rem; min-width: 70px; }
+    .bmi-row input { background: var(--bg-card); border: 1px solid var(--border); color: var(--text); padding: 0.6rem 0.75rem; border-radius: 6px; font-size: 1rem; width: 120px; box-sizing: border-box; }
+    .bmi-row input:focus { outline: none; border-color: var(--primary); }
+    .bmi-row select { background: var(--bg-card); border: 1px solid var(--border); color: var(--text); padding: 0.6rem 0.75rem; border-radius: 6px; font-size: 0.85rem; }
+    .bmi-display { text-align: center; padding: 1.5rem; }
+    .bmi-display .bmi-value { font-size: 3.5rem; font-weight: 800; line-height: 1.2; }
+    .bmi-display .bmi-label { font-size: 1.2rem; margin-top: 0.3rem; }
+    .bmi-display .bmi-desc { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.3rem; }
+    .bmi-bar { height: 12px; border-radius: 6px; background: linear-gradient(90deg,#60a5fa 0%,#34d399 18%,#fbbf24 43%,#fb923c 57%,#fb7185 75%,#f87171 100%); margin: 1rem 0; position: relative; }
+    .bmi-bar .indicator { position: absolute; top: -8px; width: 4px; height: 28px; background: #fff; border-radius: 2px; box-shadow: 0 0 8px rgba(255,255,255,0.5); transition: left 0.3s; }
+    .bmi-scale { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); }
+    .bmi-tags { display: flex; gap: 0.3rem; flex-wrap: wrap; justify-content: center; margin-top: 1rem; }
+    .bmi-tag { padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem; border: 1px solid var(--border); }
+    .bmi-tag.active { border-color: var(--primary); background: rgba(167,139,250,0.1); }
+    .bmi-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 0.5rem; }
+    .bmi-table th, .bmi-table td { padding: 0.4rem 0.75rem; border-bottom: 1px solid var(--border); text-align: left; }
+    .bmi-table th { color: var(--primary); font-weight: 600; }
+    @media (max-width: 768px) { .bmi-row { flex-direction: column; align-items: stretch; } .bmi-row input { width: 100%; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/bmi-calculator.html">BMI计算</a><a href="../tools/unit-converter.html">单位换算</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>BMI 计算器 / 身体质量指数</h1>
+      <p>根据身高体重计算 BMI 值，评估体重状况，支持公制和英制。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="bmi-layout">
+        <div class="bmi-row">
+          <label>单位制</label>
+          <select id="unitSystem" onchange="toggleUnits()">
+            <option value="metric">公制 (cm/kg)</option>
+            <option value="imperial">英制 (ft/in/lb)</option>
+          </select>
+        </div>
+
+        <div class="bmi-row" id="heightRow">
+          <label id="heightLabel">身高 (cm)</label>
+          <input type="number" id="heightInput" value="170" min="50" max="300" step="0.1" oninput="calcBMI()">
+        </div>
+
+        <div class="bmi-row" id="weightRow">
+          <label id="weightLabel">体重 (kg)</label>
+          <input type="number" id="weightInput" value="65" min="10" max="500" step="0.1" oninput="calcBMI()">
+        </div>
+
+        <div class="bmi-display" id="bmiDisplay">
+          <div class="bmi-value" id="bmiValue">22.5</div>
+          <div class="bmi-label" id="bmiLabel">正常范围</div>
+          <div class="bmi-desc" id="bmiDesc">健康的体重范围，继续保持！</div>
+        </div>
+
+        <div class="bmi-bar">
+          <div class="indicator" id="bmiIndicator" style="left:45%"></div>
+        </div>
+        <div class="bmi-scale">
+          <span>偏瘦<br>&lt;18.5</span>
+          <span>正常<br>18.5-24</span>
+          <span>超重<br>24-28</span>
+          <span>肥胖<br>28-35</span>
+          <span>重度<br>&gt;35</span>
+        </div>
+
+        <div class="bmi-tags" id="bmiTags"></div>
+
+        <details style="margin-top:0.5rem;">
+          <summary style="color:var(--text-muted);cursor:pointer;font-size:0.85rem;">BMI 分类标准</summary>
+          <table class="bmi-table">
+            <tr><th>分类</th><th>BMI 范围</th><th>健康风险</th></tr>
+            <tr><td>偏瘦</td><td>&lt; 18.5</td><td>较低（但其他健康风险较高）</td></tr>
+            <tr><td>正常</td><td>18.5 - 24</td><td>平均水平</td></tr>
+            <tr><td>超重</td><td>24 - 28</td><td>轻度增加</td></tr>
+            <tr><td>肥胖 I 级</td><td>28 - 35</td><td>中等增加</td></tr>
+            <tr><td>肥胖 II 级</td><td>35 - 40</td><td>严重增加</td></tr>
+            <tr><td>肥胖 III 级</td><td>&gt; 40</td><td>非常严重</td></tr>
+          </table>
+          <p style="color:var(--text-muted);font-size:0.75rem;margin-top:0.5rem;">注：BMI 是一个参考指标，不适用于运动员、孕妇、儿童和老年人等特殊人群。请结合其他健康指标综合评估。</p>
+        </details>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">[广告位] Google AdSense</div>
+  </main>
+  <footer><div class="container"><p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a></p></div></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function calcBMI(){
+      const unit=document.getElementById('unitSystem').value;
+      const hVal=parseFloat(document.getElementById('heightInput').value);
+      const wVal=parseFloat(document.getElementById('weightInput').value);
+
+      let bmi=0, h=0, w=0;
+      if(unit==='metric'){
+        h=hVal/100;
+        w=wVal;
+      }else{
+        h=hVal*0.3048; // ft to m
+        w=wVal*0.453592; // lb to kg
+      }
+
+      if(h>0&&w>0){
+        bmi=w/(h*h);
+      }
+
+      const bmiEl=document.getElementById('bmiValue');
+      const labelEl=document.getElementById('bmiLabel');
+      const descEl=document.getElementById('bmiDesc');
+      const indicator=document.getElementById('bmiIndicator');
+      const tagsEl=document.getElementById('bmiTags');
+
+      if(!bmi||bmi<=0||bmi>60){
+        bmiEl.textContent='—';
+        labelEl.textContent='请输入有效的身高和体重';
+        descEl.textContent='';
+        indicator.style.display='none';
+        tagsEl.innerHTML='';
+        return;
+      }
+
+      indicator.style.display='block';
+      bmiEl.textContent=bmi.toFixed(1);
+
+      // Position indicator on the bar (0-60 mapped to 0%-100%)
+      const pct=Math.min(Math.max((bmi/60)*100,0),100);
+      indicator.style.left=`calc(${pct}% - 2px)`;
+
+      let label,desc,color,clazz;
+      if(bmi<18.5){
+        label='偏瘦';desc='建议适当增加营养摄入，保持健康体重';color='#60a5fa';clazz='偏瘦';
+      }else if(bmi<24){
+        label='正常范围';desc='健康的体重范围，继续保持！';color='#34d399';clazz='正常';
+      }else if(bmi<28){
+        label='超重';desc='建议适当控制饮食，增加运动量';color='#fbbf24';clazz='超重';
+      }else if(bmi<35){
+        label='肥胖 I 级';desc='建议调整饮食结构并增加运动，咨询专业人士';color='#fb923c';clazz='肥胖';
+      }else if(bmi<40){
+        label='肥胖 II 级';desc='强烈建议咨询医生或营养师，制定健康计划';color='#fb7185';clazz='肥胖';
+      }else{
+        label='肥胖 III 级';desc='请立即咨询专业医生，获取个性化健康建议';color='#f87171';clazz='肥胖';
+      }
+
+      labelEl.textContent=label;
+      labelEl.style.color=color;
+      bmiEl.style.color=color;
+      descEl.textContent=desc;
+
+      const cats=['偏瘦','正常','超重','肥胖'];
+      tagsEl.innerHTML=cats.map(c=>`<span class="bmi-tag${c===clazz?' active':''}" style="${c===clazz?`border-color:${color};color:${color}`:''}">${c}</span>`).join('');
+    }
+
+    function toggleUnits(){
+      const unit=document.getElementById('unitSystem').value;
+      if(unit==='metric'){
+        document.getElementById('heightLabel').textContent='身高 (cm)';
+        document.getElementById('weightLabel').textContent='体重 (kg)';
+        document.getElementById('heightInput').value=170;
+        document.getElementById('weightInput').value=65;
+      }else{
+        document.getElementById('heightLabel').textContent='身高 (ft)';
+        document.getElementById('weightLabel').textContent='体重 (lb)';
+        document.getElementById('heightInput').value=5.6;
+        document.getElementById('weightInput').value=143;
+      }
+      calcBMI();
+    }
+
+    calcBMI();
+  </script>
+</body>
+</html>

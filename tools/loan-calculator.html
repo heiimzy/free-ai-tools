@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>贷款计算器 - 在线房贷/车贷/商业贷款计算 | Free AI Tools</title>
+  <meta name="description" content="免费在线贷款计算器，支持等额本息和等额本金两种还款方式，实时计算月供、利息总额、还款明细。适合购房贷款、车贷、商业贷款等场景使用。">
+  <meta name="keywords" content="贷款计算器,房贷计算器,月供计算,等额本息,等额本金,利息计算,按揭贷款,在线贷款工具">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .loan-layout { display: grid; gap: 1.5rem; }
+    .loan-form { display: grid; gap: 1rem; max-width: 500px; }
+    .loan-row { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+    .loan-row label { color: var(--text-muted); font-size: 0.85rem; min-width: 100px; }
+    .loan-row input, .loan-row select { background: var(--bg-card); border: 1px solid var(--border); color: var(--text); padding: 0.55rem 0.75rem; border-radius: 6px; font-size: 0.9rem; width: 140px; box-sizing: border-box; }
+    .loan-row input:focus, .loan-row select:focus { outline: none; border-color: var(--primary); }
+    .loan-summary { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; }
+    .loan-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; text-align: center; }
+    .loan-card .lc-val { font-size: 1.5rem; font-weight: 700; color: var(--primary); margin-top: 0.25rem; }
+    .loan-card .lc-label { color: var(--text-muted); font-size: 0.8rem; }
+    .loan-card .lc-sub { color: var(--text-muted); font-size: 0.75rem; margin-top: 0.25rem; }
+    .loan-table-wrap { max-height: 400px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; }
+    .loan-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    .loan-table th { position: sticky; top: 0; background: var(--bg-card); padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--border); color: var(--primary); font-weight: 600; text-align: right; }
+    .loan-table th:first-child { text-align: center; }
+    .loan-table td { padding: 0.4rem 0.75rem; border-bottom: 1px solid var(--border); text-align: right; color: var(--text); }
+    .loan-table td:first-child { text-align: center; color: var(--text-muted); }
+    .loan-table tr:hover td { background: rgba(167,139,250,0.03); }
+    @media (max-width: 768px) { .loan-summary { grid-template-columns: 1fr; } .loan-row { flex-direction: column; align-items: stretch; } .loan-row input { width: 100%; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/loan-calculator.html">贷款计算</a><a href="../tools/unit-converter.html">单位换算</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>贷款计算器 / Loan Calculator</h1>
+      <p>等额本息和等额本金两种还款方式，计算月供、利息总额及还款明细。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="loan-layout">
+        <div class="loan-form">
+          <div class="loan-row">
+            <label>贷款总额</label>
+            <input type="number" id="loanAmount" value="1000000" min="1" step="10000" oninput="calcLoan()">
+            <span style="color:var(--text-muted);font-size:0.8rem;">元</span>
+          </div>
+          <div class="loan-row">
+            <label>年利率 (%)</label>
+            <input type="number" id="loanRate" value="3.5" min="0.1" max="30" step="0.05" oninput="calcLoan()">
+          </div>
+          <div class="loan-row">
+            <label>贷款期限</label>
+            <input type="number" id="loanYears" value="30" min="1" max="50" step="1" oninput="calcLoan()">
+            <span style="color:var(--text-muted);font-size:0.8rem;">年</span>
+          </div>
+          <div class="loan-row">
+            <label>还款方式</label>
+            <select id="loanMethod" onchange="calcLoan()">
+              <option value="equal">等额本息</option>
+              <option value="principal">等额本金</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="loan-summary" id="loanSummary">
+          <div class="loan-card">
+            <div class="lc-label">月供</div>
+            <div class="lc-val" id="monthlyPayment">4,490</div>
+            <div class="lc-sub" id="monthlySub">元/月</div>
+          </div>
+          <div class="loan-card">
+            <div class="lc-label">利息总额</div>
+            <div class="lc-val" id="totalInterest">616,000</div>
+            <div class="lc-sub" id="interestSub">元</div>
+          </div>
+          <div class="loan-card">
+            <div class="lc-label">还款总额</div>
+            <div class="lc-val" id="totalPayment">1,616,000</div>
+            <div class="lc-sub" id="totalSub">元</div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:0.5rem;align-items:center;">
+          <label for="showTable" style="color:var(--text-muted);font-size:0.85rem;cursor:pointer;">
+            <input type="checkbox" id="showTable" onchange="toggleTable()" checked> 显示还款明细
+          </label>
+        </div>
+
+        <div class="loan-table-wrap" id="tableWrap">
+          <table class="loan-table" id="loanTable"></table>
+        </div>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">[广告位] Google AdSense</div>
+  </main>
+  <footer><div class="container"><p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a></p></div></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function formatNum(n){return Math.round(n).toLocaleString();}
+    function formatMoney(n){return n.toLocaleString('zh-CN',{minimumFractionDigits:0,maximumFractionDigits:2});}
+
+    function calcLoan(){
+      const amount=parseFloat(document.getElementById('loanAmount').value)||0;
+      const rate=parseFloat(document.getElementById('loanRate').value)||0;
+      const years=parseInt(document.getElementById('loanYears').value)||0;
+      const method=document.getElementById('loanMethod').value;
+
+      if(!amount||!rate||!years){
+        document.getElementById('monthlyPayment').textContent='—';
+        document.getElementById('totalInterest').textContent='—';
+        document.getElementById('totalPayment').textContent='—';
+        return;
+      }
+
+      const months=years*12;
+      const monthRate=rate/100/12;
+
+      let monthly, totalInterest, totalPayment;
+
+      if(method==='equal'){
+        // 等额本息
+        if(monthRate===0){
+          monthly=amount/months;
+        }else{
+          monthly=amount*monthRate*Math.pow(1+monthRate,months)/(Math.pow(1+monthRate,months)-1);
+        }
+        totalPayment=monthly*months;
+        totalInterest=totalPayment-amount;
+      }else{
+        // 等额本金
+        const principal=amount/months;
+        const payments=[];
+        let totalInt=0;
+        for(let i=0;i<months;i++){
+          const interest=(amount-principal*i)*monthRate;
+          totalInt+=interest;
+          payments.push(principal+interest);
+        }
+        monthly=payments[0];
+        totalPayment=amount+totalInt;
+        totalInterest=totalInt;
+      }
+
+      document.getElementById('monthlyPayment').textContent=method==='equal'?formatMoney(monthly):formatMoney(monthly)+'~'+formatMoney(monthly-(amount/months)*monthRate);
+      document.getElementById('monthlySub').textContent=method==='equal'?'元/月':'元/月 (首月~末月)';
+      document.getElementById('totalInterest').textContent=formatMoney(totalInterest);
+      document.getElementById('totalPayment').textContent=formatMoney(totalPayment);
+
+      if(document.getElementById('showTable').checked){
+        renderTable(amount,monthRate,months,method,monthly);
+      }
+    }
+
+    function renderTable(amount,monthRate,months,method,monthlyEqual){
+      const table=document.getElementById('loanTable');
+      const isEqual=method==='equal';
+      const principal=amount/months;
+
+      let html='<thead><tr><th>期数</th><th>月供</th><th>本金</th><th>利息</th><th>剩余本金</th></tr></thead><tbody>';
+      const rows=Math.min(months,360);
+      let balance=amount;
+
+      for(let i=0;i<rows;i++){
+        let p,iAmt;
+        if(isEqual){
+          iAmt=balance*monthRate;
+          p=monthlyEqual-iAmt;
+        }else{
+          p=principal;
+          iAmt=balance*monthRate;
+        }
+        balance-=p;
+        html+=`<tr>
+          <td>${i+1}</td>
+          <td>${formatMoney(p+iAmt)}</td>
+          <td>${formatMoney(p)}</td>
+          <td>${formatMoney(iAmt)}</td>
+          <td>${formatMoney(Math.max(0,balance))}</td>
+        </tr>`;
+      }
+
+      if(months>360){
+        html+=`<tr><td colspan="5" style="text-align:center;color:var(--text-muted);">... 仅显示前 360 期，共 ${months} 期</td></tr>`;
+      }
+
+      html+='</tbody>';
+      table.innerHTML=html;
+    }
+
+    function toggleTable(){
+      const show=document.getElementById('showTable').checked;
+      document.getElementById('tableWrap').style.display=show?'block':'none';
+      if(show) calcLoan();
+    }
+
+    calcLoan();
+  </script>
+</body>
+</html>
