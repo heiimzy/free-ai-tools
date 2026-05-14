@@ -1,5 +1,21 @@
 [
   {
+    "id": "004",
+    "date": "2026-05-14 14:22",
+    "zh": {
+      "title": "2026年AI一人公司完全指南：一个人+AI，年入百万不是梦",
+      "summary": "2026年AI变现最火的模式：一人公司。不用团队、不用办公室，一个人用AI工具搭建自动化流水线，年营收超百万的真实案例和实操方法。",
+      "tags": ["变现", "效率"],
+      "file": "posts/004-ai-one-person-company.zh.html"
+    },
+    "en": {
+      "title": "The AI Automation Agency: How to Build a One-Person Business That Prints Money in 2026",
+      "summary": "2026 is the year of the AI Automation Agency (AAA). Real case studies, tool stacks, and a step-by-step playbook for building a one-person business that generates $5K-$15K/month.",
+      "tags": ["monetization", "productivity"],
+      "file": "posts/004-ai-one-person-company.en.html"
+    }
+  },
+  {
     "id": "003",
     "date": "2026-05-14 14:00",
     "zh": {
