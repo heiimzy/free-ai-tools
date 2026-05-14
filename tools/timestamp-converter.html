@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>在线时间戳转换 - Unix时间戳/日期互转 | Free AI Tools</title>
+  <meta name="description" content="免费在线时间戳转换工具，Unix时间戳和日期时间互转，支持毫秒/秒时间戳、时区选择、多种日期格式、相对时间计算。">
+  <meta name="keywords" content="时间戳转换,Unix时间戳,日期转时间戳,时间戳在线工具,时区转换">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .ts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+    .ts-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; }
+    .ts-card h3 { margin-bottom: 0.75rem; font-size: 1rem; }
+    .ts-card input, .ts-card select { width: 100%; padding: 0.65rem 0.8rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-size: 1rem; box-sizing: border-box; font-family: monospace; }
+    .ts-card input:focus { outline: none; border-color: var(--primary); }
+    .ts-row { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.5rem; }
+    .ts-row label { color: var(--text-muted); font-size: 0.85rem; white-space: nowrap; }
+    .current-ts { text-align: center; padding: 1rem; background: linear-gradient(135deg, rgba(167,139,250,0.08), rgba(244,114,182,0.05)); border-radius: 12px; margin-bottom: 1.5rem; border: 1px solid var(--border); }
+    .current-ts .ts-value { font-size: 1.5rem; font-weight: 700; color: var(--primary); font-family: monospace; }
+    .current-ts .ts-label { color: var(--text-muted); font-size: 0.85rem; }
+    .current-ts .refresh-btn { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 0.3rem 0.8rem; color: var(--text); cursor: pointer; font-size: 0.8rem; margin-top: 0.5rem; transition: 0.2s; }
+    .current-ts .refresh-btn:hover { border-color: var(--primary); }
+    .format-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+    .format-item { background: rgba(167,139,250,0.05); border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.8rem; font-family: monospace; cursor: pointer; transition: 0.2s; color: var(--text); }
+    .format-item:hover { border-color: var(--primary); background: rgba(167,139,250,0.1); }
+    .format-item .fmt-label { display: block; font-size: 0.65rem; color: var(--text-muted); font-family: sans-serif; margin-bottom: 0.2rem; }
+    @media (max-width: 768px) { .ts-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/text-rewriter.html">AI改写</a><a href="../tools/timestamp-converter.html">时间戳工具</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>在线时间戳转换</h1>
+      <p>Unix 时间戳与日期时间互转，支持多种时区和格式。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="current-ts">
+        <div class="ts-label">当前时间戳</div>
+        <div class="ts-value" id="currentTs">—</div>
+        <button class="refresh-btn" onclick="updateCurrentTs();updateClock();">🔄 刷新</button>
+        <div class="ts-row" style="justify-content:center;margin-top:0.3rem;">
+          <span style="font-size:0.85rem;color:var(--text-muted);" id="currentDateStr"></span>
+        </div>
+      </div>
+
+      <div class="ts-grid">
+        <div class="ts-card">
+          <h3>时间戳 → 日期</h3>
+          <input type="number" id="tsInput" placeholder="输入时间戳，如 1715654400" oninput="tsToDate()">
+          <div class="ts-row">
+            <label>时区:</label>
+            <select id="tzFrom" onchange="tsToDate()">
+              <option value="local">本地时间</option>
+              <option value="UTC">UTC</option>
+              <option value="Asia/Shanghai">Asia/Shanghai (UTC+8)</option>
+              <option value="America/New_York">America/New_York (UTC-5)</option>
+              <option value="Europe/London">Europe/London (UTC+0)</option>
+              <option value="Asia/Tokyo">Asia/Tokyo (UTC+9)</option>
+            </select>
+          </div>
+          <div class="ts-row">
+            <label>类型:</label>
+            <select id="tsType" onchange="tsToDate()">
+              <option value="s">秒 (Unix)</option>
+              <option value="ms">毫秒</option>
+            </select>
+          </div>
+          <div id="tsToDateResult" style="margin-top:0.75rem;font-family:monospace;color:var(--primary);font-size:1.1rem;">输入时间戳</div>
+          <div class="format-grid" id="tsFormats"></div>
+        </div>
+
+        <div class="ts-card">
+          <h3>日期 → 时间戳</h3>
+          <input type="datetime-local" id="dateInput" oninput="dateToTs()">
+          <div class="ts-row">
+            <label>时区:</label>
+            <select id="tzTo" onchange="dateToTs()">
+              <option value="local">本地时间</option>
+              <option value="UTC">UTC</option>
+              <option value="Asia/Shanghai">Asia/Shanghai (UTC+8)</option>
+              <option value="America/New_York">America/New_York (UTC-5)</option>
+              <option value="Europe/London">Europe/London (UTC+0)</option>
+              <option value="Asia/Tokyo">Asia/Tokyo (UTC+9)</option>
+            </select>
+          </div>
+          <div id="dateToTsResult" style="margin-top:0.75rem;">
+            <div class="ts-row"><label>秒:</label><span style="font-family:monospace;color:var(--primary);font-size:1.1rem;" id="dateToTsSec">—</span></div>
+            <div class="ts-row"><label>毫秒:</label><span style="font-family:monospace;color:var(--primary);font-size:1.1rem;" id="dateToTsMs">—</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">[广告位] Google AdSense</div>
+  </main>
+  <footer><div class="container"><p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a></p></div></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+    function getTzOffset(tz,date){
+      if(tz==='local') return 0;
+      if(tz==='UTC') return 0;
+      const offsets={'Asia/Shanghai':480,'America/New_York':-300,'Europe/London':0,'Asia/Tokyo':540};
+      const localOffset=date.getTimezoneOffset();
+      const tzOffset=offsets[tz]||0;
+      return tzOffset-localOffset;
+    }
+
+    function tsToDate(){
+      const ts=parseFloat(document.getElementById('tsInput').value);
+      const type=document.getElementById('tsType').value;
+      const tz=document.getElementById('tzFrom').value;
+      if(isNaN(ts)){document.getElementById('tsToDateResult').textContent='输入时间戳';document.getElementById('tsFormats').innerHTML='';return;}
+      const ms=type==='s'?ts*1000:ts;
+      const d=new Date(ms);
+      if(isNaN(d.getTime())){document.getElementById('tsToDateResult').textContent='无效时间戳';return;}
+      const offset=getTzOffset(tz,d);
+      const tzDate=new Date(d.getTime()+offset*60000);
+      const formats = [
+        {label:'ISO 8601',val:tzDate.toISOString().replace('Z','').replace(/\.\d{3}/,'')+(tz==='UTC'?'Z':'')},
+        {label:'日期',val:tzDate.toLocaleDateString('zh-CN')},
+        {label:'日期时间',val:tzDate.toLocaleString('zh-CN')},
+        {label:'UTC 完整',val:tzDate.toUTCString()},
+        {label:'YYYY-MM-DD',val:tzDate.getFullYear()+'-'+String(tzDate.getMonth()+1).padStart(2,'0')+'-'+String(tzDate.getDate()).padStart(2,'0')},
+        {label:'YYYY-MM-DD HH:mm:ss',val:tzDate.getFullYear()+'-'+String(tzDate.getMonth()+1).padStart(2,'0')+'-'+String(tzDate.getDate()).padStart(2,'0')+' '+String(tzDate.getHours()).padStart(2,'0')+':'+String(tzDate.getMinutes()).padStart(2,'0')+':'+String(tzDate.getSeconds()).padStart(2,'0')},
+      ];
+      document.getElementById('tsToDateResult').textContent=formats[5].val;
+      const grid=document.getElementById('tsFormats');
+      grid.innerHTML=formats.map(f=>`<div class="format-item" onclick="copyFmt('${f.val.replace(/'/g,"\\'")}')"><span class="fmt-label">${f.label}</span>${f.val}</div>`).join('');
+    }
+
+    function copyFmt(v){navigator.clipboard.writeText(v).then(()=>showToast('已复制: '+v)).catch(()=>{});}
+
+    function dateToTs(){
+      const val=document.getElementById('dateInput').value;
+      const tz=document.getElementById('tzTo').value;
+      if(!val){document.getElementById('dateToTsSec').textContent='—';document.getElementById('dateToTsMs').textContent='—';return;}
+      const d=new Date(val+':00');
+      if(isNaN(d.getTime()))return;
+      const offset=getTzOffset(tz,d);
+      const adjusted=d.getTime()-offset*60000;
+      document.getElementById('dateToTsSec').textContent=Math.floor(adjusted/1000);
+      document.getElementById('dateToTsMs').textContent=adjusted;
+    }
+
+    function updateCurrentTs(){
+      const now=Date.now();
+      document.getElementById('currentTs').textContent=Math.floor(now/1000)+' (秒)  /  '+now+' (毫秒)';
+      document.getElementById('currentDateStr').textContent=new Date().toLocaleString('zh-CN')+' (本地时间)';
+    }
+
+    function updateClock(){
+      document.getElementById('tsInput').placeholder='如 '+Math.floor(Date.now()/1000);
+    }
+
+    // Set default date input to now
+    function setDefaultDate(){
+      const now=new Date();
+      const local=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0')+'T'+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+      document.getElementById('dateInput').value=local;
+    }
+
+    // init
+    updateCurrentTs();
+    setDefaultDate();
+    dateToTs();
+    setInterval(updateCurrentTs,1000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>在线单位换算 - 长度/重量/温度/面积/体积 | Free AI Tools</title>
+  <meta name="description" content="免费在线单位换算工具，支持长度、重量、温度、面积、体积、时间、速度、数据存储等各类单位之间的实时换算。">
+  <meta name="keywords" content="单位换算,长度换算,重量换算,温度换算,面积换算,在线转换器">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .converter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+    .converter-grid select, .converter-grid input { width: 100%; padding: 0.65rem 0.8rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-size: 1rem; box-sizing: border-box; }
+    .converter-grid select option { background: #1a1225; }
+    .swap-btn { display: flex; align-items: center; justify-content: center; }
+    .swap-btn button { background: var(--bg-card); border: 1px solid var(--border); border-radius: 50%; width: 44px; height: 44px; font-size: 1.2rem; cursor: pointer; transition: 0.2s; color: var(--text); }
+    .swap-btn button:hover { border-color: var(--primary); box-shadow: 0 0 15px var(--glow-purple); }
+    .category-tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .category-tab { padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); cursor: pointer; transition: 0.2s; font-size: 0.85rem; }
+    .category-tab:hover { border-color: var(--primary); }
+    .category-tab.active { background: linear-gradient(135deg, rgba(167,139,250,0.2), rgba(244,114,182,0.1)); border-color: var(--primary); color: var(--primary); }
+    .conversion-result { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; text-align: center; margin-top: 1rem; }
+    .conversion-result .result-value { font-size: 2rem; font-weight: 700; color: var(--primary); font-family: monospace; }
+    .conversion-result .result-label { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.3rem; }
+    .formula-box { background: rgba(167,139,250,0.05); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem 1rem; margin-top: 1rem; font-family: monospace; font-size: 0.85rem; color: var(--text-muted); }
+    @media (max-width: 768px) { .converter-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/text-rewriter.html">AI改写</a><a href="../tools/unit-converter.html">单位换算</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>在线单位换算</h1>
+      <p>长度、重量、温度、面积、体积、时间、速度、数据存储 — 实时换算。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="category-tabs" id="categoryTabs"></div>
+
+      <div class="converter-grid">
+        <div>
+          <label>从</label>
+          <select id="fromUnit"></select>
+          <input type="number" id="fromValue" value="1" oninput="convert()" step="any">
+        </div>
+        <div>
+          <label>到</label>
+          <select id="toUnit" onchange="convert()"></select>
+          <div style="position:relative;">
+            <input type="text" id="toValue" readonly style="width:100%;padding:0.65rem 0.8rem;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--text);font-size:1rem;box-sizing:border-box;font-family:monospace;">
+          </div>
+        </div>
+      </div>
+
+      <div class="swap-btn"><button onclick="swapUnits()" title="交换单位">⇄</button></div>
+
+      <div class="conversion-result">
+        <div class="result-value" id="resultDisplay">1</div>
+        <div class="result-label" id="resultLabel">选择单位和数值</div>
+      </div>
+
+      <div class="formula-box" id="formulaBox">输入数值查看换算公式</div>
+    </div>
+
+    <div class="ad-placeholder">[广告位] Google AdSense</div>
+  </main>
+  <footer><div class="container"><p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a></p></div></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+    const categories = {
+      length: {
+        name:'长度', units:['米','千米','厘米','毫米','微米','纳米','英里','英尺','英寸','码','海里','光年'],
+        base: ['m','km','cm','mm','µm','nm','mi','ft','in','yd','nmi','ly'],
+        toBase(v,u){const t={'m':1,'km':1000,'cm':0.01,'mm':0.001,'µm':1e-6,'nm':1e-9,'mi':1609.344,'ft':0.3048,'in':0.0254,'yd':0.9144,'nmi':1852,'ly':9.461e15};return v*t[u];},
+        fromBase(v,u){const t={'m':1,'km':1000,'cm':0.01,'mm':0.001,'µm':1e-6,'nm':1e-9,'mi':1609.344,'ft':0.3048,'in':0.0254,'yd':0.9144,'nmi':1852,'ly':9.461e15};return v/t[u];}
+      },
+      weight: {
+        name:'重量', units:['千克','克','毫克','吨','磅','盎司','克拉','市斤','两'],
+        base: ['kg','g','mg','t','lb','oz','ct','jin','liang'],
+        toBase(v,u){const t={'kg':1,'g':0.001,'mg':1e-6,'t':1000,'lb':0.453592,'oz':0.0283495,'ct':0.0002,'jin':0.5,'liang':0.05};return v*t[u];},
+        fromBase(v,u){const t={'kg':1,'g':0.001,'mg':1e-6,'t':1000,'lb':0.453592,'oz':0.0283495,'ct':0.0002,'jin':0.5,'liang':0.05};return v/t[u];}
+      },
+      temperature: {
+        name:'温度', units:['摄氏度','华氏度','开尔文'],
+        base: ['C','F','K'],
+        toBase(v,u){if(u==='C')return v;if(u==='F')return (v-32)*5/9;if(u==='K')return v-273.15;},
+        fromBase(v,u){if(u==='C')return v;if(u==='F')return v*9/5+32;if(u==='K')return v+273.15;}
+      },
+      area: {
+        name:'面积', units:['平方米','平方千米','公顷','亩','平方英尺','平方英寸','平方码','英亩'],
+        base: ['m2','km2','ha','mu','ft2','in2','yd2','ac'],
+        toBase(v,u){const t={'m2':1,'km2':1e6,'ha':10000,'mu':666.667,'ft2':0.092903,'in2':0.00064516,'yd2':0.836127,'ac':4046.86};return v*t[u];},
+        fromBase(v,u){const t={'m2':1,'km2':1e6,'ha':10000,'mu':666.667,'ft2':0.092903,'in2':0.00064516,'yd2':0.836127,'ac':4046.86};return v/t[u];}
+      },
+      volume: {
+        name:'体积', units:['升','毫升','立方米','加仑(美)','加仑(英)','夸脱','品脱','杯','盎司(液)'],
+        base: ['L','mL','m3','gal_us','gal_uk','qt','pt','cup','fl_oz'],
+        toBase(v,u){const t={'L':1,'mL':0.001,'m3':1000,'gal_us':3.78541,'gal_uk':4.54609,'qt':0.946353,'pt':0.473176,'cup':0.236588,'fl_oz':0.0295735};return v*t[u];},
+        fromBase(v,u){const t={'L':1,'mL':0.001,'m3':1000,'gal_us':3.78541,'gal_uk':4.54609,'qt':0.946353,'pt':0.473176,'cup':0.236588,'fl_oz':0.0295735};return v/t[u];}
+      },
+      time: {
+        name:'时间', units:['秒','分钟','小时','天','周','月(30天)','年(365天)'],
+        base: ['s','min','h','d','wk','mo','yr'],
+        toBase(v,u){const t={'s':1,'min':60,'h':3600,'d':86400,'wk':604800,'mo':2592000,'yr':31536000};return v*t[u];},
+        fromBase(v,u){const t={'s':1,'min':60,'h':3600,'d':86400,'wk':604800,'mo':2592000,'yr':31536000};return v/t[u];}
+      },
+      speed: {
+        name:'速度', units:['米/秒','千米/时','英里/时','节','马赫'],
+        base: ['m_s','km_h','mph','kn','mach'],
+        toBase(v,u){const t={'m_s':1,'km_h':0.277778,'mph':0.44704,'kn':0.514444,'mach':340.3};return v*t[u];},
+        fromBase(v,u){const t={'m_s':1,'km_h':0.277778,'mph':0.44704,'kn':0.514444,'mach':340.3};return v/t[u];}
+      },
+      data: {
+        name:'数据存储', units:['字节','KB','MB','GB','TB','PB','bit'],
+        base: ['B','KB','MB','GB','TB','PB','bit'],
+        toBase(v,u){const t={'B':1,'KB':1024,'MB':1048576,'GB':1073741824,'TB':1099511627776,'PB':1125899906842624,'bit':0.125};return v*t[u];},
+        fromBase(v,u){const t={'B':1,'KB':1024,'MB':1048576,'GB':1073741824,'TB':1099511627776,'PB':1125899906842624,'bit':0.125};return v/t[u];}
+      }
+    };
+
+    let currentCat = 'length';
+
+    function initCategories(){
+      const container=document.getElementById('categoryTabs');
+      container.innerHTML=Object.keys(categories).map(k=>`<button class="category-tab${k===currentCat?' active':''}" data-cat="${k}">${categories[k].name}</button>`).join('');
+      container.querySelectorAll('.category-tab').forEach(el=>el.addEventListener('click',function(){switchCategory(this.dataset.cat);}));
+    }
+
+    function switchCategory(cat){
+      currentCat=cat;
+      document.querySelectorAll('.category-tab').forEach(el=>el.classList.toggle('active',el.dataset.cat===cat));
+      populateUnits();
+      convert();
+    }
+
+    function populateUnits(){
+      const cat=categories[currentCat];
+      const fromSel=document.getElementById('fromUnit');
+      const toSel=document.getElementById('toUnit');
+      fromSel.innerHTML=cat.units.map((u,i)=>`<option value="${cat.base[i]}">${u}</option>`).join('');
+      toSel.innerHTML=cat.units.map((u,i)=>`<option value="${cat.base[i]}">${u}</option>`).join('');
+      // default: different units for same cat
+      if(cat.base.length>1){toSel.selectedIndex=1;}
+    }
+
+    function convert(){
+      const cat=categories[currentCat];
+      const fromUnit=document.getElementById('fromUnit').value;
+      const toUnit=document.getElementById('toUnit').value;
+      const fromVal=parseFloat(document.getElementById('fromValue').value);
+      if(isNaN(fromVal)){document.getElementById('toValue').value='';document.getElementById('resultDisplay').textContent='—';return;}
+      const baseVal=cat.toBase(fromVal,fromUnit);
+      const result=cat.fromBase(baseVal,toUnit);
+      const formatted=result<1e-6||result>1e9?result.toExponential(6):result.toFixed(6).replace(/\.?0+$/,'');
+      document.getElementById('toValue').value=formatted;
+      document.getElementById('resultDisplay').textContent=formatted;
+      const fromLabel=document.getElementById('fromUnit').selectedOptions[0].text;
+      const toLabel=document.getElementById('toUnit').selectedOptions[0].text;
+      document.getElementById('resultLabel').textContent=`${fromVal} ${fromLabel} = ${formatted} ${toLabel}`;
+      // formula hint
+      const baseName=cat.base.indexOf(fromUnit)!==-1?fromUnit:cat.base[0];
+      document.getElementById('formulaBox').textContent=`${fromVal} ${fromLabel} → 先转基准单位(${baseName}) → 再转目标单位`;
+    }
+
+    function swapUnits(){
+      const fromSel=document.getElementById('fromUnit');
+      const toSel=document.getElementById('toUnit');
+      const tmp=fromSel.value;fromSel.value=toSel.value;toSel.value=tmp;
+      convert();
+    }
+
+    // init
+    initCategories();
+    populateUnits();
+    convert();
+
+    document.getElementById('fromValue').addEventListener('keydown',function(e){if(e.key==='Enter')convert();});
+  </script>
+</body>
+</html>
