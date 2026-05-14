@@ -1,5 +1,21 @@
 [
   {
+    "id": "005",
+    "date": "2026-05-14",
+    "zh": {
+      "title": "2026年AI提升工作效率完全指南：智能体工作流+自动化实战",
+      "summary": "2026年AI提效最实用的方法：AI智能体工作流、跨应用自动化、Prompt工程、会议纪要自动生成。实测有效的效率提升方案，看完就能用。",
+      "tags": ["效率", "工作流"],
+      "file": "posts/005-ai-productivity-workflow.zh.html"
+    },
+    "en": {
+      "title": "AI Productivity in 2026: Agentic Workflows, Automation & Practical Guides",
+      "summary": "Practical AI productivity guide for 2026: agentic workflows with Claude MCP & Zapier, cross-app automation with n8n/Make, meeting assistants, prompt engineering. Real solutions you can implement today.",
+      "tags": ["productivity", "workflow"],
+      "file": "posts/005-ai-productivity-workflow.en.html"
+    }
+  },
+  {
     "id": "004",
     "date": "2026-05-14 14:22",
     "zh": {
