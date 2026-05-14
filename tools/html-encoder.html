@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML 转义工具 - 在线HTML实体编码解码 | Free AI Tools</title>
+  <meta name="description" content="免费在线HTML转义反转义工具，将特殊字符转换为HTML实体，或从HTML实体还原为原始字符。支持批量处理，一键复制结果。">
+  <meta name="keywords" content="HTML转义,HTML反转义,HTML实体编码,特殊字符转义,在线转义工具">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .html-layout { display: grid; gap: 1.5rem; }
+    .html-textarea { width: 100%; min-height: 150px; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: monospace; font-size: 0.85rem; resize: vertical; box-sizing: border-box; line-height: 1.5; }
+    .html-textarea:focus { outline: none; border-color: var(--primary); }
+    .html-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .char-ref { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 0.4rem; margin-top: 1rem; }
+    .char-ref-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 0.4rem 0.6rem; font-size: 0.75rem; text-align: center; cursor: pointer; transition: 0.15s; }
+    .char-ref-item:hover { border-color: var(--primary); }
+    .char-ref-item .ch { font-size: 1.1rem; }
+    .char-ref-item .code { font-family: monospace; color: var(--text-muted); font-size: 0.65rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/text-rewriter.html">AI改写</a><a href="../tools/html-encoder.html">HTML转义</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>HTML 转义 / 反转义</h1>
+      <p>将特殊字符转为 HTML 实体，或将 HTML 实体还原为原始字符。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="html-layout">
+        <div>
+          <label>输入文本</label>
+          <textarea class="html-textarea" id="inputText" placeholder="输入要转义或反转义的内容...">&lt;script&gt;alert("Hello &amp; welcome!");&lt;/script&gt;</textarea>
+        </div>
+
+        <div class="html-actions">
+          <button class="btn btn-primary" onclick="encode()">🔐 转义 &amp; → &amp;amp;</button>
+          <button class="btn btn-secondary" onclick="decode()">🔓 反转义 &amp;amp; → &amp;</button>
+          <button class="btn btn-secondary" onclick="clearAll()">🗑️ 清空</button>
+          <button class="btn btn-success" onclick="copyResult()" id="copyBtn">📋 复制结果</button>
+        </div>
+
+        <div>
+          <label>结果</label>
+          <textarea class="html-textarea" id="outputText" readonly placeholder="结果将显示在这里..."></textarea>
+        </div>
+
+        <div style="margin-top:0.5rem;">
+          <label>常用 HTML 字符参考（点击复制）</label>
+          <div class="char-ref">
+            <div class="char-ref-item" onclick="copyChar('&amp;lt;')"><div class="ch">&lt;</div><div class="code">&amp;lt;</div></div>
+            <div class="char-ref-item" onclick="copyChar('&amp;gt;')"><div class="ch">&gt;</div><div class="code">&amp;gt;</div></div>
+            <div class="char-ref-item" onclick="copyChar('&amp;amp;')"><div class="ch">&amp;</div><div class="code">&amp;amp;</div></div>
+            <div class="char-ref-item" onclick="copyChar('&amp;quot;')"><div class="ch">"</div><div class="code">&amp;quot;</div></div>
+            <div class="char-ref-item" onclick="copyChar('&amp;apos;')"><div class="ch">'</div><div class="code">&amp;apos;</div></div>
+            <div class="char-ref-item" onclick="copyChar('&amp;nbsp;')"><div class="ch"> </div><div class="code">&amp;nbsp;</div></div>
+            <div class="char-ref-item" onclick="copyChar('&amp;copy;')"><div class="ch">©</div><div class="code">&amp;copy;</div></div>
+            <div class="char-ref-item" onclick="copyChar('&amp;trade;')"><div class="ch">™</div><div class="code">&amp;trade;</div></div>
+            <div class="char-ref-item" onclick="copyChar('&amp;reg;')"><div class="ch">®</div><div class="code">&amp;reg;</div></div>
+            <div class="char-ref-item" onclick="copyChar('&amp;mdash;')"><div class="ch">—</div><div class="code">&amp;mdash;</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">[广告位] Google AdSense</div>
+  </main>
+  <footer><div class="container"><p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a></p></div></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+    function encode(){
+      const input=document.getElementById('inputText').value;
+      const output=document.getElementById('outputText');
+      output.value=input.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+      showToast('转义完成');
+    }
+
+    function decode(){
+      const input=document.getElementById('inputText').value;
+      const output=document.getElementById('outputText');
+      const txt=document.createElement('textarea');
+      txt.innerHTML=input;
+      output.value=txt.value;
+      showToast('反转义完成');
+    }
+
+    function clearAll(){
+      document.getElementById('inputText').value='';
+      document.getElementById('outputText').value='';
+      showToast('已清空');
+    }
+
+    function copyResult(){
+      const val=document.getElementById('outputText').value;
+      if(!val){showToast('没有内容可复制');return;}
+      navigator.clipboard.writeText(val).then(()=>showToast('已复制')).catch(()=>{});
+    }
+
+    function copyChar(c){
+      navigator.clipboard.writeText(c).then(()=>showToast('已复制: '+c)).catch(()=>{});
+    }
+  </script>
+</body>
+</html>

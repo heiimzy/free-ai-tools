@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UUID 生成器 - 在线UUID/GUID生成工具 | Free AI Tools</title>
+  <meta name="description" content="免费在线UUID生成器，支持 UUID v4（随机）和 UUID v7（时间排序）批量生成，一键复制，适合数据库主键、分布式系统标识符生成场景。">
+  <meta name="keywords" content="UUID生成器,GUID生成,在线UUID,UUID v4,UUID v7,唯一标识符,分布式ID">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .uuid-opts { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; margin-bottom: 1.25rem; }
+    .uuid-opts label { color: var(--text-muted); font-size: 0.85rem; }
+    .uuid-opts select, .uuid-opts input[type="number"] { padding: 0.5rem 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-size: 0.9rem; }
+    .uuid-opts select option { background: #1a1225; }
+    .uuid-list { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 0; max-height: 400px; overflow-y: auto; }
+    .uuid-item { display: flex; justify-content: space-between; align-items: center; padding: 0.65rem 1rem; border-bottom: 1px solid var(--border); font-family: monospace; font-size: 0.85rem; }
+    .uuid-item:last-child { border-bottom: none; }
+    .uuid-item .uuid-val { color: var(--text); word-break: break-all; }
+    .uuid-item .uuid-copy { cursor: pointer; color: var(--primary); font-size: 0.75rem; flex-shrink: 0; margin-left: 0.5rem; opacity: 0.6; transition: 0.15s; background: none; border: none; font-family: inherit; }
+    .uuid-item .uuid-copy:hover { opacity: 1; }
+    .uuid-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/text-rewriter.html">AI改写</a><a href="../tools/uuid-generator.html">UUID</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>UUID 生成器</h1>
+      <p>批量生成 UUID v4 / UUID v7，支持一键复制。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="uuid-opts">
+        <div>
+          <label>版本</label>
+          <select id="uuidVersion" onchange="generateUUIDs()">
+            <option value="v4">UUID v4（随机）</option>
+            <option value="v7">UUID v7（时间排序）</option>
+          </select>
+        </div>
+        <div>
+          <label>数量</label>
+          <input type="number" id="uuidCount" value="5" min="1" max="1000" onchange="generateUUIDs()">
+        </div>
+        <div>
+          <label>大小写</label>
+          <select id="uuidCase" onchange="generateUUIDs()">
+            <option value="lower">小写</option>
+            <option value="upper">大写</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="uuid-actions">
+        <button class="btn btn-primary" onclick="generateUUIDs()">🔄 重新生成</button>
+        <button class="btn btn-secondary" onclick="copyAll()">📋 复制全部</button>
+        <button class="btn btn-secondary" onclick="exportCSV()">📥 导出CSV</button>
+      </div>
+
+      <div style="margin:0.75rem 0;color:var(--text-muted);font-size:0.8rem;">
+        已生成 <span id="uuidCountDisplay">5</span> 个 UUID
+      </div>
+
+      <div class="uuid-list" id="uuidList"></div>
+    </div>
+
+    <div class="ad-placeholder">[广告位] Google AdSense</div>
+  </main>
+  <footer><div class="container"><p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a></p></div></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+    function uuidV4(){
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{
+        const r=Math.random()*16|0;
+        return (c==='x'?r:(r&0x3|0x8)).toString(16);
+      });
+    }
+
+    function uuidV7(){
+      const now=Date.now();
+      const hex=now.toString(16).padStart(12,'0');
+      const rand1=(Math.random()*0x10000|0).toString(16).padStart(4,'0');
+      const rand2=(Math.random()*0x10000|0).toString(16).padStart(4,'0');
+      const rand3=(Math.random()*0x10000|0).toString(16).padStart(4,'0');
+      const ver='7';
+      const variant=((Math.random()*0x1000|0)&0x0fff|0x8000).toString(16);
+      return `${hex.slice(0,8)}-${hex.slice(8,12)}-${ver}${rand1.slice(1)}-${variant.slice(0,4)}-${rand2}${rand3}`;
+    }
+
+    function generateUUIDs(){
+      const version=document.getElementById('uuidVersion').value;
+      const count=Math.min(1000,Math.max(1,parseInt(document.getElementById('uuidCount').value)||1));
+      const useUpper=document.getElementById('uuidCase').value==='upper';
+      const list=document.getElementById('uuidList');
+      const fn=version==='v4'?uuidV4:uuidV7;
+      const uuids=[];
+      for(let i=0;i<count;i++){
+        let u=fn();
+        if(useUpper) u=u.toUpperCase();
+        uuids.push(u);
+      }
+      document.getElementById('uuidCountDisplay').textContent=count;
+      list.innerHTML=uuids.map((u,i)=>`
+        <div class="uuid-item">
+          <span class="uuid-val">${u}</span>
+          <button class="uuid-copy" onclick="copyUUID('${u}')">复制</button>
+        </div>
+      `).join('');
+      window._lastUUIDs=uuids;
+    }
+
+    function copyUUID(u){
+      navigator.clipboard.writeText(u).then(()=>showToast('已复制: '+u)).catch(()=>{});
+    }
+
+    function copyAll(){
+      const list=window._lastUUIDs||[];
+      if(!list.length){showToast('请先生成 UUID');return;}
+      navigator.clipboard.writeText(list.join('\n')).then(()=>showToast('已复制 '+list.length+' 个 UUID')).catch(()=>{});
+    }
+
+    function exportCSV(){
+      const list=window._lastUUIDs||[];
+      if(!list.length){showToast('请先生成 UUID');return;}
+      const blob=new Blob(['UUID\n'+list.join('\n')],{type:'text/csv;charset=utf-8'});
+      const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='uuids.csv';a.click();
+      URL.revokeObjectURL(a.href);
+      showToast('已导出 '+list.length+' 个 UUID');
+    }
+
+    // init
+    generateUUIDs();
+  </script>
+</body>
+</html>
