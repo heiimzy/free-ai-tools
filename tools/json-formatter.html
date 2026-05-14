@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JSON 格式化工具 - 在线JSON解析验证 | Free AI Tools</title>
+  <meta name="description" content="免费在线JSON格式化工具，支持JSON解析、验证、压缩、转义。实时格式化，错误提示，开发者必备工具。">
+  <meta name="keywords" content="JSON格式化,JSON在线工具,JSON解析,JSON验证,JSON压缩">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/text-rewriter.html">AI改写</a><a href="../tools/json-formatter.html">JSON工具</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>JSON 格式化工具</h1>
+      <p>JSON 解析、格式化、验证、压缩一体化工具。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="form-group">
+        <label for="inputText">输入 JSON</label>
+        <textarea id="inputText" placeholder='{"name": "John","age":30,"city":"New York"}' rows="8"></textarea>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+        <button class="btn btn-primary" onclick="formatJSON()">🔧 格式化</button>
+        <button class="btn btn-secondary" onclick="compressJSON()">📦 压缩</button>
+        <button class="btn btn-secondary" onclick="escapeJSON()">🔤 转义</button>
+        <button class="btn btn-secondary" onclick="unescapeJSON()">↩️ 反转义</button>
+        <button class="btn btn-secondary" onclick="validateJSON()">✅ 验证</button>
+      </div>
+
+      <div class="form-group">
+        <label>结果 <span id="statusBadge" style="font-size:0.8rem;margin-left:0.5rem;"></span></label>
+        <div class="result-box" id="resultBox" style="font-family: 'Courier New', monospace; font-size: 0.85rem;">
+          <div class="empty-state">输入 JSON 后点击操作按钮</div>
+        </div>
+        <button class="btn btn-success" onclick="copyResult()" id="copyBtn" disabled style="margin-top: 0.75rem;">📋 复制</button>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">[广告位] Google AdSense</div>
+  </main>
+  <footer><div class="container"><p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a></p></div></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+    function getInput(){return document.getElementById('inputText').value;}
+    function setResult(t){const b=document.getElementById('resultBox');b.innerHTML=t;document.getElementById('copyBtn').disabled=false;}
+    function setStatus(c,m){const b=document.getElementById('statusBadge');b.innerHTML=m||'';b.style.color=c||'var(--text-muted)';}
+
+    function tryParse(t){try{return JSON.parse(t);}catch(e){return null;}}
+
+    function formatJSON(){
+      const t=getInput();if(!t){showToast('请输入JSON');return;}
+      const p=tryParse(t);if(!p){setResult('❌ 无效JSON：语法错误');setStatus('var(--danger)','❌ 无效');showToast('JSON格式错误');return;}
+      setResult(JSON.stringify(p,null,2));setStatus('var(--success)','✅ 有效JSON');showToast('已格式化');
+    }
+
+    function compressJSON(){
+      const t=getInput();if(!t){showToast('请输入JSON');return;}
+      const p=tryParse(t);if(!p){showToast('JSON格式错误');return;}
+      setResult(JSON.stringify(p));setStatus('var(--success)','✅ 已压缩');
+    }
+
+    function escapeJSON(){
+      const t=getInput();setResult(JSON.stringify(t));setStatus('','🔤 已转义');
+    }
+
+    function unescapeJSON(){
+      const t=getInput();if(!t){showToast('请输入JSON');return;}
+      try{const p=JSON.parse(t);setResult(p);setStatus('','↩️ 已反转义');}catch(e){showToast('转义字符串格式错误');}
+    }
+
+    function validateJSON(){
+      const t=getInput();if(!t){showToast('请输入JSON');return;}
+      const p=tryParse(t);
+      if(p){const s=JSON.stringify(p,null,2);setResult(`✅ 有效 JSON\n\n${s.substring(0,2000)}`);setStatus('var(--success)','✅ 有效JSON');showToast('JSON有效');}
+      else{setResult('❌ 无效 JSON\n\n请检查以下问题：\n1. 确保所有key使用双引号\n2. 确保没有多余的逗号\n3. 确保花括号/方括号匹配');setStatus('var(--danger)','❌ 无效');showToast('JSON无效');}
+    }
+
+    function copyResult(){
+      const t=document.getElementById('resultBox').textContent;
+      if(t&&t!=='输入 JSON 后点击操作按钮'){navigator.clipboard.writeText(t).then(()=>showToast('✅ 已复制'));}
+    }
+  </script>
+</body>
+</html>

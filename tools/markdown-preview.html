@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markdown 编辑器 - 在线MD转HTML预览 | Free AI Tools</title>
+  <meta name="description" content="免费在线Markdown编辑器，实时预览HTML效果。支持标题、列表、代码块、表格、图片等Markdown语法。">
+  <meta name="keywords" content="Markdown编辑器,MD转HTML,在线Markdown,Markdown预览,Markdown工具">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .editor-pane { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .editor-pane textarea { min-height: 400px; font-family: 'Courier New', monospace; font-size: 0.9rem; }
+    .preview-pane { background: #fff; color: #333; border-radius: 8px; padding: 1.5rem; min-height: 400px; border: 1px solid var(--border); overflow-y: auto; }
+    .preview-pane h1, .preview-pane h2, .preview-pane h3 { border-bottom: 1px solid #eee; padding-bottom: 0.3rem; margin-top: 1.5rem; }
+    .preview-pane h1 { font-size: 1.8rem; }
+    .preview-pane h2 { font-size: 1.4rem; }
+    .preview-pane h3 { font-size: 1.2rem; }
+    .preview-pane p { margin: 0.5rem 0; line-height: 1.7; }
+    .preview-pane code { background: #f5f5f5; padding: 0.2rem 0.4rem; border-radius: 3px; font-size: 0.85rem; }
+    .preview-pane pre { background: #f5f5f5; padding: 1rem; border-radius: 6px; overflow-x: auto; }
+    .preview-pane pre code { background: none; padding: 0; }
+    .preview-pane blockquote { border-left: 4px solid var(--primary); padding-left: 1rem; color: #666; margin: 1rem 0; }
+    .preview-pane table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+    .preview-pane th, .preview-pane td { border: 1px solid #ddd; padding: 0.5rem; text-align: left; }
+    .preview-pane th { background: #f5f5f5; }
+    .preview-pane img { max-width: 100%; }
+    .preview-pane ul, .preview-pane ol { padding-left: 2rem; margin: 0.5rem 0; }
+    .preview-pane a { color: var(--primary); }
+    @media (max-width: 768px) { .editor-pane { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/text-rewriter.html">AI改写</a><a href="../tools/markdown-preview.html">Markdown</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>Markdown 编辑器</h1>
+      <p>实时编辑和预览 Markdown 内容，支持完整语法。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="editor-pane">
+        <div class="form-group" style="margin:0;">
+          <label>编辑 Markdown</label>
+          <textarea id="mdInput" oninput="renderMD()" placeholder="# 标题&#10;&#10;输入 Markdown 内容..."># 欢迎使用 Markdown 编辑器
+
+## 基本语法
+
+**粗体** *斜体* ~~删除线~~
+
+### 列表
+- 项目 1
+- 项目 2
+  - 子项目
+
+1. 有序列表
+2. 有序列表
+
+### 代码块
+```javascript
+function hello() {
+  console.log("Hello World!");
+}
+```
+
+### 引用
+> 这是引用内容
+
+### 表格
+| 名称 | 价格 | 数量 |
+|------|------|------|
+| 苹果 | ￥5  | 100  |
+| 香蕉 | ￥3  | 200  |
+
+### 链接和图片
+[Free AI Tools](https://heiimzy.github.io/free-ai-tools/)
+
+---
+
+*实时预览，即写即看 ✨*</textarea>
+        </div>
+        <div>
+          <label>实时预览</label>
+          <div class="preview-pane" id="mdPreview"></div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:0.75rem;margin-top:1rem;">
+        <button class="btn btn-success" onclick="copyHTML()">📋 复制 HTML</button>
+        <button class="btn btn-secondary" onclick="resetMD()">↩️ 恢复默认</button>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">[广告位] Google AdSense</div>
+  </main>
+  <footer><div class="container"><p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a></p></div></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function showToast(m,e){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');t.style.background=e?'var(--danger)':'var(--success)';setTimeout(()=>t.classList.remove('show'),2500);}
+
+    function escapeHTML(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+    function renderMD(){
+      let md = document.getElementById('mdInput').value;
+      let html = md;
+
+      // Escape HTML tags first
+      html = escapeHTML(html);
+
+      // Code blocks (fenced) - must be before inline code
+      html = html.replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
+
+      // Headers
+      html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+      html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+      html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+
+      // Horizontal rules
+      html = html.replace(/^---$/gm, '<hr>');
+
+      // Blockquotes
+      html = html.replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>');
+
+      // Tables
+      html = html.replace(/\|(.+)\|/g, function(match) {
+        if (match.includes('---')) return '<hr>';
+        const cells = match.split('|').filter(c => c.trim());
+        return '<tr><td>' + cells.map(c => c.trim()).join('</td><td>') + '</td></tr>';
+      });
+
+      // Unordered lists
+      html = html.replace(/^[-*] (.+)$/gm, '<li>$1</li>');
+      html = html.replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>');
+
+      // Ordered lists
+      html = html.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
+
+      // Images
+      html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
+
+      // Links
+      html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+
+      // Inline code
+      html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+      // Bold + Italic
+      html = html.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+      html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+      html = html.replace(/~~(.+?)~~/g, '<del>$1</del>');
+
+      // Line breaks
+      html = html.replace(/\n\n/g, '</p><p>');
+      html = html.replace(/\n/g, '<br>');
+
+      // Wrap in paragraph
+      html = '<p>' + html + '</p>';
+
+      // Clean up nested paragraphs from block elements
+      html = html.replace(/<\/p><p><(h[1-3]|ul|ol|li|blockquote|pre|hr|table|tr|td|th)/g, '<$1');
+      html = html.replace(/\/(h[1-3]|ul|ol|li|blockquote|pre|hr|table|tr|td|th)><\/p>/g, '/$1>');
+      html = html.replace(/<\/p><p><\/p>/g, '');
+      html = html.replace(/<p><\/p>/g, '');
+
+      // Clean up nested lists
+      html = html.replace(/<ul>\n?<li>/g, '<ul><li>');
+      html = html.replace(/<\/li>\n?<\/ul>/g, '</li></ul>');
+
+      document.getElementById('mdPreview').innerHTML = html;
+    }
+
+    function copyHTML(){
+      const html = document.getElementById('mdPreview').innerHTML;
+      if(html){navigator.clipboard.writeText(html).then(()=>showToast('✅ HTML已复制'));}
+    }
+
+    function resetMD(){document.getElementById('mdInput').value=document.getElementById('mdInput').placeholder;renderMD();}
+
+    window.addEventListener('DOMContentLoaded', renderMD);
+  </script>
+</body>
+</html>

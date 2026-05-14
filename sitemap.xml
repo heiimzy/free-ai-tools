@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schema/sitemap/0.9">
+  <url><loc>https://heiimzy.github.io/free-ai-tools/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://heiimzy.github.io/free-ai-tools/tools/text-rewriter.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://heiimzy.github.io/free-ai-tools/tools/password-generator.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://heiimzy.github.io/free-ai-tools/tools/word-counter.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://heiimzy.github.io/free-ai-tools/tools/article-summarizer.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://heiimzy.github.io/free-ai-tools/tools/json-formatter.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://heiimzy.github.io/free-ai-tools/tools/qr-generator.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://heiimzy.github.io/free-ai-tools/tools/markdown-preview.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+</urlset>
