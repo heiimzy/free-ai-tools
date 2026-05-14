@@ -1,5 +1,21 @@
 [
   {
+    "id": "003",
+    "title": "2026年5月最值得尝试的AI工具推荐 (含免费方案)",
+    "date": "2026-05-14 14:00",
+    "summary": "精选2026年5月最新AI工具推荐，涵盖视频生成、编程助手、内容创作和效率提升工具，附免费使用方案。",
+    "tags": ["工具", "效率"],
+    "file": "posts/003-best-ai-tools-2026-may.html"
+  },
+  {
+    "id": "002",
+    "title": "Anthropic 企业市场份额首次超越 OpenAI，AI 竞争格局剧变",
+    "date": "2026-05-14 12:00",
+    "summary": "2026年5月最新数据：Anthropic以34.4%企业市场份额超越OpenAI的32.3%。同时Google警告AI驱动网络攻击已进入实战阶段。",
+    "tags": ["新闻", "行业"],
+    "file": "posts/002-anthropic-surpasses-openai.html"
+  },
+  {
     "id": "001",
     "title": "AI 日报正式上线 — 每小时追踪 AI 领域最新动态",
     "date": "2026-05-14 00:00",
