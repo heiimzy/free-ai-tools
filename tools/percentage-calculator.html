@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>百分比计算器 - 在线百分比/比例/增长率计算 | Free AI Tools</title>
+  <meta name="description" content="免费在线百分比计算器，支持求百分比、求比例、求增减百分比、百分比差值、折扣计算、增值税计算等多种场景。实时计算，一键复制结果，适合购物折扣、财务分析、数据统计使用。">
+  <meta name="keywords" content="百分比计算器,在线百分比,比例计算,折扣计算,增长率计算,百分比差,增值税计算,数学工具">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .pct-layout { max-width: 520px; margin: 0 auto; display: grid; gap: 1.5rem; }
+    .pct-tabs { display: flex; gap: 0.25rem; flex-wrap: wrap; }
+    .pct-tab { padding: 0.4rem 0.85rem; border-radius: 8px 8px 0 0; border: 1px solid var(--border); border-bottom: none; background: var(--bg-card); color: var(--text-muted); cursor: pointer; font-size: 0.82rem; transition: 0.15s; }
+    .pct-tab.active { color: var(--primary); border-color: var(--primary); background: rgba(167,139,250,0.05); }
+    .pct-tab:hover { color: var(--primary); }
+    .pct-panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0 8px 8px 8px; padding: 1.25rem; display: none; }
+    .pct-panel.active { display: block; }
+    .pct-panel label { display: block; color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.3rem; }
+    .pct-panel input { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.9rem; box-sizing: border-box; margin-bottom: 0.5rem; }
+    .pct-panel input:focus { outline: none; border-color: var(--primary); }
+    .pct-result { font-size: 1.8rem; font-weight: 700; text-align: center; padding: 0.75rem; color: var(--primary); }
+    .pct-result .sub { font-size: 0.9rem; color: var(--text-muted); font-weight: 400; }
+    .pct-actions { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/percentage-calculator.html">百分比计算</a><a href="../tools/unit-converter.html">单位换算</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>百分比计算器 / Percentage Calculator</h1>
+      <p>求百分比、增减比例、折扣计算、差值百分比，覆盖日常所需。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="pct-layout">
+        <div class="pct-tabs" id="pctTabs">
+          <div class="pct-tab active" data-tab="pctOf">A 的 B%</div>
+          <div class="pct-tab" data-tab="pctIs">A 是 B 的 ?%</div>
+          <div class="pct-tab" data-tab="pctChange">增减百分比</div>
+          <div class="pct-tab" data-tab="pctDiff">百分比差值</div>
+          <div class="pct-tab" data-tab="discount">折扣计算</div>
+        </div>
+
+        <!-- A of B% -->
+        <div class="pct-panel active" id="panel-pctOf">
+          <label>总量 (B)</label>
+          <input type="number" id="pctOfTotal" value="200" oninput="calcPctOf()">
+          <label>百分比 (%)</label>
+          <input type="number" id="pctOfPct" value="15" oninput="calcPctOf()">
+          <div class="pct-result" id="pctOfResult">30</div>
+          <div class="pct-actions"><button class="btn btn-success" onclick="copyVal('pctOfResult')">📋 复制结果</button></div>
+        </div>
+
+        <!-- A is what % of B -->
+        <div class="pct-panel" id="panel-pctIs">
+          <label>数值 (A)</label>
+          <input type="number" id="pctIsNum" value="30" oninput="calcPctIs()">
+          <label>总量 (B)</label>
+          <input type="number" id="pctIsTotal" value="200" oninput="calcPctIs()">
+          <div class="pct-result" id="pctIsResult">15%</div>
+          <div class="pct-actions"><button class="btn btn-success" onclick="copyVal('pctIsResult')">📋 复制结果</button></div>
+        </div>
+
+        <!-- Percentage change -->
+        <div class="pct-panel" id="panel-pctChange">
+          <label>原值</label>
+          <input type="number" id="pctOld" value="100" oninput="calcPctChange()">
+          <label>新值</label>
+          <input type="number" id="pctNew" value="150" oninput="calcPctChange()">
+          <div class="pct-result" id="pctChangeResult">+50% <span class="sub">(增加)</span></div>
+          <div class="pct-actions"><button class="btn btn-success" onclick="copyVal('pctChangeResult')">📋 复制结果</button></div>
+        </div>
+
+        <!-- Percentage difference -->
+        <div class="pct-panel" id="panel-pctDiff">
+          <label>数值 1</label>
+          <input type="number" id="pctDiffA" value="80" oninput="calcPctDiff()">
+          <label>数值 2</label>
+          <input type="number" id="pctDiffB" value="120" oninput="calcPctDiff()">
+          <div class="pct-result" id="pctDiffResult">40% <span class="sub">(差异)</span></div>
+          <div class="pct-actions"><button class="btn btn-success" onclick="copyVal('pctDiffResult')">📋 复制结果</button></div>
+        </div>
+
+        <!-- Discount -->
+        <div class="pct-panel" id="panel-discount">
+          <label>原价</label>
+          <input type="number" id="discOrig" value="299" oninput="calcDiscount()">
+          <label>折扣 (%)</label>
+          <input type="number" id="discPct" value="20" oninput="calcDiscount()">
+          <div class="pct-result" id="discResult">¥239.20 <span class="sub">(省 ¥59.80)</span></div>
+          <div class="pct-actions"><button class="btn btn-success" onclick="copyVal('discResult')">📋 复制结果</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">[广告位] Google AdSense</div>
+  </main>
+  <footer><div class="container"><p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a></p></div></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+    // Tab switching
+    document.getElementById('pctTabs').addEventListener('click',function(e){
+      if(e.target.classList.contains('pct-tab')){
+        document.querySelectorAll('.pct-tab').forEach(t=>t.classList.remove('active'));
+        document.querySelectorAll('.pct-panel').forEach(p=>p.classList.remove('active'));
+        e.target.classList.add('active');
+        document.getElementById('panel-'+e.target.dataset.tab).classList.add('active');
+      }
+    });
+
+    function copyVal(id){
+      const el=document.getElementById(id);
+      const v=el.textContent.trim();
+      navigator.clipboard.writeText(v).then(()=>showToast('已复制: '+v)).catch(()=>{});
+    }
+
+    function calcPctOf(){
+      const t=parseFloat(document.getElementById('pctOfTotal').value)||0;
+      const p=parseFloat(document.getElementById('pctOfPct').value)||0;
+      document.getElementById('pctOfResult').textContent=(t*p/100).toFixed(2);
+    }
+
+    function calcPctIs(){
+      const n=parseFloat(document.getElementById('pctIsNum').value)||0;
+      const t=parseFloat(document.getElementById('pctIsTotal').value)||1;
+      document.getElementById('pctIsResult').textContent=(n/t*100).toFixed(2)+'%';
+    }
+
+    function calcPctChange(){
+      const o=parseFloat(document.getElementById('pctOld').value)||0;
+      const n=parseFloat(document.getElementById('pctNew').value)||0;
+      if(o===0){document.getElementById('pctChangeResult').innerHTML='—';return;}
+      const change=((n-o)/o*100).toFixed(2);
+      const sign=change>=0?'+':'';
+      document.getElementById('pctChangeResult').innerHTML=sign+change+'% <span class="sub">('+(change>=0?'增加':'减少')+')</span>';
+    }
+
+    function calcPctDiff(){
+      const a=parseFloat(document.getElementById('pctDiffA').value)||0;
+      const b=parseFloat(document.getElementById('pctDiffB').value)||0;
+      const avg=(a+b)/2;
+      if(avg===0){document.getElementById('pctDiffResult').innerHTML='—';return;}
+      document.getElementById('pctDiffResult').innerHTML=Math.abs((a-b)/avg*100).toFixed(2)+'% <span class="sub">(差异)</span>';
+    }
+
+    function calcDiscount(){
+      const orig=parseFloat(document.getElementById('discOrig').value)||0;
+      const pct=parseFloat(document.getElementById('discPct').value)||0;
+      const saved=orig*pct/100;
+      const final=orig-saved;
+      document.getElementById('discResult').innerHTML='¥'+final.toFixed(2)+' <span class="sub">(省 ¥'+saved.toFixed(2)+')</span>';
+    }
+
+    // Init
+    calcPctOf();calcPctIs();calcPctChange();calcPctDiff();calcDiscount();
+  </script>
+</body>
+</html>

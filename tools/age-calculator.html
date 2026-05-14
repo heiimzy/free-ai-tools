@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>年龄计算器 - 在线精确年龄计算/周岁计算 | Free AI Tools</title>
+  <meta name="description" content="免费在线年龄计算器，根据出生日期精确计算当前年龄（年/月/日/时/分），支持显示距离下次生日的倒计时、星座、生肖。适合年龄查询、生日提醒、法律年龄计算等场景。">
+  <meta name="keywords" content="年龄计算器,周岁计算,精确年龄,生日计算,星座查询,生肖查询,在线年龄工具">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .age-layout { max-width: 500px; margin: 0 auto; display: grid; gap: 1.5rem; }
+    .age-row { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+    .age-row label { color: var(--text-muted); font-size: 0.85rem; min-width: 60px; }
+    .age-row input { background: var(--bg-card); border: 1px solid var(--border); color: var(--text); padding: 0.55rem 0.75rem; border-radius: 6px; font-size: 0.95rem; }
+    .age-row input:focus { outline: none; border-color: var(--primary); }
+    .age-display { text-align: center; padding: 1rem; }
+    .age-display .main-num { font-size: 4rem; font-weight: 800; line-height: 1; background: linear-gradient(135deg, #a78bfa, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .age-display .main-label { font-size: 1rem; color: var(--text-muted); margin-top: 0.3rem; }
+    .age-detail { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+    .age-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem; text-align: center; }
+    .age-card .ac-val { font-size: 1.3rem; font-weight: 700; color: var(--secondary); }
+    .age-card .ac-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem; }
+    .age-info { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; }
+    .age-tag { background: var(--bg); border-radius: 6px; padding: 0.5rem; text-align: center; font-size: 0.82rem; }
+    .age-tag .t-label { color: var(--text-muted); font-size: 0.7rem; }
+    .age-tag .t-val { color: var(--text); font-weight: 600; margin-top: 0.15rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/age-calculator.html">年龄计算</a><a href="../tools/unit-converter.html">单位换算</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>年龄计算器 / Age Calculator</h1>
+      <p>根据出生日期精确计算年龄，支持年月日时分，显示星座生肖和生日倒计时。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="age-layout">
+        <div class="age-row">
+          <label>出生日期</label>
+          <input type="date" id="birthDate" onchange="calcAge()">
+        </div>
+
+        <div class="age-display">
+          <div class="main-num" id="mainAge">—</div>
+          <div class="main-label" id="mainLabel">岁</div>
+        </div>
+
+        <div class="age-detail">
+          <div class="age-card"><div class="ac-val" id="dMonths">—</div><div class="ac-label">月</div></div>
+          <div class="age-card"><div class="ac-val" id="dDays">—</div><div class="ac-label">天</div></div>
+          <div class="age-card"><div class="ac-val" id="dHours">—</div><div class="ac-label">小时</div></div>
+          <div class="age-card"><div class="ac-val" id="dMinutes">—</div><div class="ac-label">分钟</div></div>
+        </div>
+
+        <div class="age-info">
+          <div class="age-tag"><div class="t-label">星座</div><div class="t-val" id="zodiac">—</div></div>
+          <div class="age-tag"><div class="t-label">生肖</div><div class="t-val" id="chineseZodiac">—</div></div>
+          <div class="age-tag"><div class="t-label">距离生日</div><div class="t-val" id="nextBirthday">—</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">[广告位] Google AdSense</div>
+  </main>
+  <footer><div class="container"><p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a></p></div></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function pad(n){return n.toString().padStart(2,'0');}
+
+    function calcAge(){
+      const val=document.getElementById('birthDate').value;
+      if(!val){
+        document.getElementById('mainAge').textContent='—';document.getElementById('mainLabel').textContent='请选择出生日期';
+        ['dMonths','dDays','dHours','dMinutes'].forEach(id=>document.getElementById(id).textContent='—');
+        ['zodiac','chineseZodiac','nextBirthday'].forEach(id=>document.getElementById(id).textContent='—');
+        return;
+      }
+
+      const birth=new Date(val+'T00:00:00');
+      const now=new Date();
+
+      if(birth>now){
+        document.getElementById('mainAge').textContent='🤔';document.getElementById('mainLabel').textContent='出生日期不能在未来';
+        return;
+      }
+
+      // Exact age in milliseconds
+      const diff=now-birth;
+      const msYear=31557600000; // 365.25 days
+      const exactYears=diff/msYear;
+
+      // Calculate years, months, days
+      let years=now.getFullYear()-birth.getFullYear();
+      let months=now.getMonth()-birth.getMonth();
+      let days=now.getDate()-birth.getDate();
+      if(days<0){
+        months--;
+        const prevMonth=new Date(now.getFullYear(),now.getMonth(),0);
+        days+=prevMonth.getDate();
+      }
+      if(months<0){years--;months+=12;}
+
+      // Total months/days/hours/minutes
+      const totalMonths=years*12+months;
+      const totalDays=Math.floor(diff/86400000);
+      const totalHours=Math.floor(diff/3600000);
+      const totalMins=Math.floor(diff/60000);
+
+      document.getElementById('mainAge').textContent=years;
+      document.getElementById('mainLabel').textContent='岁 ('+totalDays.toLocaleString()+' 天)';
+
+      document.getElementById('dMonths').textContent=totalMonths.toLocaleString();
+      document.getElementById('dDays').textContent=totalDays.toLocaleString();
+      document.getElementById('dHours').textContent=totalHours.toLocaleString();
+      document.getElementById('dMinutes').textContent=totalMins.toLocaleString();
+
+      // Zodiac
+      const m=birth.getMonth()+1,d=birth.getDate();
+      const zodiacs=['摩羯座','水瓶座','双鱼座','白羊座','金牛座','双子座','巨蟹座','狮子座','处女座','天秤座','天蝎座','射手座'];
+      const zDates=[20,19,21,20,21,22,23,23,23,24,23,22];
+      const zIdx=m===12&&d>=22?11:m===1&&d<=20?0:d<zDates[m-1]?m-1:m;
+      document.getElementById('zodiac').textContent=zodiacs[zIdx]||'—';
+
+      // Chinese zodiac
+      const animals=['猴','鸡','狗','猪','鼠','牛','虎','兔','龙','蛇','马','羊'];
+      const year=birth.getFullYear();
+      document.getElementById('chineseZodiac').textContent=animals[year%12];
+
+      // Next birthday
+      const next=new Date(now.getFullYear(),birth.getMonth(),birth.getDate());
+      if(next<now) next.setFullYear(next.getFullYear()+1);
+      const daysToBirth=Math.ceil((next-now)/86400000);
+      document.getElementById('nextBirthday').textContent=daysToBirth+' 天';
+    }
+
+    // Set default date to 20 years ago
+    (function(){
+      const d=new Date();
+      d.setFullYear(d.getFullYear()-20);
+      document.getElementById('birthDate').value=d.toISOString().split('T')[0];
+      calcAge();
+    })();
+  </script>
+</body>
+</html>
