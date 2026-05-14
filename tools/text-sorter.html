@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>文本排序工具 - 在线文本行排序/去重/打乱 | Free AI Tools</title>
+  <meta name="description" content="免费在线文本行排序工具，支持字母升序降序、文本去重、行打乱、倒序排列、移除空行、大小写转换。批量处理，一键复制，适合数据处理和文本整理。">
+  <meta name="keywords" content="文本排序,在线排序,文本去重,行排序工具,字母排序,打乱顺序,文本整理工具">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .sort-layout { display: grid; gap: 1.5rem; }
+    .sort-textarea { width: 100%; min-height: 200px; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: monospace; font-size: 0.85rem; resize: vertical; box-sizing: border-box; line-height: 1.5; }
+    .sort-textarea:focus { outline: none; border-color: var(--primary); }
+    .sort-textarea::placeholder { color: var(--text-muted); opacity: 0.5; }
+    .sort-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .sort-btn-group { display: flex; gap: 0.25rem; flex-wrap: wrap; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 0.3rem; }
+    .sort-btn-group .s-btn { padding: 0.3rem 0.65rem; border-radius: 6px; border: none; background: transparent; color: var(--text-muted); cursor: pointer; font-size: 0.8rem; transition: 0.15s; }
+    .sort-btn-group .s-btn:hover { color: var(--text); background: rgba(167,139,250,0.1); }
+    .sort-btn-group .s-btn.active { background: var(--primary); color: #fff; }
+    .sort-info { color: var(--text-muted); font-size: 0.8rem; margin-top: 0.3rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/text-sorter.html">文本排序</a><a href="../tools/text-rewriter.html">AI改写</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>文本行排序工具 / Text Sorter</h1>
+      <p>批量排序、去重、打乱、倒序排列文本行，适合数据整理和文本处理。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="sort-layout">
+        <div>
+          <label>输入文本</label>
+          <textarea class="sort-textarea" id="inputText" placeholder="每行输入一项..." oninput="autoSort()">香蕉
+苹果
+橙子
+葡萄
+苹果
+西瓜
+荔枝
+香蕉
+芒果
+草莓</textarea>
+        </div>
+
+        <div class="sort-actions">
+          <div class="sort-btn-group">
+            <button class="s-btn active" data-mode="asc" onclick="setMode('asc')">A→Z</button>
+            <button class="s-btn" data-mode="desc" onclick="setMode('desc')">Z→A</button>
+            <button class="s-btn" data-mode="reverse" onclick="setMode('reverse')">倒序</button>
+            <button class="s-btn" data-mode="shuffle" onclick="setMode('shuffle')">打乱</button>
+          </div>
+          <label style="display:flex;align-items:center;gap:0.3rem;color:var(--text-muted);font-size:0.8rem;cursor:pointer;">
+            <input type="checkbox" id="uniqueOnly" onchange="sort()"> 去重
+          </label>
+          <label style="display:flex;align-items:center;gap:0.3rem;color:var(--text-muted);font-size:0.8rem;cursor:pointer;">
+            <input type="checkbox" id="ignoreCase" onchange="sort()" checked> 忽略大小写
+          </label>
+          <label style="display:flex;align-items:center;gap:0.3rem;color:var(--text-muted);font-size:0.8rem;cursor:pointer;">
+            <input type="checkbox" id="trimLines" onchange="sort()" checked> 去除首尾空格
+          </label>
+        </div>
+
+        <div>
+          <label>结果 <span id="sortInfo" class="sort-info"></span></label>
+          <textarea class="sort-textarea" id="outputText" readonly placeholder="排序结果..." style="min-height:200px;"></textarea>
+          <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+            <button class="btn btn-success" onclick="copyResult()">📋 复制结果</button>
+            <button class="btn btn-secondary" onclick="clearAll()">🗑️ 清空</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">[广告位] Google AdSense</div>
+  </main>
+  <footer><div class="container"><p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a></p></div></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+    let currentMode='asc';
+
+    function setMode(mode){
+      currentMode=mode;
+      document.querySelectorAll('.s-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));
+      sort();
+    }
+
+    function autoSort(){sort();}
+
+    function sort(){
+      const input=document.getElementById('inputText').value;
+      const out=document.getElementById('outputText');
+      const info=document.getElementById('sortInfo');
+      const unique=document.getElementById('uniqueOnly').checked;
+      const ignoreCase=document.getElementById('ignoreCase').checked;
+      const trim=document.getElementById('trimLines').checked;
+
+      let lines=input.split('\n');
+      let total=lines.length;
+
+      if(trim) lines=lines.map(l=>l.trim());
+
+      if(unique){
+        const seen=new Set();
+        lines=lines.filter(l=>{if(seen.has(l))return false;seen.add(l);return true;});
+      }
+
+      switch(currentMode){
+        case 'asc':
+          lines.sort((a,b)=>ignoreCase?a.localeCompare(b,void 0,{sensitivity:'base'}):a<b?-1:a>b?1:0);
+          break;
+        case 'desc':
+          lines.sort((a,b)=>ignoreCase?b.localeCompare(a,void 0,{sensitivity:'base'}):b<a?-1:b>a?1:0);
+          break;
+        case 'reverse':
+          lines.reverse();
+          break;
+        case 'shuffle':
+          for(let i=lines.length-1;i>0;i--){
+            const j=Math.floor(Math.random()*(i+1));
+            [lines[i],lines[j]]=[lines[j],lines[i]];
+          }
+          break;
+      }
+
+      out.value=lines.join('\n');
+      const modeLabel={asc:'升序',desc:'降序',reverse:'倒序',shuffle:'打乱'}[currentMode];
+      info.textContent=`(${total} 行 → ${lines.length} 行 · ${modeLabel})`;
+    }
+
+    function clearAll(){
+      document.getElementById('inputText').value='';
+      document.getElementById('outputText').value='';
+      document.getElementById('sortInfo').textContent='';
+      showToast('已清空');
+    }
+
+    function copyResult(){
+      const v=document.getElementById('outputText').value;
+      if(!v){showToast('没有内容可复制');return;}
+      navigator.clipboard.writeText(v).then(()=>showToast('已复制')).catch(()=>{});
+    }
+
+    sort();
+  </script>
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>色彩对比度检查器 - WCAG无障碍色差检测工具 | Free AI Tools</title>
+  <meta name="description" content="免费在线色彩对比度检查工具，根据WCAG 2.1标准检测前景色与背景色的对比度，自动评估AA/AAA级别是否通过。支持HEX/RGB输入，实时预览效果，适合设计师和前端开发者。">
+  <meta name="keywords" content="色彩对比度检查,WCAG对比度,无障碍色差,颜色对比度检测,AA对比度,AAA对比度,Web无障碍">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .contrast-layout { display: grid; gap: 1.5rem; }
+    .contrast-row { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+    .contrast-row label { color: var(--text-muted); font-size: 0.8rem; min-width: 60px; }
+    .cpicker-wrap { display: flex; align-items: center; gap: 0.5rem; }
+    .cpicker-wrap input[type="color"] { width: 48px; height: 48px; border: 2px solid var(--border); border-radius: 8px; padding: 0; cursor: pointer; background: none; }
+    .cpicker-wrap input[type="text"] { background: var(--bg-card); border: 1px solid var(--border); color: var(--text); padding: 0.5rem 0.75rem; border-radius: 6px; font-family: monospace; font-size: 0.85rem; width: 110px; }
+    .cpicker-wrap input[type="text"]:focus { outline: none; border-color: var(--primary); }
+    .preview-box { padding: 2rem; border-radius: 12px; text-align: center; font-size: 1.1rem; font-weight: 500; transition: 0.2s; }
+    .preview-box .small { font-size: 0.85rem; font-weight: 400; margin-top: 0.5rem; opacity: 0.9; }
+    .result-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; text-align: center; }
+    .result-card .ratio { font-size: 2.5rem; font-weight: 800; background: linear-gradient(135deg, #a78bfa, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .result-card .badge { display: inline-block; padding: 0.25rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; margin: 0.25rem; }
+    .badge.pass { background: rgba(52,211,153,0.15); color: #34d399; border: 1px solid rgba(52,211,153,0.3); }
+    .badge.fail { background: rgba(251,113,133,0.15); color: #fb7185; border: 1px solid rgba(251,113,133,0.3); }
+    .badge.aa { background: rgba(96,165,250,0.15); color: #60a5fa; border: 1px solid rgba(96,165,250,0.3); }
+    .badge.aaa { background: rgba(167,139,250,0.15); color: #a78bfa; border: 1px solid rgba(167,139,250,0.3); }
+    .suggest-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.5rem; }
+    .suggest-item { background: var(--bg); border-radius: 6px; padding: 0.5rem; text-align: center; font-size: 0.8rem; cursor: pointer; transition: 0.15s; border: 1px solid transparent; }
+    .suggest-item:hover { border-color: var(--primary); }
+    .suggest-item .dot { display: inline-block; width: 20px; height: 20px; border-radius: 4px; vertical-align: middle; margin-right: 0.3rem; }
+    @media (max-width: 768px) { .contrast-row { flex-direction: column; align-items: stretch; } .suggest-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/color-contrast.html">色彩对比度</a><a href="../tools/color-picker.html">颜色选择器</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>色彩对比度检查器</h1>
+      <p>根据 WCAG 2.1 标准检测前景色与背景色的对比度，确保无障碍设计达标。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="contrast-layout">
+        <div class="contrast-row">
+          <label>前景色</label>
+          <div class="cpicker-wrap">
+            <input type="color" id="fgColor" value="#1a1a2e" oninput="updateFG(this.value)">
+            <input type="text" id="fgHex" value="#1a1a2e" oninput="onFGInput()">
+          </div>
+        </div>
+
+        <div class="contrast-row">
+          <label>背景色</label>
+          <div class="cpicker-wrap">
+            <input type="color" id="bgColor" value="#e2e8f0" oninput="updateBG(this.value)">
+            <input type="text" id="bgHex" value="#e2e8f0" oninput="onBGInput()">
+          </div>
+        </div>
+
+        <div class="preview-box" id="previewBox">
+          <div>示例文本 Sample Text</div>
+          <div class="small">14px 常规字体 · 18px 粗体 · WCAG 对比度测试</div>
+        </div>
+
+        <div class="result-card">
+          <div class="ratio" id="ratioDisplay">12.1:1</div>
+          <div style="margin-top:0.5rem;">
+            <span class="badge" id="badgeAA">AA 普通文本</span>
+            <span class="badge" id="badgeAAA">AAA 增强文本</span>
+            <span class="badge" id="badgeAALarge">AA 大文本</span>
+            <span class="badge" id="badgeAAALarge">AAA 大文本</span>
+          </div>
+        </div>
+
+        <div>
+          <label style="color:var(--text-muted);font-size:0.8rem;">推荐近似色（点击应用）</label>
+          <div class="suggest-grid" id="suggestGrid"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">[广告位] Google AdSense</div>
+  </main>
+  <footer><div class="container"><p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a></p></div></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+    function hexToRgb(h){
+      const r=h.replace('#','');
+      return {
+        r:parseInt(r.slice(0,2),16),
+        g:parseInt(r.slice(2,4),16),
+        b:parseInt(r.slice(4,6),16)
+      };
+    }
+
+    function rgbToHex(r,g,b){
+      return '#'+[r,g,b].map(v=>Math.round(v).toString(16).padStart(2,'0')).join('');
+    }
+
+    function luminance(r,g,b){
+      const [R,G,B]=[r,g,b].map(v=>{
+        v=v/255;
+        return v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4);
+      });
+      return 0.2126*R+0.7152*G+0.0722*B;
+    }
+
+    function contrastRatio(fg,bg){
+      const l1=luminance(fg.r,fg.g,fg.b);
+      const l2=luminance(bg.r,bg.g,bg.b);
+      const lighter=Math.max(l1,l2);
+      const darker=Math.min(l1,l2);
+      return (lighter+0.05)/(darker+0.05);
+    }
+
+    function updateFG(v){
+      document.getElementById('fgHex').value=v;
+      document.getElementById('fgColor').value=v;
+      calc();
+    }
+
+    function updateBG(v){
+      document.getElementById('bgHex').value=v;
+      document.getElementById('bgColor').value=v;
+      calc();
+    }
+
+    function onFGInput(){
+      const v=document.getElementById('fgHex').value;
+      if(/^#[0-9a-fA-F]{6}$/.test(v)){document.getElementById('fgColor').value=v;calc();}
+    }
+
+    function onBGInput(){
+      const v=document.getElementById('bgHex').value;
+      if(/^#[0-9a-fA-F]{6}$/.test(v)){document.getElementById('bgColor').value=v;calc();}
+    }
+
+    function calc(){
+      const fg=hexToRgb(document.getElementById('fgHex').value);
+      const bg=hexToRgb(document.getElementById('bgHex').value);
+      const ratio=contrastRatio(fg,bg);
+
+      document.getElementById('ratioDisplay').textContent=ratio.toFixed(2)+':1';
+
+      const passAA=ratio>=4.5;
+      const passAAA=ratio>=7;
+      const passAALarge=ratio>=3;
+      const passAAALarge=ratio>=4.5;
+
+      setBadge('badgeAA',passAA);
+      setBadge('badgeAAA',passAAA);
+      setBadge('badgeAALarge',passAALarge);
+      setBadge('badgeAAALarge',passAAALarge);
+
+      // Preview
+      const box=document.getElementById('previewBox');
+      box.style.color=document.getElementById('fgHex').value;
+      box.style.backgroundColor=document.getElementById('bgHex').value;
+
+      generateSuggestions(fg,bg,ratio);
+    }
+
+    function setBadge(id,pass){
+      const el=document.getElementById(id);
+      el.className='badge '+(pass?'pass':'fail');
+      el.textContent=el.textContent.split(' ')[0]+' '+(pass?'✓':'✗');
+    }
+
+    function generateSuggestions(fg,bg,ratio){
+      const grid=document.getElementById('suggestGrid');
+      const suggestions=[];
+
+      if(ratio<4.5){
+        // Try darkening fg
+        suggestions.push({
+          label:'加深前景色',
+          fg:darkenColor(fg,0.5),
+          bg:document.getElementById('bgHex').value
+        });
+        // Try lightening bg
+        suggestions.push({
+          label:'淡化背景色',
+          fg:document.getElementById('fgHex').value,
+          bg:lightenColor(bg,0.5)
+        });
+        // Try complementary
+        suggestions.push({
+          label:'更高中文对比',
+          fg:'#000000',
+          bg:'#ffffff'
+        });
+        suggestions.push({
+          label:'蓝白组合',
+          fg:'#1e40af',
+          bg:'#f8fafc'
+        });
+      }else{
+        suggestions.push(
+          {label:'当前配色 ✓',fg:document.getElementById('fgHex').value,bg:document.getElementById('bgHex').value},
+          {label:'经典黑白',fg:'#000000',bg:'#ffffff'},
+          {label:'深蓝浅蓝',fg:'#1a365d',bg:'#ebf4ff'},
+          {label:'紫白组合',fg:'#6d28d9',bg:'#f5f3ff'}
+        );
+      }
+
+      grid.innerHTML=suggestions.slice(0,4).map(s=>{
+        return `<div class="suggest-item" onclick="applySuggestion('${s.fg}','${s.bg}')">
+          <span class="dot" style="background:${s.fg}"></span>
+          <span class="dot" style="background:${s.bg}"></span>
+          ${s.label}
+        </div>`;
+      }).join('');
+    }
+
+    function darkenColor(c,factor){
+      return rgbToHex(c.r*factor,c.g*factor,c.b*factor);
+    }
+
+    function lightenColor(c,factor){
+      return rgbToHex(255-(255-c.r)*factor,255-(255-c.g)*factor,255-(255-c.b)*factor);
+    }
+
+    function applySuggestion(fg,bg){
+      updateFG(fg);
+      updateBG(bg);
+    }
+
+    calc();
+  </script>
+</body>
+</html>

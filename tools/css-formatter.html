@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS 格式化/压缩工具 - 在线CSS美化与压缩 | Free AI Tools</title>
+  <meta name="description" content="免费在线CSS格式化与压缩工具，支持CSS代码美化排版、一键压缩、清除注释。实时预览，一键复制，适合前端开发者日常使用。">
+  <meta name="keywords" content="CSS格式化,CSS压缩,CSS美化,CSS Minify,前端工具,在线CSS工具,样式表格式化">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .css-layout { display: grid; gap: 1.5rem; }
+    .css-textarea { width: 100%; min-height: 200px; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: monospace; font-size: 0.82rem; resize: vertical; box-sizing: border-box; line-height: 1.5; }
+    .css-textarea:focus { outline: none; border-color: var(--primary); }
+    .css-textarea::placeholder { color: var(--text-muted); opacity: 0.5; }
+    .css-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .css-info { color: var(--text-muted); font-size: 0.8rem; margin-top: 0.3rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/css-formatter.html">CSS工具</a><a href="../tools/text-rewriter.html">AI改写</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>CSS 格式化 / 压缩工具</h1>
+      <p>CSS 代码美化排版、一键压缩、清除注释，实时预览。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="css-layout">
+        <div>
+          <label>输入 CSS</label>
+          <textarea class="css-textarea" id="inputText" placeholder="粘贴 CSS 代码..." oninput="autoFormat()">body { margin: 0; padding: 0; background: #f5f5f5; } .container { max-width: 1200px; margin: 0 auto; } .box { display: flex; justify-content: center; align-items: center; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }</textarea>
+        </div>
+
+        <div class="css-actions">
+          <button class="btn btn-primary" onclick="formatCSS()">✨ 美化格式</button>
+          <button class="btn btn-secondary" onclick="minifyCSS()">🔧 压缩</button>
+          <button class="btn btn-secondary" onclick="stripComments()">🗑️ 清除注释</button>
+          <button class="btn btn-secondary" onclick="clearAll()">🗑️ 清空</button>
+        </div>
+
+        <div>
+          <label>输出 <span id="sizeInfo" class="css-info"></span></label>
+          <textarea class="css-textarea" id="outputText" readonly placeholder="输出结果..." style="min-height:200px;"></textarea>
+          <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+            <button class="btn btn-success" onclick="copyResult()">📋 复制结果</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">[广告位] Google AdSense</div>
+  </main>
+  <footer><div class="container"><p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a></p></div></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+    function getInput(){return document.getElementById('inputText').value;}
+    function setOutput(v){
+      document.getElementById('outputText').value=v;
+      const info=document.getElementById('sizeInfo');
+      const inSize=getInput().length;
+      const outSize=v.length;
+      const saved=((1-outSize/inSize)*100).toFixed(1);
+      info.textContent=inSize?`(输入 ${inSize}B → 输出 ${outSize}B，压缩 ${saved}%)`:'';
+    }
+
+    function autoFormat(){/* manual trigger only */}
+
+    function formatCSS(){
+      const css=getInput();
+      if(!css.trim()){setOutput('');showToast('请输入CSS代码');return;}
+      let out='', indent=0;
+      // Remove extra whitespace first
+      const clean=css.replace(/\/\*[\s\S]*?\*\//g,'').replace(/\s+/g,' ').replace(/\s*([{};,:])\s*/g,'$1 ').replace(/\s+$/gm,'').trim();
+      for(let i=0;i<clean.length;i++){
+        const c=clean[i];
+        if(c=='{'){out+=' {\n';indent++;out+='  '.repeat(indent);}
+        else if(c=='}'){
+          out+='\n';indent=Math.max(0,indent-1);
+          out+='  '.repeat(indent)+'}';
+        }else if(c==';'){out+=';\n'+'  '.repeat(indent);}
+        else if(c==','){out+=',\n'+'  '.repeat(indent);}
+        else out+=c;
+      }
+      setOutput(out.trim());
+      showToast('CSS 已美化');
+    }
+
+    function minifyCSS(){
+      const css=getInput();
+      if(!css.trim()){setOutput('');showToast('请输入CSS代码');return;}
+      // Remove comments and whitespace
+      const min=css.replace(/\/\*[\s\S]*?\*\//g,'').replace(/[\r\n]+/g,'').replace(/\s+/g,' ').replace(/\s*([{};,:~>+*])\s*/g,'$1').replace(/;\}/g,'}').trim();
+      setOutput(min);
+      showToast('CSS 已压缩');
+    }
+
+    function stripComments(){
+      const css=getInput();
+      if(!css.trim()){setOutput('');showToast('请输入CSS代码');return;}
+      const out=css.replace(/\/\*[\s\S]*?\*\//g,'').replace(/^\s*[\r\n]/gm,'').trim();
+      setOutput(out);
+      showToast('注释已清除');
+    }
+
+    function clearAll(){
+      document.getElementById('inputText').value='';
+      document.getElementById('outputText').value='';
+      document.getElementById('sizeInfo').textContent='';
+      showToast('已清空');
+    }
+
+    function copyResult(){
+      const v=document.getElementById('outputText').value;
+      if(!v){showToast('没有内容可复制');return;}
+      navigator.clipboard.writeText(v).then(()=>showToast('已复制')).catch(()=>{});
+    }
+  </script>
+</body>
+</html>
