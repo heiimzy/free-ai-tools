@@ -1,5 +1,21 @@
 [
   {
+    "id": "009",
+    "date": "2026-05-14",
+    "zh": {
+      "title": "2026年AI提效实战指南：四大场景效率提升5倍+、工具链重构全攻略",
+      "summary": "2026年5月最新AI提效方法：提示词工程四段式框架、AI工具链重构三阶段路线图、四大核心场景实测效率数据（文档提效5倍/代码开发提速150%/数据分析6倍/视频成本降84%）。",
+      "tags": ["效率", "工作流"],
+      "file": "posts/009-ai-productivity-guide-2026.zh.html"
+    },
+    "en": {
+      "title": "AI Productivity in 2026: Autonomous Agents, Workflow Automation & Measured Gains",
+      "summary": "2026 productivity playbook: shift from chatbots to autonomous agents with OpenClaw and n8n, context-aware AI workflows, unified workspaces, role-specific time savings (PMs 8.5h/wk, devs 12h/wk, founders 15h/wk).",
+      "tags": ["productivity", "workflow"],
+      "file": "posts/009-ai-productivity-guide-2026.en.html"
+    }
+  },
+  {
     "id": "008",
     "date": "2026-05-14",
     "zh": {
