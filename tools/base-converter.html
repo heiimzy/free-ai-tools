@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>进制转换工具 - 在线二进制/八进制/十进制/十六进制转换 | Free AI Tools</title>
+  <meta name="description" content="免费在线进制转换工具，支持二进制、八进制、十进制、十六进制、三十二进制、六十四进制之间的实时互转。适合程序员、网络工程师和学生使用。">
+  <meta name="keywords" content="进制转换,二进制转十进制,十六进制转换,进制计算器,在线进制转换,程序员工具">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .base-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .base-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; text-align: center; cursor: pointer; transition: 0.15s; }
+    .base-card:hover { border-color: var(--primary); }
+    .base-card.active { border-color: var(--primary); box-shadow: 0 0 15px var(--glow-purple); }
+    .base-card .base-label { color: var(--text-muted); font-size: 0.75rem; margin-bottom: 0.25rem; }
+    .base-card .base-val { font-family: monospace; font-size: 1.1rem; color: var(--text); word-break: break-all; }
+    .base-input { width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: monospace; font-size: 1.2rem; box-sizing: border-box; text-align: center; }
+    .base-input:focus { outline: none; border-color: var(--primary); }
+    .base-select-row { display: flex; gap: 0.75rem; align-items: center; justify-content: center; margin-bottom: 1rem; flex-wrap: wrap; }
+    .base-select-row select { padding: 0.5rem 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-size: 0.9rem; }
+    .base-select-row select option { background: #1a1225; }
+    @media (max-width: 768px) { .base-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/text-rewriter.html">AI改写</a><a href="../tools/base-converter.html">进制转换</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>进制转换工具</h1>
+      <p>二进制 / 八进制 / 十进制 / 十六进制 / 三十二进制 / 六十四进制实时互转。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="base-select-row">
+        <label style="color:var(--text-muted)">输入进制:</label>
+        <select id="inputBase" onchange="convert()">
+          <option value="2">二进制 (Bin)</option>
+          <option value="8">八进制 (Oct)</option>
+          <option value="10" selected>十进制 (Dec)</option>
+          <option value="16">十六进制 (Hex)</option>
+        </select>
+        <input type="text" class="base-input" id="inputVal" value="42" placeholder="输入数值" oninput="convert()" style="max-width:300px;">
+      </div>
+
+      <div class="base-grid" id="resultGrid"></div>
+
+      <div style="margin-top:1.5rem;">
+        <label>常见用法</label>
+        <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.5rem;">
+          <button class="preset-btn" onclick="setExample('255','10')">Dec 255 → FF</button>
+          <button class="preset-btn" onclick="setExample('11111111','2')">Bin 11111111 → 255</button>
+          <button class="preset-btn" onclick="setExample('FF','16')">Hex FF → 255</button>
+          <button class="preset-btn" onclick="setExample('1024','10')">Dec 1024 → 400</button>
+          <button class="preset-btn" onclick="setExample('10000000','2')">Bin 10000000 → 128</button>
+          <button class="preset-btn" onclick="setExample('A','16')">Hex A → 10</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">[广告位] Google AdSense</div>
+  </main>
+  <footer><div class="container"><p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a></p></div></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+    const bases=[
+      {base:2,name:'二进制',prefix:'0b'},
+      {base:8,name:'八进制',prefix:'0o'},
+      {base:10,name:'十进制',prefix:''},
+      {base:16,name:'十六进制',prefix:'0x'},
+      {base:32,name:'三十二进制',prefix:''},
+      {base:64,name:'六十四进制',prefix:''},
+    ];
+
+    const chars='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/';
+
+    function isValidForBase(str,base){
+      const valid=chars.slice(0,base);
+      return str.split('').every(c=>valid.includes(c));
+    }
+
+    function toDecimal(str,base){
+      return parseInt(str,base);
+    }
+
+    function fromDecimal(num,base){
+      if(num===0) return '0';
+      const neg=num<0;
+      num=Math.abs(num);
+      let result='';
+      while(num>0){
+        result=chars[num%base]+result;
+        num=Math.floor(num/base);
+      }
+      return neg?'-'+result:result;
+    }
+
+    function convert(){
+      const inputBase=parseInt(document.getElementById('inputBase').value);
+      const inputVal=document.getElementById('inputVal').value.trim();
+
+      if(!inputVal){
+        document.getElementById('resultGrid').innerHTML=bases.map(b=>`
+          <div class="base-card">
+            <div class="base-label">${b.name}</div>
+            <div class="base-val" style="color:var(--text-muted)">—</div>
+          </div>
+        `).join('');
+        return;
+      }
+
+      // Validate
+      if(!isValidForBase(inputVal.toUpperCase(),inputBase)){
+        document.getElementById('resultGrid').innerHTML=bases.map(b=>`
+          <div class="base-card">
+            <div class="base-label">${b.name}</div>
+            <div class="base-val" style="color:#f87171">无效输入</div>
+          </div>
+        `).join('');
+        return;
+      }
+
+      const decimal=toDecimal(inputVal,inputBase);
+      if(decimal===null||isNaN(decimal)||decimal>Number.MAX_SAFE_INTEGER){
+        document.getElementById('resultGrid').innerHTML=bases.map(b=>`
+          <div class="base-card">
+            <div class="base-label">${b.name}</div>
+            <div class="base-val" style="color:#f87171">数值溢出</div>
+          </div>
+        `).join('');
+        return;
+      }
+
+      const grid=document.getElementById('resultGrid');
+      grid.innerHTML=bases.map((b,i)=>{
+        const val=fromDecimal(decimal,b.base);
+        const isActive=b.base===inputBase;
+        return `<div class="base-card${isActive?' active':''}" onclick="copyBase('${val}')" title="点击复制">
+          <div class="base-label">${b.name} ${isActive?'(当前)':''}</div>
+          <div class="base-val">${b.prefix}${val}</div>
+        </div>`;
+      }).join('');
+    }
+
+    function copyBase(v){
+      navigator.clipboard.writeText(v).then(()=>showToast('已复制: '+v)).catch(()=>{});
+    }
+
+    function setExample(val,base){
+      document.getElementById('inputBase').value=base;
+      document.getElementById('inputVal').value=val;
+      convert();
+    }
+
+    // init
+    convert();
+  </script>
+</body>
+</html>

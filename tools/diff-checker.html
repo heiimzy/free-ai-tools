@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>文本比较工具 - 在线文本对比Diff | Free AI Tools</title>
+  <meta name="description" content="免费在线文本差异比较工具，支持逐行对比、字符级差异高亮、并排视图。适合代码对比、文章修改前后比对、版本差异检查。">
+  <meta name="keywords" content="文本比较,Diff工具,文本对比,代码比较,差异对比,在线Diff">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .diff-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .diff-textarea { width: 100%; min-height: 250px; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: monospace; font-size: 0.82rem; resize: vertical; box-sizing: border-box; line-height: 1.5; }
+    .diff-textarea:focus { outline: none; border-color: var(--primary); }
+    .diff-output { width: 100%; min-height: 300px; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: monospace; font-size: 0.82rem; line-height: 1.5; white-space: pre; overflow: auto; box-sizing: border-box; margin-top: 1rem; }
+    .diff-output .add { background: rgba(52,211,153,0.2); color: #34d399; display: block; }
+    .diff-output .rem { background: rgba(248,113,113,0.2); color: #f87171; display: block; }
+    .diff-output .ctx { display: block; color: var(--text-muted); }
+    .diff-stats { display: flex; gap: 1rem; margin: 0.75rem 0; flex-wrap: wrap; }
+    .diff-stat { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 0.4rem 0.9rem; font-size: 0.82rem; }
+    .diff-stat .num { font-weight: 700; font-family: monospace; }
+    .diff-stat .num.add { color: #34d399; }
+    .diff-stat .num.rem { color: #f87171; }
+    @media (max-width: 768px) { .diff-layout { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/text-rewriter.html">AI改写</a><a href="../tools/diff-checker.html">文本比较</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>文本比较工具</h1>
+      <p>逐行比较两段文本的差异，高亮显示新增和删除内容。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="diff-layout">
+        <div>
+          <label>原始文本</label>
+          <textarea class="diff-textarea" id="textA" oninput="runDiff()" placeholder="粘贴原始文本...">function hello() {
+  console.log("Hello World");
+  return true;
+}</textarea>
+        </div>
+        <div>
+          <label>修改后文本</label>
+          <textarea class="diff-textarea" id="textB" oninput="runDiff()" placeholder="粘贴修改后文本...">function hello() {
+  console.log("Hello World!");
+  return true;
+  // done
+}</textarea>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-bottom:0.5rem;">
+        <button class="btn btn-primary" onclick="runDiff()">🔄 比较</button>
+        <button class="btn btn-secondary" onclick="swapText()">⇄ 交换</button>
+        <button class="btn btn-secondary" onclick="clearAll()">🗑️ 清空</button>
+      </div>
+
+      <div class="diff-stats">
+        <div class="diff-stat">新增: <span class="num add" id="addCount">0</span> 行</div>
+        <div class="diff-stat">删除: <span class="num rem" id="remCount">0</span> 行</div>
+        <div class="diff-stat" id="sameStat">完全相同: 是</div>
+      </div>
+
+      <div>
+        <label>差异结果</label>
+        <div class="diff-output" id="diffOutput">输入文本并点击比较</div>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">[广告位] Google AdSense</div>
+  </main>
+  <footer><div class="container"><p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a></p></div></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+    function runDiff(){
+      const a=document.getElementById('textA').value;
+      const b=document.getElementById('textB').value;
+      const out=document.getElementById('diffOutput');
+      const addEl=document.getElementById('addCount');
+      const remEl=document.getElementById('remCount');
+      const sameEl=document.getElementById('sameStat');
+
+      const linesA=a.split('\n');
+      const linesB=b.split('\n');
+
+      // LCS-based diff
+      const m=linesA.length, n=linesB.length;
+      const dp=Array.from({length:m+1},()=>Array(n+1).fill(0));
+      for(let i=1;i<=m;i++) for(let j=1;j<=n;j++)
+        dp[i][j]=linesA[i-1]===linesB[j-1]?dp[i-1][j-1]+1:Math.max(dp[i-1][j],dp[i][j-1]);
+
+      // Backtrack
+      const result=[];
+      let i=m,j=n;
+      while(i>0||j>0){
+        if(i>0&&j>0&&linesA[i-1]===linesB[j-1]){
+          result.unshift({type:'ctx',line:linesA[i-1]});
+          i--;j--;
+        }else if(j>0&&(i===0||dp[i][j-1]>=dp[i-1][j])){
+          result.unshift({type:'add',line:linesB[j-1]});
+          j--;
+        }else{
+          result.unshift({type:'rem',line:linesA[i-1]});
+          i--;
+        }
+      }
+
+      let adds=0,rems=0;
+      let html='';
+      for(const r of result){
+        if(r.type==='add'){adds++;html+=`<span class="add">+ ${esc(r.line)}</span>`;}
+        else if(r.type==='rem'){rems++;html+=`<span class="rem">- ${esc(r.line)}</span>`;}
+        else html+=`<span class="ctx">  ${esc(r.line)}</span>`;
+      }
+
+      out.innerHTML=html||'<span style="color:var(--text-muted)">(空内容)</span>';
+      addEl.textContent=adds;
+      remEl.textContent=rems;
+      sameEl.textContent=adds===0&&rems===0?'完全相同: ✅ 是':'存在差异: ❌ 否';
+      sameEl.style.color=adds===0&&rems===0?'#34d399':'#f87171';
+    }
+
+    function esc(s){return s.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/ /g,' ');}
+
+    function swapText(){
+      const a=document.getElementById('textA');
+      const b=document.getElementById('textB');
+      [a.value,b.value]=[b.value,a.value];
+      runDiff();
+    }
+
+    function clearAll(){
+      document.getElementById('textA').value='';
+      document.getElementById('textB').value='';
+      runDiff();
+    }
+
+    // init
+    runDiff();
+  </script>
+</body>
+</html>
