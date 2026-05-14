@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 日报 - AI新闻、工具、变现、效率提升 | Free AI Tools Blog</title>
+  <meta name="description" content="每日更新AI领域最新动态，涵盖AI新闻、AI工具推荐、AI赚钱变现方法、AI提升工作效率技巧。">
+  <meta name="keywords" content="AI新闻,AI工具,AI变现,AI赚钱,AI效率,人工智能">
+  <link rel="alternate" type="application/rss+xml" title="AI日报 RSS" href="rss.xml">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .blog-header { text-align: center; padding: 3rem 1rem 2rem; }
+    .blog-header h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+    .blog-header p { color: var(--text-muted); max-width: 600px; margin: 0 auto; }
+    .blog-header .subtitle { color: var(--primary); font-size: 0.9rem; margin-top: 0.5rem; }
+
+    .post-list { max-width: 800px; margin: 0 auto; padding: 0 0 3rem; }
+    .post-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      transition: border-color 0.2s, transform 0.2s;
+      cursor: pointer;
+    }
+    .post-item:hover { border-color: var(--primary); transform: translateX(4px); }
+    .post-item .date { color: var(--text-muted); font-size: 0.8rem; }
+    .post-item h2 { font-size: 1.2rem; margin: 0.3rem 0; color: var(--text); }
+    .post-item .summary { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin-top: 0.5rem; }
+    .post-item .tags { margin-top: 0.75rem; display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .post-item .tag {
+      background: rgba(99,102,241,0.1);
+      color: var(--primary);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+    }
+    .post-item .read-more { color: var(--secondary); font-size: 0.85rem; margin-top: 0.5rem; display: inline-block; }
+
+    .loading { text-align: center; padding: 3rem; color: var(--text-muted); }
+    .loading .spinner { display: inline-block; width: 24px; height: 24px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 0.5rem; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .pagination { display: flex; justify-content: center; gap: 0.5rem; margin-top: 2rem; }
+    .pagination button {
+      background: var(--bg-card); border: 1px solid var(--border); color: var(--text);
+      padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-family: inherit;
+    }
+    .pagination button:hover { border-color: var(--primary); }
+    .pagination button.active { background: var(--primary); border-color: var(--primary); }
+    .pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .post-count { text-align: center; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem; }
+
+    @media (max-width: 768px) {
+      .blog-header h1 { font-size: 1.6rem; }
+      .post-item { padding: 1rem; }
+    }
+
+    /* Category Filter */
+    .category-nav { display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; }
+    .category-nav button {
+      background: transparent; border: 1px solid var(--border); color: var(--text-muted);
+      padding: 0.4rem 1rem; border-radius: 20px; cursor: pointer; font-size: 0.85rem; font-family: inherit;
+      transition: all 0.2s;
+    }
+    .category-nav button:hover { border-color: var(--primary); color: var(--text); }
+    .category-nav button.active { background: var(--primary); border-color: var(--primary); color: white; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav>
+        <a href="../index.html">工具</a>
+        <a href="index.html">博客</a>
+        <a href="rss.xml">RSS</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="blog-header">
+    <div class="container">
+      <h1>AI 日报</h1>
+      <p>追踪 AI 领域最新动态 — 新闻 · 工具 · 变现 · 效率</p>
+      <div class="subtitle">🕐 每小时自动更新 · 永不遗漏</div>
+    </div>
+  </section>
+
+  <div class="category-nav" id="categoryNav">
+    <button data-cat="all" class="active">全部</button>
+    <button data-cat="新闻">📰 AI新闻</button>
+    <button data-cat="工具">🛠 AI工具</button>
+    <button data-cat="变现">💰 AI变现</button>
+    <button data-cat="效率">⚡ AI提效</button>
+  </div>
+
+  <main class="container">
+    <div class="post-count" id="postCount"></div>
+    <div class="post-list" id="postList">
+      <div class="loading"><div class="spinner"></div>正在加载文章...</div>
+    </div>
+    <div class="pagination" id="pagination"></div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>AI日报 &copy; 2026 | <a href="../index.html">工具站</a> | <a href="rss.xml">RSS订阅</a></p>
+    </div>
+  </footer>
+
+  <script>
+    const POSTS_PER_PAGE = 20;
+    let allPosts = [];
+    let currentPage = 1;
+    let currentCategory = 'all';
+
+    async function loadPosts() {
+      try {
+        const res = await fetch('posts.json?_=' + Date.now());
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        allPosts = await res.json();
+        if (!Array.isArray(allPosts)) allPosts = [];
+        render();
+      } catch(e) {
+        document.getElementById('postList').innerHTML = '<div class="loading" style="color:var(--danger);">⚠️ 暂时还没有文章，等待下次更新...</div>';
+      }
+    }
+
+    function filterPosts(cat) {
+      if (cat === 'all') return allPosts;
+      return allPosts.filter(p => (p.tags || []).includes(cat));
+    }
+
+    function render() {
+      const filtered = filterPosts(currentCategory);
+      const totalPages = Math.max(1, Math.ceil(filtered.length / POSTS_PER_PAGE));
+      if (currentPage > totalPages) currentPage = totalPages;
+
+      const start = (currentPage - 1) * POSTS_PER_PAGE;
+      const pagePosts = filtered.slice(start, start + POSTS_PER_PAGE);
+
+      document.getElementById('postCount').textContent = `共 ${filtered.length} 篇文章`;
+
+      const list = document.getElementById('postList');
+      if (pagePosts.length === 0) {
+        list.innerHTML = '<div class="loading">📭 暂无文章，等待下次自动更新...</div>';
+      } else {
+        list.innerHTML = pagePosts.map(p => {
+          const tags = (p.tags || []).map(t => `<span class="tag">${t}</span>`).join('');
+          const date = p.date || '';
+          return `<div class="post-item" onclick="openPost('${p.file || ''}')">
+            <div class="date">${date}</div>
+            <h2>${p.title || '无标题'}</h2>
+            <div class="summary">${p.summary || ''}</div>
+            <div class="tags">${tags}</div>
+            <span class="read-more">阅读全文 →</span>
+          </div>`;
+        }).join('');
+      }
+
+      // Pagination
+      const pg = document.getElementById('pagination');
+      if (totalPages <= 1) { pg.innerHTML = ''; return; }
+      let phtml = `<button ${currentPage <= 1 ? 'disabled' : ''} onclick="goPage(${currentPage - 1})">← 上一页</button>`;
+      for (let i = 1; i <= totalPages; i++) {
+        phtml += `<button class="${i === currentPage ? 'active' : ''}" onclick="goPage(${i})">${i}</button>`;
+      }
+      phtml += `<button ${currentPage >= totalPages ? 'disabled' : ''} onclick="goPage(${currentPage + 1})">下一页 →</button>`;
+      pg.innerHTML = phtml;
+    }
+
+    function goPage(n) { currentPage = n; render(); window.scrollTo({top: 0, behavior: 'smooth'}); }
+
+    function openPost(file) { if (file) window.location.href = file; }
+
+    // Category filter
+    document.getElementById('categoryNav').addEventListener('click', function(e) {
+      if (e.target.tagName === 'BUTTON') {
+        document.querySelectorAll('#categoryNav button').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        currentCategory = e.target.dataset.cat || 'all';
+        currentPage = 1;
+        render();
+      }
+    });
+
+    loadPosts();
+  </script>
+</body>
+</html>
