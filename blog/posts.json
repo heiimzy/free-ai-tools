@@ -1,5 +1,21 @@
 [
   {
+    "id": "013",
+    "date": "2026-05-15",
+    "zh": {
+      "title": "2026年AI提效实战手册：四大场景×智能代理工作流，效率提升3-10倍",
+      "summary": "2026年AI提效最新方法：智能代理（Agent）自主完成跨应用操作、聊天编程减少60%调试时间、长文本处理准确率92%、多模态内容全流程自动化、确定性流程编排。附企业落地三阶段策略。",
+      "tags": ["效率", "工作流", "自动化"],
+      "file": "posts/013-ai-productivity-2026-guide.zh.html"
+    },
+    "en": {
+      "title": "AI Productivity 2026: Agent-Centric Workflows, Real ROI Data & Practical Playbook",
+      "summary": "2026 AI productivity guide: agentic AI workflow architecture with 2-10x gains, real enterprise ROI (Suzano 95% faster, Linde 92% cut, Vanta 1800+ hrs reclaimed), personal AI workers stack, 3-layer maturity model, and actionable tips.",
+      "tags": ["productivity", "workflow", "agents"],
+      "file": "posts/013-ai-productivity-2026-guide.en.html"
+    }
+  },
+  {
     "id": "012",
     "date": "2026-05-15",
     "zh": {
