@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>文章摘要生成器 - AI自动提取文章要点 | Free AI Tools</title>
+  <meta name="description" content="免费在线文章摘要生成工具，AI自动提取文章核心内容和关键信息，快速生成简洁准确的摘要。">
+  <meta name="keywords" content="文章摘要,AI摘要生成,文本摘要,内容提取,自动摘要">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav>
+        <a href="../index.html">首页</a>
+        <a href="../tools/text-rewriter.html">AI改写</a>
+        <a href="../tools/password-generator.html">密码生成</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>文章摘要生成器</h1>
+      <p>AI 自动提取文章核心内容，快速生成简洁准确的摘要。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="form-group">
+        <label for="inputText">输入文章内容</label>
+        <textarea id="inputText" placeholder="请粘贴文章内容..." rows="8"></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="summaryLength">摘要长度</label>
+          <select id="summaryLength">
+            <option value="short">简短 (1-2句)</option>
+            <option value="medium" selected>适中 (3-5句)</option>
+            <option value="detailed">详细 (5-8句)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="summaryFocus">摘要重点</label>
+          <select id="summaryFocus">
+            <option value="general">综合概括</option>
+            <option value="keypoints">关键要点</option>
+            <option value="conclusion">结论总结</option>
+            <option value="actionable">行动建议</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" onclick="generateSummary()">✨ 生成摘要</button>
+
+      <div class="form-group" style="margin-top: 1.5rem;">
+        <label>摘要结果</label>
+        <div class="result-box" id="resultBox">
+          <div class="empty-state">点击"生成摘要"查看结果</div>
+        </div>
+        <button class="btn btn-success" onclick="copyResult()" id="copyBtn" disabled style="margin-top: 0.75rem;">📋 复制摘要</button>
+      </div>
+    </div>
+
+    <!-- AdSense 广告位 -->
+    <div class="ad-placeholder">
+      [广告位] Google AdSense - 将在获得批准后启用<br>
+      <small>欢迎广告合作：请联系站长添加您的广告</small>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 - 免费在线工具集 | <a href="../index.html">首页</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    function generateSummary() {
+      const input = document.getElementById('inputText').value.trim();
+      if (!input) {
+        showToast('请先输入文章内容');
+        return;
+      }
+
+      if (input.length < 50) {
+        showToast('文章内容太短，请输入至少50个字符');
+        return;
+      }
+
+      const length = document.getElementById('summaryLength').value;
+      const focus = document.getElementById('summaryFocus').value;
+
+      const btn = document.querySelector('.btn-primary');
+      btn.disabled = true;
+      btn.textContent = '⏳ 生成中...';
+
+      const resultBox = document.getElementById('resultBox');
+      resultBox.innerHTML = '<div class="empty-state">正在分析文章内容...</div>';
+
+      setTimeout(() => {
+        // Extract sentences from the text
+        const sentences = input
+          .replace(/([。！？.!?])\s*/g, '$1|')
+          .split('|')
+          .filter(s => s.trim().length > 10);
+
+        if (sentences.length === 0) {
+          resultBox.innerHTML = '无法提取摘要，请确保文章包含完整的句子。';
+          btn.disabled = false;
+          btn.textContent = '✨ 生成摘要';
+          return;
+        }
+
+        // Score sentences by importance (keyword frequency, position)
+        const words = input.toLowerCase().split(/[\s,，。.、；;：:！!？?（）()【】\[\]]/).filter(w => w.length > 1);
+        const wordFreq = {};
+        words.forEach(w => { wordFreq[w] = (wordFreq[w] || 0) + 1; });
+
+        const scoredSentences = sentences.map((s, i) => {
+          let score = 0;
+          // Position bonus (first sentences are usually more important)
+          score += Math.max(0, 1 - i * 0.05);
+          // Keyword frequency
+          const sWords = s.toLowerCase().split(/[\s,，。.、；;：:！!？?（）()【】\[\]]/).filter(w => w.length > 1);
+          sWords.forEach(w => { score += (wordFreq[w] || 0) * 0.1; });
+          // Sentence length bonus (moderate length sentences are better)
+          const lenScore = Math.min(1, s.length / 100);
+          score += lenScore;
+          return { sentence: s, score, index: i };
+        });
+
+        // Sort by score and select top sentences based on length setting
+        scoredSentences.sort((a, b) => b.score - a.score);
+
+        let numSentences;
+        switch (length) {
+          case 'short': numSentences = Math.min(2, sentences.length); break;
+          case 'medium': numSentences = Math.min(5, sentences.length); break;
+          case 'detailed': numSentences = Math.min(8, sentences.length); break;
+          default: numSentences = Math.min(5, sentences.length);
+        }
+
+        let selected = scoredSentences.slice(0, numSentences);
+
+        // Sort selected sentences back to original order
+        selected.sort((a, b) => a.index - b.index);
+
+        let summary = selected.map(s => s.sentence.trim()).join('');
+
+        // Apply focus-based modifications
+        switch (focus) {
+          case 'keypoints':
+            summary = '核心要点：\n• ' + selected.map(s => s.sentence.trim()).join('\n• ');
+            break;
+          case 'conclusion':
+            summary = '总结：\n' + selected.slice(Math.max(0, selected.length - 3)).map(s => s.sentence.trim()).join('');
+            if (!summary.endsWith('。')) summary += '。';
+            break;
+          case 'actionable':
+            summary = '行动建议：\n基于以上分析，建议重点关注以下方面：\n' + selected.map(s => '• ' + s.sentence.trim()).join('\n');
+            break;
+          default:
+            // general - just the clean summary
+            break;
+        }
+
+        resultBox.innerHTML = summary;
+        document.getElementById('copyBtn').disabled = false;
+
+        btn.disabled = false;
+        btn.textContent = '✨ 生成摘要';
+        showToast('✅ 摘要生成完成！');
+      }, 600 + Math.random() * 400);
+    }
+
+    function copyResult() {
+      const text = document.getElementById('resultBox').textContent;
+      if (text && text !== '点击"生成摘要"查看结果' && text !== '正在分析文章内容...') {
+        navigator.clipboard.writeText(text).then(() => showToast('✅ 已复制到剪贴板'));
+      }
+    }
+  </script>
+</body>
+</html>

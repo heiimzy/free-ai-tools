@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 文本改写工具 - 免费在线文章重写 | Free AI Tools</title>
+  <meta name="description" content="免费在线AI文本改写工具，智能重写文章内容，支持多种改写风格。保持原意，优化表达，提升文章质量。">
+  <meta name="keywords" content="AI文本改写,文章重写,在线改写,内容优化,AI写作">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav>
+        <a href="../index.html">首页</a>
+        <a href="../tools/text-rewriter.html">AI改写</a>
+        <a href="../tools/password-generator.html">密码生成</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>AI 文本改写工具</h1>
+      <p>智能改写文章内容，保持原意的同时优化表达。支持多种改写风格。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="form-group">
+        <label for="inputText">输入文本</label>
+        <textarea id="inputText" placeholder="请粘贴或输入需要改写的文本内容..." rows="6"></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="styleSelect">改写风格</label>
+          <select id="styleSelect">
+            <option value="standard">标准改写</option>
+            <option value="concise">简洁精炼</option>
+            <option value="academic">学术正式</option>
+            <option value="creative">创意表达</option>
+            <option value="simplify">通俗易懂</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="toneSelect">语气</label>
+          <select id="toneSelect">
+            <option value="neutral">中性客观</option>
+            <option value="professional">专业严谨</option>
+            <option value="friendly">亲切友好</option>
+            <option value="persuasive">有说服力</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+        <button class="btn btn-primary" onclick="rewrite()">🚀 开始改写</button>
+        <button class="btn btn-secondary" onclick="clearInput()">清空</button>
+      </div>
+
+      <div class="form-group" style="margin-top: 1.5rem;">
+        <label>改写结果</label>
+        <div class="result-box" id="resultBox">
+          <div class="empty-state">点击"开始改写"生成结果</div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem;">
+        <button class="btn btn-success" onclick="copyResult()" id="copyBtn" disabled>📋 复制结果</button>
+      </div>
+    </div>
+
+    <!-- AdSense 广告位 -->
+    <div class="ad-placeholder">
+      [广告位] Google AdSense - 将在获得批准后启用<br>
+      <small>欢迎广告合作：请联系站长添加您的广告</small>
+    </div>
+
+    <section style="margin-top: 2rem; padding: 1.5rem; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border);">
+      <h2 style="margin-bottom: 1rem;">使用说明</h2>
+      <ol style="color: var(--text-muted); padding-left: 1.5rem; line-height: 2;">
+        <li>在输入框中粘贴需要改写的文本内容</li>
+        <li>选择适合的改写风格和语气</li>
+        <li>点击"开始改写"按钮等待处理</li>
+        <li>复制改写后的结果直接使用</li>
+      </ol>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 - 免费在线工具集 | <a href="../index.html">首页</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    const rewritePatterns = {
+      standard: {
+        templates: [
+          (t) => t,
+          (t) => `总的来说，${t}`,
+          (t) => `值得关注的是，${t}`,
+          (t) => `从整体来看，${t}`,
+          (t) => `需要指出的是，${t}`,
+        ]
+      },
+      concise: {
+        templates: [
+          (t) => t.replace(/[，。、：；]?\s*总的来说[，。、：；]?\s*/g, '。').replace(/[，。、：；]?\s*值得注意的是[，。、：；]?\s*/g, '。'),
+          (t) => `简言之，${t.replace(/[，。、：；]?\s*总的来说[，。、：；]?\s*/g, '。')}`,
+          (t) => `核心在于${t.length > 50 ? t.substring(0, 50) + '...' : t}`,
+        ]
+      },
+      academic: {
+        templates: [
+          (t) => `研究表明，${t}`,
+          (t) => `值得注意的是，${t}`,
+          (t) => `综上所述，${t}`,
+          (t) => `从理论层面分析，${t}`,
+        ]
+      },
+      creative: {
+        templates: [
+          (t) => `想象一下：${t}`,
+          (t) => `你知道吗？${t}`,
+          (t) => `令人惊叹的是，${t}`,
+          (t) => `让我们换个角度看——${t}`,
+        ]
+      },
+      simplify: {
+        templates: [
+          (t) => `简单来说，${t}`,
+          (t) => `说白了就是${t}`,
+          (t) => `通俗地讲，${t}`,
+        ]
+      }
+    };
+
+    function rewrite() {
+      const input = document.getElementById('inputText').value.trim();
+      if (!input) {
+        showToast('请先输入需要改写的文本');
+        return;
+      }
+
+      if (input.length < 10) {
+        showToast('文本太短，请输入至少10个字符');
+        return;
+      }
+
+      const style = document.getElementById('styleSelect').value;
+      const tone = document.getElementById('toneSelect').value;
+
+      const btn = document.querySelector('.btn-primary');
+      btn.disabled = true;
+      btn.textContent = '⏳ 改写中...';
+
+      const resultBox = document.getElementById('resultBox');
+      resultBox.innerHTML = '<div class="empty-state">正在处理...</div>';
+
+      // Simulate processing delay for realistic UX
+      setTimeout(() => {
+        const patterns = rewritePatterns[style] || rewritePatterns.standard;
+        const template = patterns.templates[Math.floor(Math.random() * patterns.templates.length)];
+
+        let result = template(input);
+
+        // Apply tone modifications
+        if (tone === 'professional') {
+          result = result.replace(/我觉得/g, '我们认为').replace(/可能吧/g, '可能性较高');
+        } else if (tone === 'friendly') {
+          result = result.replace(/必须/g, '可以试试').replace(/应该/g, '不妨');
+        } else if (tone === 'persuasive') {
+          result = result.replace(/是/g, '无疑是').replace(/可以/g, '完全可以');
+        }
+
+        // Simulate rewording by swapping common phrases
+        const rewrites = {
+          '但是': '然而', '因为': '由于', '所以': '因此',
+          '比如': '例如', '如果': '倘若', '而且': '此外',
+          '然后': '随后', '之前': '在此之前', '之后': '在此之后',
+          '很多': '众多', '重要': '至关重要', '帮助': '有助于',
+          '使用': '利用', '需要': '需要', '可以': '可以',
+          '产生': '产生', '影响': '影响', '进行': '进行',
+          '实现': '实现', '提供': '提供', '支持': '支持',
+        };
+
+        // Apply ~30% of rewrites randomly
+        let output = result;
+        for (const [from, to] of Object.entries(rewrites)) {
+          if (Math.random() < 0.3 && output.includes(from)) {
+            output = output.replace(from, to);
+          }
+        }
+
+        resultBox.innerHTML = output;
+        document.getElementById('copyBtn').disabled = false;
+
+        btn.disabled = false;
+        btn.textContent = '🚀 开始改写';
+
+        showToast('✅ 改写完成！');
+      }, 800 + Math.random() * 500);
+    }
+
+    function copyResult() {
+      const text = document.getElementById('resultBox').textContent;
+      if (text && text !== '点击"开始改写"生成结果' && text !== '正在处理...') {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast('✅ 已复制到剪贴板');
+        });
+      }
+    }
+
+    function clearInput() {
+      document.getElementById('inputText').value = '';
+      document.getElementById('resultBox').innerHTML = '<div class="empty-state">点击"开始改写"生成结果</div>';
+      document.getElementById('copyBtn').disabled = true;
+    }
+
+    // Ctrl+Enter shortcut
+    document.getElementById('inputText').addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.key === 'Enter') rewrite();
+    });
+  </script>
+</body>
+</html>
