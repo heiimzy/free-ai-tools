@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数字转中文大写 - 免费在线金额大写转换器 | Free AI Tools</title>
+  <meta name="description" content="免费在线数字转中文大写工具，支持数字转人民币大写、英文金额拼写、数字转罗马数字。实时转换，一键复制，财务报销必备。">
+  <meta name="keywords" content="数字转中文大写,金额大写转换器,人民币大写,数字转英文,罗马数字转换,在线工具">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/number-to-words.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .convert-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .convert-tab { padding: 0.5rem 1.2rem; border: 1px solid var(--border); border-radius: 8px; background: transparent; color: var(--text-muted); cursor: pointer; font-family: inherit; font-size: 0.9rem; transition: all 0.2s; }
+    .convert-tab:hover { border-color: var(--primary); color: var(--text); }
+    .convert-tab.active { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border-color: transparent; }
+    .convert-panel { display: none; }
+    .convert-panel.active { display: block; }
+    .result-area { background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; min-height: 60px; margin-top: 0.75rem; font-size: 1.1rem; word-break: break-all; position: relative; }
+    .result-area .label-small { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.3rem; }
+    .result-area .big-text { font-size: 1.3rem; color: var(--primary); font-weight: 700; }
+    .option-row { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin: 0.75rem 0; }
+    .option-row label { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; cursor: pointer; }
+    .option-row input[type="checkbox"] { accent-color: var(--primary); width: 16px; height: 16px; }
+    .history-list { margin-top: 1rem; }
+    .history-item { display: flex; justify-content: space-between; align-items: center; padding: 0.4rem 0.75rem; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 0.3rem; font-size: 0.85rem; }
+    .history-item .val { color: var(--primary); font-weight: 600; }
+    .history-item .del { cursor: pointer; color: var(--text-muted); font-size: 0.8rem; }
+    .history-item .del:hover { color: var(--danger); }
+    @media (max-width: 768px) { .big-text { font-size: 1rem !important; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../blog/">AI博客</a></nav>
+    </div>
+  </header>
+  <div class="tool-page">
+    <div class="container">
+      <div class="tool-header">
+        <h1>数字转中文大写</h1>
+        <p>数字转人民币大写、英文金额拼写、罗马数字转换，一键复制</p>
+      </div>
+      <div class="tool-container">
+        <div class="convert-tabs" id="tabs">
+          <button class="convert-tab active" data-tab="chinese">人民币大写</button>
+          <button class="convert-tab" data-tab="english">英文金额</button>
+          <button class="convert-tab" data-tab="roman">罗马数字</button>
+        </div>
+
+        <!-- Chinese -->
+        <div class="convert-panel active" id="panel-chinese">
+          <div class="form-group">
+            <label>输入数字</label>
+            <input type="text" id="chineseInput" placeholder="例如: 12345.67 或 壹万贰仟叁佰肆拾伍元陆角柒分" oninput="toChinese()">
+          </div>
+          <button class="btn btn-primary" onclick="toChinese()">转换为大写</button>
+          <div class="result-area" id="chineseResult">
+            <div class="label-small">中文大写金额</div>
+            <div class="big-text" id="chineseOutput">—</div>
+          </div>
+          <div class="option-row">
+            <label><input type="checkbox" id="chineseStrict" checked onchange="toChinese()"> 严格模式（无"零角零分"简写）</label>
+          </div>
+        </div>
+
+        <!-- English -->
+        <div class="convert-panel" id="panel-english">
+          <div class="form-group">
+            <label>输入数字</label>
+            <input type="text" id="englishInput" placeholder="例如: 1234.56" oninput="toEnglish()">
+          </div>
+          <button class="btn btn-primary" onclick="toEnglish()">转换为英文</button>
+          <div class="result-area" id="englishResult">
+            <div class="label-small">English Amount</div>
+            <div class="big-text" id="englishOutput">—</div>
+          </div>
+          <div class="option-row">
+            <label><input type="checkbox" id="englishCurrency" checked onchange="toEnglish()"> 添加货币单位（dollars and cents）</label>
+          </div>
+        </div>
+
+        <!-- Roman -->
+        <div class="convert-panel" id="panel-roman">
+          <div class="form-group">
+            <label>输入数字（1-3999）</label>
+            <input type="number" id="romanInput" min="1" max="3999" placeholder="例如: 2026" oninput="toRoman()">
+          </div>
+          <button class="btn btn-primary" onclick="toRoman()">转换为罗马数字</button>
+          <div class="result-area" id="romanResult">
+            <div class="label-small">Roman Numerals</div>
+            <div class="big-text" id="romanOutput">—</div>
+          </div>
+        </div>
+
+        <!-- History -->
+        <div style="margin-top:1.5rem;border-top:1px solid var(--border);padding-top:1rem;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+            <span style="font-size:0.85rem;color:var(--text-muted)">转换历史</span>
+            <button class="btn btn-secondary" style="padding:0.25rem 0.75rem;font-size:0.8rem;" onclick="clearHistory()">清空</button>
+          </div>
+          <div class="history-list" id="historyList"><span style="color:var(--text-muted);font-size:0.85rem;">暂无记录</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 - 免费在线工具集 | <a href="../index.html">首页</a></p>
+    </div>
+  </footer>
+  <div class="toast" id="toast"></div>
+  <script>
+    const CN_NUMS = ['零','壹','贰','叁','肆','伍','陆','柒','捌','玖'];
+    const CN_UNITS = ['','拾','佰','仟'];
+    const CN_BIG_UNITS = ['','万','亿','万亿'];
+
+    function numberToChinese(n, strict) {
+      if (n === 0) return '零';
+      const parts = String(n).split('.');
+      const intPart = parseInt(parts[0], 10);
+      const decPart = parts[1] || '';
+      const intStr = chineseInt(intPart);
+      const decStr = chineseDec(decPart, strict);
+      return intStr + decStr;
+    }
+
+    function chineseInt(n) {
+      if (n === 0) return '零';
+      let s = '';
+      let yi = Math.floor(n / 100000000);
+      let wan = Math.floor((n % 100000000) / 10000);
+      let ge = n % 10000;
+      if (yi) { s += sectionChinese(yi) + '亿'; }
+      if (wan) { if (yi && wan < 1000) s += '零'; s += sectionChinese(wan) + '万'; }
+      else if (yi && ge) s += '零';
+      if (ge) { s += sectionChinese(ge); }
+      return s;
+    }
+
+    function sectionChinese(n) {
+      let s = '', zero = false;
+      for (let i = 0; i < 4; i++) {
+        const d = Math.floor(n / Math.pow(10, 3 - i)) % 10;
+        if (d === 0) { zero = true; }
+        else {
+          if (zero) { s += '零'; zero = false; }
+          s += CN_NUMS[d] + CN_UNITS[3 - i];
+        }
+      }
+      return s;
+    }
+
+    function chineseDec(s, strict) {
+      if (!s || s === '') return strict ? '元整' : '元整';
+      let jiao = parseInt(s[0], 10) || 0;
+      let fen = parseInt(s[1], 10) || 0;
+      let result = '元';
+      if (jiao) result += CN_NUMS[jiao] + '角';
+      else if (!strict && (fen)) result += '零';
+      if (fen) result += CN_NUMS[fen] + '分';
+      else if (!strict && jiao) result += '整';
+      else if (strict && !jiao) result += '整';
+      else if (strict && jiao && !fen) result += '整';
+      return result;
+    }
+
+    function toChinese() {
+      const raw = document.getElementById('chineseInput').value.trim();
+      const strict = document.getElementById('chineseStrict').checked;
+      const out = document.getElementById('chineseOutput');
+      if (!raw) { out.textContent = '—'; return; }
+      const num = parseFloat(raw.replace(/[^\d.]/g, ''));
+      if (isNaN(num) || num < 0) { out.textContent = '请输入有效数字'; return; }
+      if (num >= 1e12) { out.textContent = '数字过大（超过万亿）'; return; }
+      const intPart = Math.floor(num);
+      const decStr = String(num).split('.')[1] || '';
+      const result = numberToChinese(num, strict);
+      out.textContent = result;
+      addHistory(raw, result);
+      showToast('转换完成');
+    }
+
+    // English
+    const EN_ONES = ['','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];
+    const EN_TENS = ['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
+    const EN_SCALES = ['','thousand','million','billion','trillion'];
+
+    function enSmall(n) {
+      if (n === 0) return '';
+      let s = '';
+      const h = Math.floor(n / 100);
+      const r = n % 100;
+      if (h) s += EN_ONES[h] + ' hundred ';
+      if (r) {
+        if (r < 20) s += EN_ONES[r];
+        else s += EN_TENS[Math.floor(r / 10)] + (r % 10 ? '-' + EN_ONES[r % 10] : '');
+      }
+      return s.trim();
+    }
+
+    function numberToEnglish(n, currency) {
+      if (n === 0) return currency ? 'zero dollars' : 'zero';
+      const parts = String(n).split('.');
+      const intPart = parseInt(parts[0], 10);
+      let decPart = (parts[1] || '00').padEnd(2, '0').substring(0, 2);
+      if (intPart === 0 && parseInt(decPart, 10) === 0) return currency ? 'zero dollars' : 'zero';
+      let result = '';
+      if (intPart === 0) { result = 'zero'; }
+      else {
+        let chunks = [];
+        let num = intPart;
+        while (num > 0) { chunks.push(num % 1000); num = Math.floor(num / 1000); }
+        for (let i = chunks.length - 1; i >= 0; i--) {
+          if (chunks[i] === 0) continue;
+          if (result) result += ' ';
+          result += enSmall(chunks[i]) + (EN_SCALES[i] ? ' ' + EN_SCALES[i] : '');
+        }
+      }
+      if (currency) {
+        result += ' dollar' + (intPart !== 1 ? 's' : '');
+        const c = parseInt(decPart, 10);
+        if (c > 0) result += ' and ' + (c < 20 ? EN_ONES[c] : EN_TENS[Math.floor(c / 10)] + (c % 10 ? '-' + EN_ONES[c % 10] : '')) + ' cent' + (c !== 1 ? 's' : '');
+      }
+      return result.charAt(0).toUpperCase() + result.slice(1);
+    }
+
+    function toEnglish() {
+      const raw = document.getElementById('englishInput').value.trim();
+      const currency = document.getElementById('englishCurrency').checked;
+      const out = document.getElementById('englishOutput');
+      if (!raw) { out.textContent = '—'; return; }
+      const num = parseFloat(raw);
+      if (isNaN(num) || num < 0) { out.textContent = 'Please enter a valid number'; return; }
+      if (num >= 1e15) { out.textContent = 'Number too large (>= 1 quadrillion)'; return; }
+      out.textContent = numberToEnglish(num, currency);
+      addHistory(raw, out.textContent);
+      showToast('转换完成');
+    }
+
+    // Roman
+    function toRoman() {
+      const raw = document.getElementById('romanInput').value.trim();
+      const out = document.getElementById('romanOutput');
+      if (!raw) { out.textContent = '—'; return; }
+      let n = parseInt(raw, 10);
+      if (isNaN(n) || n < 1 || n > 3999) { out.textContent = '请输入 1-3999 之间的整数'; return; }
+      const vals = [1000,900,500,400,100,90,50,40,10,9,5,4,1];
+      const romans = ['M','CM','D','CD','C','XC','L','XL','X','IX','V','IV','I'];
+      let r = '';
+      for (let i = 0; i < vals.length; i++) {
+        while (n >= vals[i]) { r += romans[i]; n -= vals[i]; }
+      }
+      out.textContent = r;
+      addHistory(raw, r);
+      showToast('转换完成');
+    }
+
+    // History
+    function addHistory(input, output) {
+      let h = JSON.parse(localStorage.getItem('fat_n2w_history') || '[]');
+      h.unshift({ input, output, time: Date.now() });
+      if (h.length > 20) h = h.slice(0, 20);
+      localStorage.setItem('fat_n2w_history', JSON.stringify(h));
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const el = document.getElementById('historyList');
+      const h = JSON.parse(localStorage.getItem('fat_n2w_history') || '[]');
+      if (!h.length) { el.innerHTML = '<span style="color:var(--text-muted);font-size:0.85rem;">暂无记录</span>'; return; }
+      el.innerHTML = h.map(item =>
+        '<div class="history-item"><span class="val">' + escapeHtml(item.input) + ' → ' + escapeHtml(item.output) + '</span><span class="del" onclick="deleteHistory(\'' + item.time + '\')">✕</span></div>'
+      ).join('');
+    }
+
+    function deleteHistory(t) {
+      let h = JSON.parse(localStorage.getItem('fat_n2w_history') || '[]');
+      h = h.filter(item => String(item.time) !== t);
+      localStorage.setItem('fat_n2w_history', JSON.stringify(h));
+      renderHistory();
+    }
+
+    function clearHistory() {
+      localStorage.removeItem('fat_n2w_history');
+      renderHistory();
+      showToast('历史已清空');
+    }
+
+    function escapeHtml(s) { return String(s).replace(/[&<>"]/g, function(c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+    // Tabs
+    document.querySelectorAll('.convert-tab').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.convert-tab').forEach(function(b) { b.classList.remove('active'); });
+        document.querySelectorAll('.convert-panel').forEach(function(p) { p.classList.remove('active'); });
+        btn.classList.add('active');
+        document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    // Toast
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(function() { t.classList.remove('show'); }, 2500);
+    }
+
+    renderHistory();
+  </script>
+</body>
+</html>
