@@ -1,5 +1,21 @@
 [
   {
+    "id": "014",
+    "date": "2026-05-15",
+    "zh": {
+      "title": "苹果与OpenAI决裂：AI平台战争进入下半场，ChatGPT输给Siri了吗？",
+      "summary": "2026年5月，苹果与OpenAI长达两年的合作关系破裂，OpenAI正考虑起诉。ChatGPT流量份额跌至53.7%，Gemini飙升至26.7%，iOS 27将开放多模型选择。深度解析这场AI平台战争背后的原因和影响。",
+      "tags": ["新闻", "行业", "AI竞争"],
+      "file": "posts/014-ai-platform-war.zh.html"
+    },
+    "en": {
+      "title": "Apple vs. OpenAI: The Partnership That Never Was — and What It Means for the AI Platform War",
+      "summary": "The Apple-OpenAI partnership has collapsed with OpenAI preparing legal action. ChatGPT integration handled less than 5% of all Siri requests. iOS 27 pivots to multi-provider AI. Analysis of the AI platform war's new phase.",
+      "tags": ["news", "industry", "AI competition"],
+      "file": "posts/014-ai-platform-war.en.html"
+    }
+  },
+  {
     "id": "013",
     "date": "2026-05-15",
     "zh": {
