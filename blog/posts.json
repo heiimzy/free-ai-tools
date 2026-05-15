@@ -1,5 +1,21 @@
 [
   {
+    "id": "016",
+    "date": "2026-05-16",
+    "zh": {
+      "title": "ChatGPT上线广告平台、千问接入淘宝：AI变现进入"基建级"时代",
+      "summary": "2026年5月，OpenAI正式上线Ads Manager广告平台，6周实现1亿美元年化收入；阿里千问+淘宝全面打通，AI成为电商新入口。深度分析AI变现从"赚小钱"到"建基础设施"的范式转变。",
+      "tags": ["变现", "行业", "AI广告"],
+      "file": "posts/016-openai-ads-monetization.zh.html"
+    },
+    "en": {
+      "title": "ChatGPT Ads Manager Is Live: Inside OpenAI's $100B Ad Ambition and the New AI Monetization Wave",
+      "summary": "OpenAI launched Ads Manager on May 5, 2026 — a self-serve ad platform opening ChatGPT to advertisers. Inside the economics ($100M annualized in 6 weeks), the platform mechanics, and what it means for the future of AI monetization.",
+      "tags": ["monetization", "industry", "AI advertising"],
+      "file": "posts/016-openai-ads-monetization.en.html"
+    }
+  },
+  {
     "id": "015",
     "date": "2026-05-16",
     "zh": {
