@@ -1,5 +1,21 @@
 [
   {
+    "id": "015",
+    "date": "2026-05-16",
+    "zh": {
+      "title": "2026年5月AI工具全景：Agent工程化爆发、视频生成白热化、10大场景选型指南",
+      "summary": "2026年5月AI工具最新动态：Agent TARS开源、可灵3.0支持2分钟长视频、MediaTek天玑AI套件3.0、亚马逊Alexa购物助理上线。含10大类别AI工具选型指南和场景推荐。",
+      "tags": ["工具", "评测", "选型"],
+      "file": "posts/015-ai-tools-may-2026-round2.zh.html"
+    },
+    "en": {
+      "title": "AI Tools Roundup May 2026: General Compute ASIC Cloud, Claude Goes Big on SMB & Legal, Boomi Agent Governance",
+      "summary": "May 2026 AI tools roundup: General Compute launches ASIC-first inference cloud for AI agents; Anthropic pushes Claude into Small Business and Legal; Boomi adds enterprise agent governance; Mixpanel AI; Google I/O preview.",
+      "tags": ["tools", "reviews", "launch"],
+      "file": "posts/015-ai-tools-may-2026-round2.en.html"
+    }
+  },
+  {
     "id": "014",
     "date": "2026-05-15",
     "zh": {

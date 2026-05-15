@@ -5,8 +5,15 @@
     <link>https://heiimzy.github.io/free-ai-tools/blog/en/</link>
     <description>Hourly-updated AI blog covering the latest AI news, tool reviews, money-making methods, and productivity tips.</description>
     <language>en</language>
-    <lastBuildDate>Fri, 15 May 2026 22:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 16 May 2026 12:00:00 GMT</lastBuildDate>
     <atom:link href="https://heiimzy.github.io/free-ai-tools/blog/en/rss.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>AI Tools Roundup May 2026: General Compute ASIC Cloud, Claude Goes Big on SMB &amp; Legal, Boomi Agent Governance</title>
+      <link>https://heiimzy.github.io/free-ai-tools/blog/posts/015-ai-tools-may-2026-round2.en.html</link>
+      <description>May 2026 AI tools roundup: General Compute launches ASIC-first inference cloud for AI agents; Anthropic pushes Claude into Small Business and Legal; Boomi adds enterprise agent governance; Mixpanel AI; Google I/O preview.</description>
+      <pubDate>Sat, 16 May 2026 12:00:00 GMT</pubDate>
+      <guid>https://heiimzy.github.io/free-ai-tools/blog/posts/015-ai-tools-may-2026-round2.en.html</guid>
+    </item>
     <item>
       <title>Apple vs. OpenAI: The Partnership That Never Was — and What It Means for the AI Platform War</title>
       <link>https://heiimzy.github.io/free-ai-tools/blog/posts/014-ai-platform-war.en.html</link>
