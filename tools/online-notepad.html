@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>在线记事本 - 免费浏览器端笔记工具 | Free AI Tools</title>
+  <meta name="description" content="免费在线记事本，浏览器本地自动保存，支持字数统计、导出TXT、Markdown预览。无需注册，隐私安全，关闭页面后自动恢复内容。">
+  <meta name="keywords" content="在线记事本,在线笔记,浏览器笔记,免费记事本,文本编辑,Markdown笔记,自动保存">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/online-notepad.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .notepad-toolbar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; align-items: center; }
+    .notepad-toolbar .spacer { flex: 1; }
+    .notepad-toolbar .btn { font-size: 0.85rem; padding: 0.4rem 1rem; }
+    .notepad-stats { display: flex; gap: 1.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .notepad-stats .stat { font-size: 0.85rem; color: var(--text-muted); }
+    .notepad-stats .stat strong { color: var(--primary); font-weight: 700; }
+    #notepadArea { width: 100%; min-height: 450px; padding: 1rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.95rem; font-family: inherit; line-height: 1.8; resize: vertical; transition: border-color 0.2s; }
+    #notepadArea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99,102,241,0.2); }
+    .notepad-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 0.75rem; flex-wrap: wrap; gap: 0.5rem; }
+    .save-indicator { font-size: 0.8rem; color: var(--success); display: flex; align-items: center; gap: 0.3rem; }
+    .save-indicator.saving { color: var(--warning); }
+    .word-count-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; z-index: 1000; display: none; min-width: 300px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+    .word-count-popup.show { display: block; }
+    .word-count-popup .close-btn { position: absolute; top: 0.5rem; right: 0.75rem; background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; }
+    .word-count-popup h3 { margin-bottom: 1rem; }
+    .word-count-popup .stat-row { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+    .word-count-popup .stat-row:last-child { border-bottom: none; }
+    .word-count-popup .stat-row .label { color: var(--text-muted); }
+    .word-count-popup .stat-row .value { color: var(--primary); font-weight: 700; }
+    #mdPreview { display: none; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin-top: 0.5rem; min-height: 200px; line-height: 1.8; }
+    #mdPreview.show { display: block; }
+    #mdPreview h1, #mdPreview h2, #mdPreview h3 { color: var(--primary); margin: 0.5rem 0; }
+    #mdPreview h1 { font-size: 1.5rem; }
+    #mdPreview h2 { font-size: 1.2rem; }
+    #mdPreview h3 { font-size: 1rem; }
+    #mdPreview p { margin: 0.3rem 0; }
+    #mdPreview code { background: var(--bg-input); padding: 0.1rem 0.3rem; border-radius: 3px; font-size: 0.85rem; }
+    #mdPreview pre { background: var(--bg-input); padding: 0.75rem; border-radius: 8px; overflow-x: auto; }
+    #mdPreview ul, #mdPreview ol { padding-left: 1.5rem; }
+    #mdPreview blockquote { border-left: 3px solid var(--primary); padding-left: 0.75rem; color: var(--text-muted); margin: 0.5rem 0; }
+    #mdPreview hr { border: none; border-top: 1px solid var(--border); margin: 1rem 0; }
+    @media (max-width: 768px) { #notepadArea { min-height: 300px; font-size: 0.9rem; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../blog/">AI博客</a></nav>
+    </div>
+  </header>
+  <div class="tool-page">
+    <div class="container">
+      <div class="tool-header">
+        <h1>在线记事本</h1>
+        <p>浏览器本地自动保存，隐私安全，关闭后自动恢复</p>
+      </div>
+      <div class="tool-container">
+        <div class="notepad-toolbar">
+          <button class="btn btn-primary" onclick="exportTxt()">📥 导出TXT</button>
+          <button class="btn btn-secondary" onclick="toggleMdPreview()">👁️ Markdown预览</button>
+          <button class="btn btn-secondary" onclick="showWordCount()">📊 字数统计</button>
+          <button class="btn btn-secondary" onclick="clearNote()">🗑️ 清空</button>
+          <span class="spacer"></span>
+        </div>
+
+        <textarea id="notepadArea" placeholder="开始输入...&#10;&#10;提示：内容会自动保存在浏览器本地，关闭页面后回来内容还在。"></textarea>
+
+        <div id="mdPreview"></div>
+
+        <div class="notepad-footer">
+          <div class="notepad-stats">
+            <span class="stat">字符: <strong id="charCount">0</strong></span>
+            <span class="stat">字数: <strong id="wordCount">0</strong></span>
+            <span class="stat">行数: <strong id="lineCount">0</strong></span>
+          </div>
+          <span class="save-indicator" id="saveIndicator">✓ 已自动保存</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Word Count Modal -->
+  <div class="word-count-popup" id="wordCountModal">
+    <button class="close-btn" onclick="closeWordCount()">✕</button>
+    <h3>📊 详细统计</h3>
+    <div class="stat-row"><span class="label">总字符数（含空格）</span><span class="value" id="dcTotal">0</span></div>
+    <div class="stat-row"><span class="label">总字符数（不含空格）</span><span class="value" id="dcNoSpace">0</span></div>
+    <div class="stat-row"><span class="label">中文字数</span><span class="value" id="dcChinese">0</span></div>
+    <div class="stat-row"><span class="label">英文单词数</span><span class="value" id="dcEnglish">0</span></div>
+    <div class="stat-row"><span class="label">段落数</span><span class="value" id="dcParagraph">0</span></div>
+    <div class="stat-row"><span class="label">行数</span><span class="value" id="dcLines">0</span></div>
+  </div>
+  <div class="bookmark-overlay" id="modalOverlay" onclick="closeWordCount()"></div>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 - 免费在线工具集 | <a href="../index.html">首页</a></p>
+    </div>
+  </footer>
+  <div class="toast" id="toast"></div>
+  <script>
+    const STORAGE_KEY = 'fat_notepad';
+    const textarea = document.getElementById('notepadArea');
+    const saveIndicator = document.getElementById('saveIndicator');
+    let saveTimer = null;
+
+    // Load saved content
+    textarea.value = localStorage.getItem(STORAGE_KEY) || '';
+
+    function updateStats() {
+      const t = textarea.value;
+      document.getElementById('charCount').textContent = t.length;
+      document.getElementById('wordCount').textContent = t.trim() ? t.trim().split(/\s+/).length : 0;
+      document.getElementById('lineCount').textContent = t ? t.split('\n').length : 0;
+    }
+
+    function autoSave() {
+      localStorage.setItem(STORAGE_KEY, textarea.value);
+      saveIndicator.textContent = '✓ 已自动保存';
+      saveIndicator.className = 'save-indicator';
+    }
+
+    textarea.addEventListener('input', function() {
+      updateStats();
+      saveIndicator.textContent = '⏳ 保存中...';
+      saveIndicator.className = 'save-indicator saving';
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(autoSave, 500);
+    });
+
+    // Export TXT
+    function exportTxt() {
+      const content = textarea.value;
+      if (!content.trim()) { showToast('内容为空，无法导出'); return; }
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'notepad-' + new Date().toISOString().slice(0, 10) + '.txt';
+      a.click();
+      URL.revokeObjectURL(a.href);
+      showToast('导出成功');
+    }
+
+    // Simple Markdown Preview
+    var mdPreviewVisible = false;
+    function toggleMdPreview() {
+      const el = document.getElementById('mdPreview');
+      mdPreviewVisible = !mdPreviewVisible;
+      if (!mdPreviewVisible) { el.classList.remove('show'); return; }
+      const md = textarea.value;
+      if (!md.trim()) { showToast('内容为空'); mdPreviewVisible = false; return; }
+      el.innerHTML = simpleMd(md);
+      el.classList.add('show');
+    }
+
+    function simpleMd(t) {
+      let h = t
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+        .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+        .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        .replace(/`(.+?)`/g, '<code>$1</code>')
+        .replace(/^- (.+)$/gm, '<li>$1</li>')
+        .replace(/^\d+\. (.+)$/gm, '<li>$1</li>')
+        .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
+        .replace(/^---+/gm, '<hr>');
+      // Wrap consecutive <li> in <ul>
+      h = h.replace(/((?:<li>.*<\/li>\n?)+)/g, '<ul>$1</ul>');
+      // Wrap consecutive <blockquote> in <blockquote>
+      h = h.replace(/((?:<blockquote>.*<\/blockquote>\n?)+)/g, function(m) { return m.replace(/<\/blockquote>\n?<blockquote>/g, '\n'); });
+      // Paragraphs: wrap lines that aren't already HTML
+      h = h.split('\n').map(function(l) {
+        l = l.trim();
+        if (!l || l.startsWith('<h') || l.startsWith('<ul') || l.startsWith('<li') || l.startsWith('</ul') || l.startsWith('<blockquote') || l.startsWith('</blockquote') || l.startsWith('<hr') || l.startsWith('<pre') || l.startsWith('</pre')) return l;
+        return '<p>' + l + '</p>';
+      }).join('\n');
+      return h;
+    }
+
+    // Word Count Detail
+    function showWordCount() {
+      const t = textarea.value;
+      document.getElementById('dcTotal').textContent = t.length;
+      document.getElementById('dcNoSpace').textContent = t.replace(/\s/g, '').length;
+      document.getElementById('dcChinese').textContent = (t.match(/[一-鿿]/g) || []).length;
+      document.getElementById('dcEnglish').textContent = t.trim() ? t.replace(/[一-鿿]/g, '').trim().split(/\s+/).filter(function(w) { return w.length > 0; }).length : 0;
+      document.getElementById('dcParagraph').textContent = t ? t.split(/\n\s*\n/).filter(function(p) { return p.trim().length > 0; }).length : 0;
+      document.getElementById('dcLines').textContent = t ? t.split('\n').length : 0;
+      document.getElementById('wordCountModal').classList.add('show');
+      document.getElementById('modalOverlay').classList.add('show');
+    }
+
+    function closeWordCount() {
+      document.getElementById('wordCountModal').classList.remove('show');
+      document.getElementById('modalOverlay').classList.remove('show');
+    }
+
+    function clearNote() {
+      if (!textarea.value.trim() || confirm('确定清空所有内容？')) {
+        textarea.value = '';
+        autoSave();
+        updateStats();
+        document.getElementById('mdPreview').classList.remove('show');
+        mdPreviewVisible = false;
+        showToast('已清空');
+      }
+    }
+
+    updateStats();
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(function() { t.classList.remove('show'); }, 2500);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS渐变生成器 - 免费在线渐变背景工具 | Free AI Tools</title>
+  <meta name="description" content="免费在线CSS渐变生成器，可视化编辑线性渐变、径向渐变，实时预览，一键复制CSS代码。支持多色标、角度调整，设计师和开发者必备工具。">
+  <meta name="keywords" content="CSS渐变生成器,渐变背景,渐变颜色,线性渐变,径向渐变,渐变色,在线渐变工具,CSS gradient">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/gradient-generator.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .gradient-preview { width: 100%; height: 250px; border-radius: 12px; margin-bottom: 1.5rem; border: 1px solid var(--border); transition: background 0.3s; position: relative; overflow: hidden; }
+    .gradient-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+    .color-stops { margin-bottom: 1.5rem; }
+    .color-stop-item { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.6rem; padding: 0.5rem 0.75rem; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; }
+    .color-stop-item input[type="color"] { width: 40px; height: 40px; border: none; border-radius: 6px; cursor: pointer; padding: 0; background: none; }
+    .color-stop-item input[type="number"] { width: 70px; padding: 0.3rem 0.5rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: inherit; font-size: 0.85rem; }
+    .color-stop-item input[type="number"]:focus { outline: none; border-color: var(--primary); }
+    .color-stop-item .remove-btn { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 1rem; padding: 0.2rem; }
+    .color-stop-item .remove-btn:hover { transform: scale(1.2); }
+    .color-stop-item .hex-label { font-size: 0.85rem; color: var(--text); font-family: monospace; min-width: 70px; }
+    .gradient-type-select { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .gradient-type-select button { padding: 0.4rem 1rem; border: 1px solid var(--border); border-radius: 8px; background: transparent; color: var(--text-muted); cursor: pointer; font-family: inherit; font-size: 0.85rem; transition: all 0.2s; }
+    .gradient-type-select button.active { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border-color: transparent; }
+    .gradient-type-select button:hover:not(.active) { border-color: var(--primary); color: var(--text); }
+    .angle-control { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+    .angle-control input[type="range"] { flex: 1; accent-color: var(--primary); }
+    .angle-control .angle-value { font-size: 0.9rem; color: var(--primary); font-weight: 700; min-width: 40px; text-align: center; }
+    .code-output { background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--text); white-space: pre-wrap; word-break: break-all; position: relative; margin-top: 1rem; min-height: 60px; }
+    .preset-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 0.5rem; margin-bottom: 1.5rem; }
+    .preset-swatch { height: 60px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; }
+    .preset-swatch:hover { transform: scale(1.1); border-color: var(--primary); box-shadow: 0 0 20px var(--glow-purple); }
+    .preset-swatch.active { border-color: var(--primary); box-shadow: 0 0 20px var(--glow-purple); }
+    .radial-options { display: none; gap: 0.75rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .radial-options.show { display: flex; }
+    .radial-options select { background: var(--bg-input); border: 1px solid var(--border); border-radius: 6px; color: var(--text); padding: 0.4rem 0.75rem; font-family: inherit; font-size: 0.85rem; }
+    @media (max-width: 768px) { .gradient-controls { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../blog/">AI博客</a></nav>
+    </div>
+  </header>
+  <div class="tool-page">
+    <div class="container">
+      <div class="tool-header">
+        <h1>CSS 渐变生成器</h1>
+        <p>可视化编辑渐变色彩，实时预览，一键复制 CSS 代码</p>
+      </div>
+      <div class="tool-container">
+        <!-- Presets -->
+        <div class="preset-grid" id="presetGrid"></div>
+
+        <!-- Type Select -->
+        <div class="gradient-type-select">
+          <button class="active" data-type="linear" onclick="setType('linear')">线性渐变</button>
+          <button data-type="radial" onclick="setType('radial')">径向渐变</button>
+        </div>
+
+        <!-- Angle (linear) -->
+        <div class="angle-control" id="angleControl">
+          <span style="font-size:0.85rem;color:var(--text-muted);">角度</span>
+          <input type="range" id="angleSlider" min="0" max="360" value="135" oninput="updateAngle()">
+          <span class="angle-value" id="angleDisplay">135°</span>
+        </div>
+
+        <!-- Radial options -->
+        <div class="radial-options" id="radialOptions">
+          <select id="radialShape" onchange="updateGradient()">
+            <option value="ellipse">椭圆 (ellipse)</option>
+            <option value="circle">正圆 (circle)</option>
+          </select>
+          <select id="radialSize" onchange="updateGradient()">
+            <option value="farthest-corner">最远角 (farthest-corner)</option>
+            <option value="closest-side">最近边 (closest-side)</option>
+            <option value="closest-corner">最近角 (closest-corner)</option>
+            <option value="farthest-side">最远边 (farthest-side)</option>
+          </select>
+          <select id="radialPosition" onchange="updateGradient()">
+            <option value="center">居中 (center)</option>
+            <option value="top left">左上 (top left)</option>
+            <option value="top right">右上 (top right)</option>
+            <option value="bottom left">左下 (bottom left)</option>
+            <option value="bottom right">右下 (bottom right)</option>
+          </select>
+        </div>
+
+        <!-- Preview -->
+        <div class="gradient-preview" id="preview"></div>
+
+        <!-- Color Stops -->
+        <div class="color-stops" id="colorStops"></div>
+
+        <button class="btn btn-secondary" onclick="addColorStop()">+ 添加色标</button>
+
+        <!-- Code Output -->
+        <div class="code-output" id="codeOutput">background: linear-gradient(135deg, #667eea, #764ba2);</div>
+        <div style="display:flex;gap:0.5rem;margin-top:0.75rem;">
+          <button class="btn btn-primary" onclick="copyCode()">📋 复制 CSS</button>
+          <button class="btn btn-secondary" onclick="exportCssFile()">💾 导出 CSS 文件</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 - 免费在线工具集 | <a href="../index.html">首页</a></p>
+    </div>
+  </footer>
+  <div class="toast" id="toast"></div>
+  <script>
+    var gradientType = 'linear';
+    var angle = 135;
+    var colors = [
+      { hex: '#667eea', pos: 0 },
+      { hex: '#764ba2', pos: 100 }
+    ];
+
+    const PRESETS = [
+      { name: 'Purple Dream', colors: [{hex:'#667eea',pos:0},{hex:'#764ba2',pos:100}] },
+      { name: 'Sunset', colors: [{hex:'#f093fb',pos:0},{hex:'#f5576c',pos:100}] },
+      { name: 'Ocean', colors: [{hex:'#4facfe',pos:0},{hex:'#00f2fe',pos:100}] },
+      { name: 'Mango', colors: [{hex:'#fccb90',pos:0},{hex:'#d57eeb',pos:100}] },
+      { name: 'Forest', colors: [{hex:'#43e97b',pos:0},{hex:'#38f9d7',pos:100}] },
+      { name: 'Night', colors: [{hex:'#0f0c29',pos:0},{hex:'#302b63',pos:50},{hex:'#24243e',pos:100}] },
+      { name: 'Bloody', colors: [{hex:'#f77062',pos:0},{hex:'#fe5196',pos:100}] },
+      { name: 'Neon', colors: [{hex:'#fa709a',pos:0},{hex:'#fee140',pos:100}] },
+      { name: 'Polar', colors: [{hex:'#a1c4fd',pos:0},{hex:'#c2e9fb',pos:100}] },
+      { name: 'Lemon', colors: [{hex:'#fa8bff',pos:0},{hex:'#2bd2ff',pos:50},{hex:'#2bff88',pos:100}] },
+      { name: 'Candy', colors: [{hex:'#ffecd2',pos:0},{hex:'#fcb69f',pos:100}] },
+      { name: 'Mint', colors: [{hex:'#13547a',pos:0},{hex:'#80d0c7',pos:100}] },
+    ];
+
+    function renderPresets() {
+      const el = document.getElementById('presetGrid');
+      el.innerHTML = PRESETS.map(function(p, i) {
+        var stops = p.colors.map(function(c) { return c.hex + ' ' + c.pos + '%'; }).join(', ');
+        var bg = 'linear-gradient(135deg, ' + stops + ')';
+        return '<div class="preset-swatch" style="background:' + bg + '" onclick="loadPreset(' + i + ')" title="' + p.name + '"></div>';
+      }).join('');
+    }
+
+    function loadPreset(idx) {
+      var p = PRESETS[idx];
+      colors = JSON.parse(JSON.stringify(p.colors));
+      updateGradient();
+      renderColorStops();
+      showToast('已加载: ' + p.name);
+    }
+
+    function renderColorStops() {
+      var el = document.getElementById('colorStops');
+      el.innerHTML = colors.map(function(c, i) {
+        return '<div class="color-stop-item">' +
+          '<input type="color" value="' + c.hex + '" onchange="updateColor(' + i + ', this.value)">' +
+          '<span class="hex-label">' + c.hex + '</span>' +
+          '<input type="number" value="' + c.pos + '" min="0" max="100" onchange="updatePos(' + i + ', this.value)">' +
+          '<span style="font-size:0.8rem;color:var(--text-muted);">%</span>' +
+          (colors.length > 2 ? '<button class="remove-btn" onclick="removeStop(' + i + ')" title="移除">✕</button>' : '') +
+          '</div>';
+      }).join('');
+    }
+
+    function updateColor(i, hex) {
+      colors[i].hex = hex;
+      renderColorStops();
+      updateGradient();
+    }
+
+    function updatePos(i, val) {
+      colors[i].pos = parseInt(val, 10) || 0;
+      updateGradient();
+    }
+
+    function addColorStop() {
+      if (colors.length >= 8) { showToast('最多8个色标'); return; }
+      var last = colors[colors.length - 1];
+      var newPos = Math.min(100, last.pos + 10);
+      colors.push({ hex: '#888888', pos: newPos });
+      renderColorStops();
+      updateGradient();
+    }
+
+    function removeStop(i) {
+      if (colors.length <= 2) { showToast('至少需要2个色标'); return; }
+      colors.splice(i, 1);
+      renderColorStops();
+      updateGradient();
+    }
+
+    function setType(type) {
+      gradientType = type;
+      document.querySelectorAll('.gradient-type-select button').forEach(function(b) {
+        b.classList.toggle('active', b.dataset.type === type);
+      });
+      document.getElementById('angleControl').style.display = type === 'linear' ? 'flex' : 'none';
+      document.getElementById('radialOptions').classList.toggle('show', type === 'radial');
+      updateGradient();
+    }
+
+    function updateAngle() {
+      angle = parseInt(document.getElementById('angleSlider').value, 10);
+      document.getElementById('angleDisplay').textContent = angle + '°';
+      updateGradient();
+    }
+
+    function buildGradientCss() {
+      var stops = colors.map(function(c) { return c.hex + ' ' + c.pos + '%'; }).join(', ');
+      if (gradientType === 'linear') {
+        return 'background: linear-gradient(' + angle + 'deg, ' + stops + ');';
+      } else {
+        var shape = document.getElementById('radialShape').value;
+        var size = document.getElementById('radialSize').value;
+        var pos = document.getElementById('radialPosition').value;
+        return 'background: radial-gradient(' + shape + ' ' + size + ' at ' + pos + ', ' + stops + ');';
+      }
+    }
+
+    function updateGradient() {
+      var css = buildGradientCss();
+      document.getElementById('preview').style.cssText = css;
+      document.getElementById('codeOutput').textContent = css;
+    }
+
+    function copyCode() {
+      var code = document.getElementById('codeOutput').textContent;
+      navigator.clipboard.writeText(code).then(function() {
+        showToast('CSS 代码已复制');
+      }).catch(function() {
+        // fallback
+        var ta = document.createElement('textarea');
+        ta.value = code;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+        showToast('CSS 代码已复制');
+      });
+    }
+
+    function exportCssFile() {
+      var css = document.getElementById('codeOutput').textContent;
+      if (!css.trim()) { showToast('无代码可导出'); return; }
+      var content = '.gradient-element {\n  ' + css + '\n  height: 200px;\n  border-radius: 8px;\n}';
+      var blob = new Blob([content], { type: 'text/css;charset=utf-8' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'gradient-' + Date.now() + '.css';
+      a.click();
+      URL.revokeObjectURL(a.href);
+      showToast('CSS 文件已导出');
+    }
+
+    function showToast(msg) {
+      var t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(function() { t.classList.remove('show'); }, 2500);
+    }
+
+    renderPresets();
+    renderColorStops();
+    updateGradient();
+  </script>
+</body>
+</html>
