@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>文字转语音 - 在线文本朗读/TTS语音合成 | Free AI Tools</title>
+  <meta name="description" content="免费在线文字转语音工具，利用浏览器原生语音合成技术将文本转换为语音朗读。支持中文、英文等多语言，可调节语速、音高和音量，适合学习外语、视力辅助、内容校对、多任务阅读等场景。">
+  <meta name="keywords" content="文字转语音,文本朗读,TTS,语音合成,在线朗读,中文语音,文本转语音,AI语音">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .tts-layout { max-width: 520px; margin: 0 auto; display: grid; gap: 1.5rem; }
+    .tts-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; }
+    .tts-box textarea { width: 100%; height: 160px; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 0.75rem; border-radius: 8px; font-size: 0.95rem; resize: vertical; box-sizing: border-box; }
+    .tts-box textarea:focus { outline: none; border-color: var(--primary); }
+    .tts-box label { display: block; color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.3rem; }
+    .tts-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .tts-controls .full { grid-column: 1 / -1; }
+    .tts-controls input[type="range"] { width: 100%; accent-color: var(--primary); }
+    .tts-controls .range-label { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); }
+    .tts-btns { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .tts-status { text-align: center; color: var(--text-muted); font-size: 0.85rem; min-height: 1.5rem; }
+    .tts-voices { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 0.45rem 0.7rem; border-radius: 6px; font-size: 0.85rem; box-sizing: border-box; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/date-duration.html">日期计算</a><a href="../tools/text-to-speech.html">文字转语音</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>文字转语音 / Text to Speech</h1>
+      <p>将文本转换为自然语音朗读，支持多语言和语速调节，数据仅在本地处理。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="tts-layout">
+        <div class="tts-box">
+          <label>输入文本</label>
+          <textarea id="ttsText" placeholder="在此输入要朗读的文字...">你好，欢迎使用免费AI工具集。这是一个在线文字转语音工具，支持中文和英文朗读。</textarea>
+        </div>
+
+        <div class="tts-box">
+          <label>语音选择</label>
+          <select class="tts-voices" id="ttsVoice"></select>
+
+          <div class="tts-controls" style="margin-top:1rem;">
+            <div>
+              <div class="range-label"><span>语速</span><span id="rateVal">1.0</span></div>
+              <input type="range" id="ttsRate" min="0.5" max="2" step="0.1" value="1.0" oninput="updateLabel('rateVal',this.value)">
+            </div>
+            <div>
+              <div class="range-label"><span>音高</span><span id="pitchVal">1.0</span></div>
+              <input type="range" id="ttsPitch" min="0.5" max="2" step="0.1" value="1.0" oninput="updateLabel('pitchVal',this.value)">
+            </div>
+            <div class="full">
+              <div class="range-label"><span>音量</span><span id="volVal">1.0</span></div>
+              <input type="range" id="ttsVol" min="0" max="1" step="0.1" value="1.0" oninput="updateLabel('volVal',this.value)">
+            </div>
+          </div>
+        </div>
+
+        <div class="tts-btns">
+          <button class="btn btn-success" onclick="speak()" id="speakBtn">🔊 朗读</button>
+          <button class="btn" onclick="stopSpeak()" style="background:var(--bg-card);color:var(--text);">⏹ 停止</button>
+          <button class="btn" onclick="clearText()" style="background:var(--bg-card);color:var(--text);">🗑 清空</button>
+        </div>
+
+        <div class="tts-status" id="ttsStatus">就绪</div>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">[广告位] Google AdSense</div>
+  </main>
+  <footer><div class="container"><p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a></p></div></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+    function updateLabel(id,v){document.getElementById(id).textContent=v;}
+
+    let voices=[];
+    let utterance=null;
+
+    function loadVoices(){
+      voices=window.speechSynthesis.getVoices();
+      const sel=document.getElementById('ttsVoice');
+      sel.innerHTML='';
+      // Prefer Chinese voices first
+      const sorted=voices.sort((a,b)=>a.lang.localeCompare(b.lang));
+      sorted.forEach((v,i)=>{
+        const opt=document.createElement('option');
+        opt.value=i;
+        opt.textContent=v.name+' ('+v.lang+')';
+        sel.appendChild(opt);
+      });
+    }
+
+    window.speechSynthesis.onvoiceschanged=loadVoices;
+
+    function speak(){
+      const text=document.getElementById('ttsText').value.trim();
+      if(!text){showToast('请输入要朗读的文字');return;}
+      window.speechSynthesis.cancel();
+      utterance=new SpeechSynthesisUtterance(text);
+      const idx=parseInt(document.getElementById('ttsVoice').value);
+      if(voices[idx]) utterance.voice=voices[idx];
+      utterance.rate=parseFloat(document.getElementById('ttsRate').value);
+      utterance.pitch=parseFloat(document.getElementById('ttsPitch').value);
+      utterance.volume=parseFloat(document.getElementById('ttsVol').value);
+      const status=document.getElementById('ttsStatus');
+      const btn=document.getElementById('speakBtn');
+      utterance.onstart=()=>{status.textContent='🔊 朗读中...';btn.textContent='🔊 朗读中';};
+      utterance.onend=()=>{status.textContent='✅ 朗读完成';btn.textContent='🔊 朗读';};
+      utterance.onerror=()=>{status.textContent='❌ 朗读出错';btn.textContent='🔊 朗读';};
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function stopSpeak(){
+      window.speechSynthesis.cancel();
+      document.getElementById('ttsStatus').textContent='⏹ 已停止';
+      document.getElementById('speakBtn').textContent='🔊 朗读';
+    }
+
+    function clearText(){
+      document.getElementById('ttsText').value='';
+      stopSpeak();
+    }
+
+    // Load voices on init
+    loadVoices();
+  </script>
+</body>
+</html>

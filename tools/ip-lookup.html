@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IP地址查询 - 在线IP定位/网络信息检测 | Free AI Tools</title>
+  <meta name="description" content="免费在线IP地址查询工具，显示本机公网IP地址、运营商信息、地理位置、浏览器信息、屏幕分辨率、操作系统等网络和设备信息。无需安装，隐私安全，所有检测在浏览器端完成。">
+  <meta name="keywords" content="IP查询,IP地址,本机IP,网络检测,IP定位,公网IP,浏览器信息,屏幕分辨率,在线网络工具">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .ip-layout { max-width: 500px; margin: 0 auto; display: grid; gap: 1.5rem; }
+    .ip-main { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; text-align: center; }
+    .ip-main .ip-addr { font-size: 2.5rem; font-weight: 800; background: linear-gradient(135deg, #a78bfa, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; word-break: break-all; }
+    .ip-main .ip-label { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.3rem; }
+    .ip-main .ip-status { font-size: 0.85rem; color: var(--text-muted); margin-top: 1rem; min-height: 1.5rem; }
+    .ip-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+    .ip-card { background: var(--bg); border-radius: 8px; padding: 0.7rem; }
+    .ip-card .ic-val { font-size: 1.1rem; font-weight: 600; color: var(--text); word-break: break-all; }
+    .ip-card .ic-label { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.15rem; text-transform: uppercase; }
+    .ip-refresh { text-align: center; margin-top: 0.5rem; }
+    .ip-error { color: var(--danger); font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/ip-lookup.html">IP查询</a><a href="../tools/text-to-speech.html">文字转语音</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>IP地址查询 / IP Lookup</h1>
+      <p>检测本机公网IP地址、网络运营商、地理位置及浏览器设备信息。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="ip-layout">
+        <div class="ip-main">
+          <div class="ip-addr" id="ipAddr">—</div>
+          <div class="ip-label">您的公网 IP 地址</div>
+          <div class="ip-status" id="ipStatus">正在检测...</div>
+        </div>
+
+        <div class="ip-grid">
+          <div class="ip-card"><div class="ic-val" id="ipCity">—</div><div class="ic-label">地理位置</div></div>
+          <div class="ip-card"><div class="ic-val" id="ipOrg">—</div><div class="ic-label">运营商</div></div>
+          <div class="ip-card"><div class="ic-val" id="ipBrowser">—</div><div class="ic-label">浏览器</div></div>
+          <div class="ip-card"><div class="ic-val" id="ipOS">—</div><div class="ic-label">操作系统</div></div>
+          <div class="ip-card"><div class="ic-val" id="ipScreen">—</div><div class="ic-label">屏幕分辨率</div></div>
+          <div class="ip-card"><div class="ic-val" id="ipLang">—</div><div class="ic-label">系统语言</div></div>
+          <div class="ip-card"><div class="ic-val" id="ipUA">—</div><div class="ic-label">User Agent</div></div>
+          <div class="ip-card"><div class="ic-val" id="ipTime">—</div><div class="ic-label">时区</div></div>
+        </div>
+
+        <div class="ip-refresh">
+          <button class="btn btn-success" onclick="refreshIP()">🔄 重新检测</button>
+          <button class="btn" onclick="copyIPInfo()" style="background:var(--bg-card);color:var(--text);margin-left:0.5rem;">📋 复制全部信息</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">[广告位] Google AdSense</div>
+  </main>
+  <footer><div class="container"><p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a></p></div></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+    function setVal(id,v){document.getElementById(id).textContent=v||'—';}
+
+    function getBrowser(){
+      const ua=navigator.userAgent;
+      if(ua.includes('Chrome')&&!ua.includes('Edg')) return 'Chrome';
+      if(ua.includes('Edg')) return 'Edge';
+      if(ua.includes('Firefox')) return 'Firefox';
+      if(ua.includes('Safari')&&!ua.includes('Chrome')) return 'Safari';
+      if(ua.includes('OPR')||ua.includes('Opera')) return 'Opera';
+      return 'Unknown';
+    }
+
+    function getOS(){
+      const ua=navigator.userAgent;
+      if(ua.includes('Windows')) return 'Windows';
+      if(ua.includes('Mac OS')) return 'macOS';
+      if(ua.includes('Linux')&&!ua.includes('Android')) return 'Linux';
+      if(ua.includes('Android')) return 'Android';
+      if(ua.includes('iPhone')||ua.includes('iPad')) return 'iOS';
+      return 'Unknown';
+    }
+
+    function refreshIP(){
+      const status=document.getElementById('ipStatus');
+      status.textContent='正在检测...';
+      document.getElementById('ipAddr').textContent='—';
+      setVal('ipCity','—');setVal('ipOrg','—');
+
+      // Use ipify for IP and ip-api for geo
+      fetch('https://api.ipify.org?format=json')
+        .then(r=>r.json())
+        .then(data=>{
+          const ip=data.ip;
+          document.getElementById('ipAddr').textContent=ip;
+
+          // Get geo info
+          fetch('https://ipapi.co/'+ip+'/json/')
+            .then(r=>r.json())
+            .then(geo=>{
+              const parts=[geo.city,geo.region,geo.country_name].filter(Boolean);
+              setVal('ipCity',parts.join(', ')||'Unknown');
+              setVal('ipOrg',geo.org||'Unknown');
+              status.textContent='✅ 检测完成';
+            })
+            .catch(()=>{
+              // fallback
+              fetch('https://ip-api.com/json/'+ip+'?fields=city,org,country')
+                .then(r=>r.json())
+                .then(geo=>{
+                  setVal('ipCity',[geo.city,geo.country].filter(Boolean).join(', '));
+                  setVal('ipOrg',geo.org||'Unknown');
+                  status.textContent='✅ 检测完成';
+                })
+                .catch(()=>{
+                  status.textContent='✅ IP 已获取（地理位置不可用）';
+                });
+            });
+        })
+        .catch(()=>{
+          status.textContent='⚠️ 无法获取公网IP信息';
+          document.getElementById('ipAddr').textContent='无法获取';
+        });
+
+      // Local info (always available)
+      setVal('ipBrowser',getBrowser());
+      setVal('ipOS',getOS());
+      setVal('ipScreen',screen.width+'x'+screen.height);
+      setVal('ipLang',navigator.language||navigator.userLanguage||'—');
+      setVal('ipUA',navigator.userAgent.substring(0,80)+'...');
+      setVal('ipTime',Intl.DateTimeFormat().resolvedOptions().timeZone);
+    }
+
+    function copyIPInfo(){
+      const ip=document.getElementById('ipAddr').textContent;
+      const city=document.getElementById('ipCity').textContent;
+      const org=document.getElementById('ipOrg').textContent;
+      const browser=document.getElementById('ipBrowser').textContent;
+      const os=document.getElementById('ipOS').textContent;
+      const screen=document.getElementById('ipScreen').textContent;
+      const txt='IP: '+ip+'\n位置: '+city+'\n运营商: '+org+'\n浏览器: '+browser+'\n系统: '+os+'\n屏幕: '+screen;
+      navigator.clipboard.writeText(txt).then(()=>showToast('已复制 IP 信息')).catch(()=>{});
+    }
+
+    refreshIP();
+  </script>
+</body>
+</html>

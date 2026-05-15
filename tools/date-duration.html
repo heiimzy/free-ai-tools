@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>日期计算器 - 在线日期差/天数计算/日期推算 | Free AI Tools</title>
+  <meta name="description" content="免费在线日期计算器，计算两个日期之间的天数、周数、月数、年数，支持日期加减推算（加减天数/周数/月数/年数），精确计算日期间隔，适合合同期限计算、年龄精确计算、项目工期规划等场景。">
+  <meta name="keywords" content="日期计算器,天数计算,日期差,日期推算,日期间隔计算,在线日期工具,日期加减">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .dd-layout { max-width: 520px; margin: 0 auto; display: grid; gap: 1.5rem; }
+    .dd-tabs { display: flex; gap: 0.25rem; flex-wrap: wrap; }
+    .dd-tab { padding: 0.4rem 0.85rem; border-radius: 8px 8px 0 0; border: 1px solid var(--border); border-bottom: none; background: var(--bg-card); color: var(--text-muted); cursor: pointer; font-size: 0.82rem; transition: 0.15s; }
+    .dd-tab.active { color: var(--primary); border-color: var(--primary); background: rgba(167,139,250,0.05); }
+    .dd-tab:hover { color: var(--primary); }
+    .dd-panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 0 8px 8px 8px; padding: 1.25rem; display: none; }
+    .dd-panel.active { display: block; }
+    .dd-panel label { display: block; color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.3rem; }
+    .dd-panel input, .dd-panel select { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.9rem; box-sizing: border-box; margin-bottom: 0.5rem; }
+    .dd-panel input:focus, .dd-panel select:focus { outline: none; border-color: var(--primary); }
+    .dd-result { font-size: 1.8rem; font-weight: 700; text-align: center; padding: 0.75rem; color: var(--primary); }
+    .dd-result .sub { font-size: 0.9rem; color: var(--text-muted); font-weight: 400; display: block; margin-top: 0.2rem; }
+    .dd-detail { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+    .dd-card { background: var(--bg); border-radius: 8px; padding: 0.6rem; text-align: center; }
+    .dd-card .dc-val { font-size: 1.4rem; font-weight: 700; color: var(--secondary); }
+    .dd-card .dc-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.15rem; }
+    .dd-actions { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/date-duration.html">日期计算</a><a href="../tools/text-to-speech.html">文字转语音</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>日期计算器 / Date Duration Calculator</h1>
+      <p>计算两个日期之间的精确间隔，或对日期进行加减推算。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="dd-layout">
+        <div class="dd-tabs" id="ddTabs">
+          <div class="dd-tab active" data-tab="diff">日期间隔</div>
+          <div class="dd-tab" data-tab="add">日期推算</div>
+          <div class="dd-tab" data-tab="today">今天信息</div>
+        </div>
+
+        <!-- 日期间隔 -->
+        <div class="dd-panel active" id="panel-diff">
+          <label>开始日期</label>
+          <input type="date" id="ddStart" onchange="calcDiff()">
+          <label>结束日期</label>
+          <input type="date" id="ddEnd" onchange="calcDiff()">
+          <div class="dd-result" id="ddDiffMain">— <span class="sub">选择日期以计算</span></div>
+          <div class="dd-detail">
+            <div class="dd-card"><div class="dc-val" id="ddDays">—</div><div class="dc-label">天数</div></div>
+            <div class="dd-card"><div class="dc-val" id="ddWeeks">—</div><div class="dc-label">周数</div></div>
+            <div class="dd-card"><div class="dc-val" id="ddMonths">—</div><div class="dc-label">月数</div></div>
+            <div class="dd-card"><div class="dc-val" id="ddYears">—</div><div class="dc-label">年数</div></div>
+          </div>
+          <div class="dd-actions"><button class="btn btn-success" onclick="copyDDResult()">📋 复制结果</button></div>
+        </div>
+
+        <!-- 日期推算 -->
+        <div class="dd-panel" id="panel-add">
+          <label>基准日期</label>
+          <input type="date" id="ddBase" oninput="calcAdd()">
+          <label>加减</label>
+          <select id="ddOp" onchange="calcAdd()">
+            <option value="add">加</option>
+            <option value="sub">减</option>
+          </select>
+          <div style="display:flex;gap:0.5rem;">
+            <div style="flex:1;">
+              <label>数量</label>
+              <input type="number" id="ddAmount" value="7" min="1" oninput="calcAdd()">
+            </div>
+            <div style="flex:1;">
+              <label>单位</label>
+              <select id="ddUnit" onchange="calcAdd()">
+                <option value="day">天</option>
+                <option value="week">周</option>
+                <option value="month">月</option>
+                <option value="year">年</option>
+              </select>
+            </div>
+          </div>
+          <div class="dd-result" id="ddAddResult">— <span class="sub">计算结果</span></div>
+          <div class="dd-actions"><button class="btn btn-success" onclick="copyDDAdd()">📋 复制结果</button></div>
+        </div>
+
+        <!-- 今天信息 -->
+        <div class="dd-panel" id="panel-today">
+          <div class="dd-result" id="todayDate" style="font-size:2.2rem;">—</div>
+          <div class="dd-detail">
+            <div class="dd-card"><div class="dc-val" id="todayDoY">—</div><div class="dc-label">当年第几天</div></div>
+            <div class="dd-card"><div class="dc-val" id="todayWeek">—</div><div class="dc-label">周几</div></div>
+            <div class="dd-card"><div class="dc-val" id="todayISO">—</div><div class="dc-label">ISO 周</div></div>
+            <div class="dd-card"><div class="dc-val" id="todayUnix">—</div><div class="dc-label">Unix 时间戳</div></div>
+          </div>
+          <div class="dd-actions"><button class="btn btn-success" onclick="copyToday()">📋 复制今天日期</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">[广告位] Google AdSense</div>
+  </main>
+  <footer><div class="container"><p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a></p></div></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+    // Tab switching
+    document.getElementById('ddTabs').addEventListener('click',function(e){
+      if(e.target.classList.contains('dd-tab')){
+        document.querySelectorAll('.dd-tab').forEach(t=>t.classList.remove('active'));
+        document.querySelectorAll('.dd-panel').forEach(p=>p.classList.remove('active'));
+        e.target.classList.add('active');
+        document.getElementById('panel-'+e.target.dataset.tab).classList.add('active');
+      }
+    });
+
+    function fmt(d){return d.toISOString().split('T')[0];}
+
+    function calcDiff(){
+      const s=document.getElementById('ddStart').value;
+      const e=document.getElementById('ddEnd').value;
+      if(!s||!e){document.getElementById('ddDiffMain').innerHTML='— <span class="sub">选择日期以计算</span>';return;}
+      const d1=new Date(s+'T00:00:00'),d2=new Date(e+'T00:00:00');
+      const diff=Math.abs(d2-d1);
+      const days=Math.round(diff/86400000);
+      const weeks=(days/7).toFixed(1);
+      let months=(d2.getFullYear()-d1.getFullYear())*12+(d2.getMonth()-d1.getMonth());
+      if(d2.getDate()<d1.getDate()) months--;
+      months=Math.abs(months);
+      const years=(months/12).toFixed(1);
+      const label=d2>=d1?'相隔':'已过';
+      document.getElementById('ddDiffMain').innerHTML=days+' 天 <span class="sub">'+label+' '+Math.abs(d2-d1)/86400000+' 天</span>';
+      document.getElementById('ddDays').textContent=days.toLocaleString();
+      document.getElementById('ddWeeks').textContent=weeks;
+      document.getElementById('ddMonths').textContent=months;
+      document.getElementById('ddYears').textContent=years;
+    }
+
+    function calcAdd(){
+      const base=document.getElementById('ddBase').value;
+      const op=document.getElementById('ddOp').value;
+      const amt=parseInt(document.getElementById('ddAmount').value)||0;
+      const unit=document.getElementById('ddUnit').value;
+      if(!base){document.getElementById('ddAddResult').innerHTML='— <span class="sub">请选择基准日期</span>';return;}
+      const d=new Date(base+'T00:00:00');
+      const sign=op==='add'?1:-1;
+      if(unit==='day') d.setDate(d.getDate()+sign*amt);
+      else if(unit==='week') d.setDate(d.getDate()+sign*amt*7);
+      else if(unit==='month') d.setMonth(d.getMonth()+sign*amt);
+      else if(unit==='year') d.setFullYear(d.getFullYear()+sign*amt);
+      const weekdays=['日','一','二','三','四','五','六'];
+      document.getElementById('ddAddResult').innerHTML=fmt(d)+' <span class="sub">周'+weekdays[d.getDay()]+'</span>';
+    }
+
+    function showToday(){
+      const n=new Date();
+      document.getElementById('todayDate').textContent=fmt(n);
+      const weekdays=['日','一','二','三','四','五','六'];
+      document.getElementById('todayDoY').textContent=Math.floor((n-new Date(n.getFullYear(),0,0))/86400000);
+      document.getElementById('todayWeek').textContent='星期'+weekdays[n.getDay()];
+      const start=new Date(n.getFullYear(),0,1);
+      const isoWeek=Math.ceil((((n-start)/86400000)+start.getDay()+1)/7);
+      document.getElementById('todayISO').textContent=n.getFullYear()+'-W'+String(isoWeek).padStart(2,'0');
+      document.getElementById('todayUnix').textContent=Math.floor(n.getTime()/1000);
+    }
+
+    function copyDDResult(){
+      const d=document.getElementById('ddDays').textContent;
+      showToast('间隔: '+d+' 天');
+    }
+    function copyDDAdd(){
+      const d=document.getElementById('ddAddResult').textContent.trim().split(' ')[0];
+      showToast('结果: '+d);
+    }
+    function copyToday(){
+      const d=document.getElementById('todayDate').textContent;
+      navigator.clipboard.writeText(d).then(()=>showToast('已复制: '+d)).catch(()=>{});
+    }
+
+    // Init: set defaults
+    (function(){
+      const n=new Date();
+      document.getElementById('ddStart').value=fmt(new Date(n.getFullYear(),0,1));
+      document.getElementById('ddEnd').value=fmt(n);
+      document.getElementById('ddBase').value=fmt(n);
+      calcDiff();calcAdd();showToday();
+    })();
+  </script>
+</body>
+</html>
