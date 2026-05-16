@@ -1,5 +1,21 @@
 [
   {
+    "id": "017",
+    "date": "2026-05-16",
+    "zh": {
+      "title": "AI进入"主动服务"时代：Anthropic Orbit、ChatGPT Pulse、Google Proactive全面解析",
+      "summary": "2026年5月，Anthropic发布Orbit自动日报、ChatGPT Pulse早间简报、Google I/O推出Proactive Assistance。AI从"被动应答"转向"主动汇报"，深度解析这轮AI提效革命的产品逻辑、使用场景及中国AI的跟进策略。",
+      "tags": ["效率", "AI代理", "自动化"],
+      "file": "posts/017-proactive-ai-era.zh.html"
+    },
+    "en": {
+      "title": "The Proactive AI Era: Anthropic Orbit, ChatGPT Pulse, and Google's Ambition to Own Your Morning",
+      "summary": "May 2026 marks AI's shift from reactive to proactive. Anthropic's Orbit delivers daily briefs from Gmail/Slack/GitHub, ChatGPT Pulse personalizes your morning news, and Google I/O unveils Gemini Proactive Assistance across its entire ecosystem. Analysis of the '7 a.m. attention war.'",
+      "tags": ["productivity", "AI agents", "automation"],
+      "file": "posts/017-proactive-ai-era.en.html"
+    }
+  },
+  {
     "id": "016",
     "date": "2026-05-16",
     "zh": {
