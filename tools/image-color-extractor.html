@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>图片颜色提取器 - 免费在线从图片中提取颜色 | Free AI Tools</title>
+  <meta name="description" content="免费在线图片颜色提取器，上传图片点击任意位置提取颜色值。支持HEX、RGB、HSL格式显示，自动生成主色调调色板，一键复制颜色代码。适合设计师、前端开发者从参考图片中提取配色方案。浏览器本地处理，不上传服务器。">
+  <meta name="keywords" content="图片颜色提取,取色器,颜色提取器,图片配色,色值提取,图片取色,在线取色,配色方案提取,HEX颜色,RGB颜色">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/image-color-extractor.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .ice-layout { max-width: 750px; margin: 0 auto; display: grid; gap: 1.5rem; }
+    .ice-upload { border: 2px dashed var(--border); border-radius: 12px; padding: 2rem; text-align: center; cursor: pointer; transition: 0.2s; }
+    .ice-upload:hover { border-color: var(--primary); background: rgba(167,139,250,0.03); }
+    .ice-upload .icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+    .ice-upload p { color: var(--text-muted); margin: 0; font-size: 0.9rem; }
+    .ice-drop-zone.dragover { border-color: var(--primary); background: rgba(167,139,250,0.08); }
+    .ice-preview-wrap { text-align: center; position: relative; display: none; }
+    .ice-preview-wrap img { max-width: 100%; max-height: 400px; border-radius: 10px; border: 1px solid var(--border); cursor: crosshair; }
+    .ice-coords { position: absolute; background: rgba(0,0,0,0.85); color: white; padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 0.75rem; font-family: monospace; pointer-events: none; display: none; white-space: nowrap; }
+    .ice-color-display { display: flex; align-items: center; gap: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; }
+    .ice-color-swatch { width: 60px; height: 60px; border-radius: 8px; border: 2px solid var(--border); flex-shrink: 0; }
+    .ice-color-values { flex: 1; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; }
+    .ice-color-values .item { text-align: center; }
+    .ice-color-values .item .label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; }
+    .ice-color-values .item .val { font-size: 0.9rem; font-weight: 700; font-family: monospace; cursor: pointer; transition: 0.15s; }
+    .ice-color-values .item .val:hover { color: var(--primary); }
+    .ice-palette { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .ice-palette .p-item { width: 48px; height: 48px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; transition: 0.15s; position: relative; }
+    .ice-palette .p-item:hover { transform: scale(1.15); z-index: 2; }
+    .ice-palette .p-item .tip { position: absolute; bottom: -1.5rem; left: 50%; transform: translateX(-50%); font-size: 0.6rem; color: var(--text-muted); white-space: nowrap; display: none; }
+    .ice-palette .p-item:hover .tip { display: block; }
+    .ice-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .ice-actions button { padding: 0.5rem 1.2rem; border-radius: 8px; border: none; font-family: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .ice-btn-copy { background: rgba(167,139,250,0.15); color: var(--primary); }
+    .ice-btn-copy:hover { background: rgba(167,139,250,0.25); }
+    .ice-btn-extract { background: linear-gradient(135deg, var(--primary), #7c3aed); color: white; }
+    .ice-btn-extract:hover { transform: translateY(-1px); box-shadow: 0 4px 15px var(--glow-purple); }
+    .toast-copy { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); color: white; padding: 0.5rem 1.2rem; border-radius: 8px; font-size: 0.85rem; z-index: 999; opacity: 0; transition: opacity 0.3s; }
+    .toast-copy.show { opacity: 1; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/image-color-extractor.html">图片取色</a><a href="../tools/color-picker.html">颜色选择器</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>图片颜色提取器 / Image Color Extractor</h1>
+      <p>上传图片，点击任意位置提取颜色值，自动生成调色板。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="ice-layout">
+        <div class="ice-upload" id="dropZone">
+          <div class="icon">🎨</div>
+          <p>点击上传图片或拖放图片到此处</p>
+          <div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.3rem;">支持 JPG / PNG / WebP / GIF</div>
+          <input type="file" id="fileInput" accept="image/*" style="display:none;">
+        </div>
+
+        <div class="ice-preview-wrap" id="previewWrap">
+          <div style="position:relative;display:inline-block;">
+            <img id="previewImg" src="" alt="Preview">
+            <div class="ice-coords" id="coords"></div>
+          </div>
+        </div>
+
+        <div class="ice-color-display" id="colorDisplay" style="display:none;">
+          <div class="ice-color-swatch" id="colorSwatch"></div>
+          <div class="ice-color-values">
+            <div class="item"><div class="label">HEX</div><div class="val" id="hexVal" onclick="copyVal(this)">#000000</div></div>
+            <div class="item"><div class="label">RGB</div><div class="val" id="rgbVal" onclick="copyVal(this)">rgb(0,0,0)</div></div>
+            <div class="item"><div class="label">HSL</div><div class="val" id="hslVal" onclick="copyVal(this)">hsl(0,0%,0%)</div></div>
+          </div>
+        </div>
+
+        <div id="paletteWrap" style="display:none;">
+          <div style="font-size:0.8rem;color:var(--text-muted);font-weight:600;margin-bottom:0.5rem;">主色调调色板 <span style="font-weight:400;font-size:0.7rem;">(点击色块复制HEX)</span></div>
+          <div class="ice-palette" id="palette"></div>
+        </div>
+
+        <div class="ice-actions">
+          <button class="ice-btn-extract" onclick="extractPalette()">🎨 自动提取主色调</button>
+          <button class="ice-btn-copy" onclick="copyAllColors()">📋 复制所有颜色</button>
+        </div>
+
+        <div style="font-size:0.75rem;color:var(--text-muted);text-align:center;">提示：点击图片上的任意位置可获取该点的准确颜色值</div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线图片颜色提取工具</h2>
+      <p>免费的在线图片颜色提取器，上传参考图片，通过点击图片上的任意位置获取该点的精确颜色值，支持 HEX、RGB、HSL 三种颜色格式一键复制。自动分析图片的主色调生成调色板，帮助你快速从设计参考图、摄影作品、品牌素材中提取配色方案。所有处理在浏览器本地完成，图片不会上传到服务器，充分保护隐私。适合 UI/UX 设计师、前端开发者、平面设计师、社交媒体运营者在工作中快速获取配色灵感。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/image-color-extractor.html">图片取色</a> | <a href="../tools/color-picker.html">颜色选择器</a></p>
+    </div>
+  </footer>
+
+  <div class="toast-copy" id="toastCopy"></div>
+
+  <script>
+    let sourceImage = null;
+    let currentColor = { hex: '#000000', rgb: 'rgb(0,0,0)', hsl: 'hsl(0,0%,0%)' };
+
+    document.getElementById('dropZone').addEventListener('click', () => document.getElementById('fileInput').click());
+    document.getElementById('fileInput').addEventListener('change', e => { if (e.target.files.length) loadImage(e.target.files[0]); });
+
+    const dz = document.getElementById('dropZone');
+    dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
+    dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+    dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('dragover'); if (e.dataTransfer.files.length) loadImage(e.dataTransfer.files[0]); });
+
+    function loadImage(file) {
+      if (!file.type.startsWith('image/')) return showToast('⚠️ 请上传图片文件');
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+          sourceImage = img;
+          document.getElementById('previewImg').src = e.target.result;
+          document.getElementById('previewWrap').style.display = 'block';
+          document.getElementById('dropZone').style.display = 'none';
+          document.getElementById('colorDisplay').style.display = 'none';
+          document.getElementById('paletteWrap').style.display = 'none';
+          showToast('✅ 图片已加载，点击图片取色');
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    const previewImg = document.getElementById('previewImg');
+    const coords = document.getElementById('coords');
+
+    previewImg.addEventListener('click', function(e) {
+      if (!sourceImage) return;
+      const rect = this.getBoundingClientRect();
+      const scaleX = sourceImage.naturalWidth / this.naturalWidth;
+      const scaleY = sourceImage.naturalHeight / this.naturalHeight;
+      const x = Math.round((e.clientX - rect.left) * scaleX);
+      const y = Math.round((e.clientY - rect.top) * scaleY);
+
+      // Create a temp canvas to sample the pixel
+      const canvas = document.createElement('canvas');
+      canvas.width = sourceImage.naturalWidth;
+      canvas.height = sourceImage.naturalHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(sourceImage, 0, 0);
+      const pixel = ctx.getImageData(x, y, 1, 1).data;
+
+      if (pixel.length >= 3) {
+        const hex = rgbToHex(pixel[0], pixel[1], pixel[2]);
+        const rgb = `rgb(${pixel[0]},${pixel[1]},${pixel[2]})`;
+        const hsl = rgbToHsl(pixel[0], pixel[1], pixel[2]);
+
+        currentColor = { hex, rgb, hsl };
+        document.getElementById('colorSwatch').style.background = hex;
+        document.getElementById('hexVal').textContent = hex;
+        document.getElementById('rgbVal').textContent = rgb;
+        document.getElementById('hslVal').textContent = hsl;
+        document.getElementById('colorDisplay').style.display = 'flex';
+
+        // Show coords tooltip
+        const pRect = this.parentElement.getBoundingClientRect();
+        coords.style.display = 'block';
+        coords.style.left = (e.clientX - pRect.left + 15) + 'px';
+        coords.style.top = (e.clientY - pRect.top - 10) + 'px';
+        coords.textContent = `${hex} (${x}, ${y})`;
+        setTimeout(() => coords.style.display = 'none', 2000);
+      }
+    });
+
+    function extractPalette() {
+      if (!sourceImage) return showToast('⚠️ 请先上传图片');
+      const canvas = document.createElement('canvas');
+      const w = 200;
+      const h = 200;
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(sourceImage, 0, 0, w, h);
+
+      const imageData = ctx.getImageData(0, 0, w, h).data;
+      const colorMap = {};
+
+      // Sample pixels
+      for (let y = 0; y < h; y += 4) {
+        for (let x = 0; x < w; x += 4) {
+          const idx = (y * w + x) * 4;
+          const r = Math.round(imageData[idx] / 32) * 32;
+          const g = Math.round(imageData[idx + 1] / 32) * 32;
+          const b = Math.round(imageData[idx + 2] / 32) * 32;
+          const key = `${r},${g},${b}`;
+          colorMap[key] = (colorMap[key] || 0) + 1;
+        }
+      }
+
+      const sorted = Object.entries(colorMap)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 12);
+
+      const palette = document.getElementById('palette');
+      palette.innerHTML = '';
+      sorted.forEach(([key]) => {
+        const [r, g, b] = key.split(',').map(Number);
+        const hex = rgbToHex(r, g, b);
+        const div = document.createElement('div');
+        div.className = 'p-item';
+        div.style.background = hex;
+        div.innerHTML = `<span class="tip">${hex}</span>`;
+        div.onclick = () => copyText(hex);
+        palette.appendChild(div);
+      });
+
+      document.getElementById('paletteWrap').style.display = 'block';
+      showToast('✅ 已提取 ' + sorted.length + ' 个主色调');
+    }
+
+    function copyVal(el) {
+      copyText(el.textContent);
+    }
+
+    function copyAllColors() {
+      if (!document.getElementById('colorDisplay').style.display) return showToast('⚠️ 请先取色');
+      const hex = document.getElementById('hexVal').textContent;
+      const rgb = document.getElementById('rgbVal').textContent;
+      const hsl = document.getElementById('hslVal').textContent;
+      copyText(`HEX: ${hex}\nRGB: ${rgb}\nHSL: ${hsl}`);
+    }
+
+    function copyText(text) {
+      navigator.clipboard.writeText(text).then(() => showToast('✅ 已复制: ' + text));
+    }
+
+    function rgbToHex(r, g, b) {
+      return '#' + [r, g, b].map(c => c.toString(16).padStart(2, '0')).join('');
+    }
+
+    function rgbToHsl(r, g, b) {
+      r /= 255; g /= 255; b /= 255;
+      const max = Math.max(r, g, b), min = Math.min(r, g, b);
+      let h, s, l = (max + min) / 2;
+      if (max === min) { h = s = 0; } else {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+          case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+          case g: h = ((b - r) / d + 2) / 6; break;
+          case b: h = ((r - g) / d + 4) / 6; break;
+        }
+      }
+      return `hsl(${Math.round(h * 360)},${Math.round(s * 100)}%,${Math.round(l * 100)}%)`;
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toastCopy');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>在线白板/画板 - 免费在线绘图白板工具 | Free AI Tools</title>
+  <meta name="description" content="免费在线白板/画板工具，支持铅笔绘图、形状工具、文字输入、颜色选择、粗细调节、橡皮擦等。可保存为PNG图片，一键清空画布。适合在线教学、会议讲解、快速草图绘制、儿童涂鸦等场景。浏览器本地运行，流畅无需注册。">
+  <meta name="keywords" content="在线白板,画板,绘图工具,在线画图,白板工具,涂鸦板,绘画板,电子白板,Canvas画板,在线教学白板">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/whiteboard.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .wb-layout { display: grid; gap: 1rem; }
+    .wb-toolbar { display: flex; gap: 0.35rem; flex-wrap: wrap; align-items: center; padding: 0.6rem 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; }
+    .wb-toolbar .group { display: flex; gap: 0.25rem; align-items: center; margin-right: 0.5rem; }
+    .wb-toolbar .sep { width: 1px; height: 28px; background: var(--border); margin: 0 0.3rem; }
+    .wb-toolbar button { width: 34px; height: 34px; border-radius: 6px; border: 1px solid transparent; background: transparent; color: var(--text-muted); cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: 0.15s; }
+    .wb-toolbar button:hover { background: rgba(167,139,250,0.1); color: var(--text); }
+    .wb-toolbar button.active { background: rgba(167,139,250,0.2); color: var(--primary); border-color: rgba(167,139,250,0.3); }
+    .wb-toolbar input[type="color"] { width: 30px; height: 30px; padding: 0; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; background: none; }
+    .wb-toolbar input[type="range"] { width: 80px; height: 4px; accent-color: var(--primary); }
+    .wb-toolbar .size-preview { width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; }
+    .wb-toolbar .size-preview .dot { border-radius: 50%; background: var(--text); }
+    .wb-canvas-wrap { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; cursor: crosshair; background: #fff; position: relative; }
+    .wb-canvas-wrap canvas { display: block; width: 100%; height: 500px; }
+    .wb-actions { display: flex; gap: 0.5rem; }
+    .wb-actions button { padding: 0.5rem 1.2rem; border-radius: 8px; border: none; font-family: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .wb-btn-save { background: linear-gradient(135deg, var(--primary), #7c3aed); color: white; }
+    .wb-btn-save:hover { transform: translateY(-1px); box-shadow: 0 4px 15px var(--glow-purple); }
+    .wb-btn-clear { background: rgba(244,114,182,0.15); color: var(--secondary); }
+    .wb-btn-clear:hover { background: rgba(244,114,182,0.25); }
+    .wb-btn-undo { background: rgba(167,139,250,0.15); color: var(--primary); }
+    .wb-btn-undo:hover { background: rgba(167,139,250,0.25); }
+    @media (max-width: 600px) { .wb-toolbar { gap: 0.25rem; } .wb-toolbar .group { margin-right: 0.25rem; } .wb-toolbar .sep { margin: 0 0.15rem; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/whiteboard.html">白板</a><a href="../tools/image-filter.html">图片滤镜</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>在线白板 / Whiteboard</h1>
+      <p>自由绘图、添加文字、画形状。支持保存为 PNG 图片。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="wb-layout">
+        <div class="wb-toolbar">
+          <div class="group">
+            <button class="active" id="toolPen" onclick="setTool('pen')" title="铅笔">✏️</button>
+            <button id="toolEraser" onclick="setTool('eraser')" title="橡皮擦">🧹</button>
+            <button id="toolLine" onclick="setTool('line')" title="直线">📏</button>
+            <button id="toolRect" onclick="setTool('rect')" title="矩形">⬜</button>
+            <button id="toolCircle" onclick="setTool('circle')" title="圆形">⭕</button>
+            <button id="toolText" onclick="setTool('text')" title="文字">🔤</button>
+          </div>
+          <div class="sep"></div>
+          <div class="group">
+            <input type="color" id="colorPicker" value="#a78bfa" oninput="setColor(this.value)" title="颜色">
+          </div>
+          <div class="group">
+            <input type="range" id="sizeSlider" min="1" max="20" value="3" oninput="setSize(this.value)" title="粗细">
+            <div class="size-preview"><div class="dot" id="sizeDot" style="width:6px;height:6px;"></div></div>
+          </div>
+          <div class="sep"></div>
+          <div class="group">
+            <button onclick="undoAction()" title="撤销">↩️</button>
+            <button onclick="clearCanvas()" title="清空">🗑️</button>
+          </div>
+        </div>
+
+        <div class="wb-canvas-wrap">
+          <canvas id="wbCanvas"></canvas>
+        </div>
+
+        <div class="wb-actions">
+          <button class="wb-btn-save" onclick="saveCanvas()">💾 保存为 PNG</button>
+          <button class="wb-btn-undo" onclick="undoAction()">↩️ 撤销</button>
+          <button class="wb-btn-clear" onclick="clearCanvas()">🗑️ 清空画布</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线白板画板工具</h2>
+      <p>免费的在线绘图白板工具，基于 HTML5 Canvas 开发的轻量级画板应用。支持多种绘图工具：铅笔自由绘制、直线、矩形、圆形、橡皮擦擦除、文字工具添加标注。可自定义画笔颜色和粗细，支持撤销操作，画布内容可一键保存为 PNG 图片。界面简洁响应式，在桌面和移动设备上均可流畅使用。适合在线教学板书、会议讲解示意、产品原型草图、儿童涂鸦绘画、临时笔记记录等场景。所有绘图数据仅在浏览器本地处理，不上传任何内容。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/whiteboard.html">白板</a> | <a href="../tools/image-filter.html">图片滤镜</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const canvas = document.getElementById('wbCanvas');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+    let tool = 'pen';
+    let color = '#a78bfa';
+    let size = 3;
+    let startX, startY;
+    let snapshot = null;
+    let history = [];
+
+    function resizeCanvas() {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      const w = rect.width;
+      const h = 500;
+      if (canvas.width !== w || canvas.height !== h) {
+        const data = canvas.toDataURL();
+        canvas.width = w;
+        canvas.height = h;
+        const img = new Image();
+        img.onload = () => { ctx.drawImage(img, 0, 0); };
+        img.src = data;
+      }
+    }
+
+    function saveState() {
+      history.push(canvas.toDataURL());
+      if (history.length > 30) history.shift();
+    }
+
+    function restoreState(dataUrl) {
+      const img = new Image();
+      img.onload = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
+      };
+      img.src = dataUrl;
+    }
+
+    function getPos(e) {
+      const rect = canvas.getBoundingClientRect();
+      const x = (e.clientX || e.touches?.[0]?.clientX || 0) - rect.left;
+      const y = (e.clientY || e.touches?.[0]?.clientY || 0) - rect.top;
+      return { x: Math.max(0, Math.min(x, canvas.width)), y: Math.max(0, Math.min(y, canvas.height)) };
+    }
+
+    function startDraw(e) {
+      e.preventDefault();
+      const pos = getPos(e);
+      drawing = true;
+      startX = pos.x;
+      startY = pos.y;
+
+      if (tool === 'text') {
+        const text = prompt('输入文字：', '');
+        if (text) {
+          saveState();
+          ctx.font = `${Math.max(size * 4, 14)}px sans-serif`;
+          ctx.fillStyle = color;
+          ctx.fillText(text, pos.x, pos.y);
+        }
+        drawing = false;
+        return;
+      }
+
+      saveState();
+      if (tool === 'pen') {
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+      }
+    }
+
+    function draw(e) {
+      e.preventDefault();
+      if (!drawing) return;
+      const pos = getPos(e);
+
+      if (tool === 'pen') {
+        ctx.lineWidth = size;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.strokeStyle = color;
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+      } else if (tool === 'eraser') {
+        ctx.clearRect(pos.x - size * 2, pos.y - size * 2, size * 4, size * 4);
+      } else {
+        // Preview shapes using snapshot
+        restoreState(history[history.length - 1]);
+        ctx.beginPath();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = size;
+        ctx.fillStyle = color + '20';
+
+        if (tool === 'line') {
+          ctx.moveTo(startX, startY);
+          ctx.lineTo(pos.x, pos.y);
+          ctx.stroke();
+        } else if (tool === 'rect') {
+          const w = pos.x - startX;
+          const h = pos.y - startY;
+          ctx.fillRect(startX, startY, w, h);
+          ctx.strokeRect(startX, startY, w, h);
+        } else if (tool === 'circle') {
+          const rx = Math.abs(pos.x - startX) / 2;
+          const ry = Math.abs(pos.y - startY) / 2;
+          const cx = (pos.x + startX) / 2;
+          const cy = (pos.y + startY) / 2;
+          ctx.ellipse(cx, cy, rx || 1, ry || 1, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+        }
+      }
+    }
+
+    function endDraw(e) {
+      if (!drawing) return;
+      drawing = false;
+      if (tool === 'pen') {
+        ctx.beginPath();
+      }
+    }
+
+    // Tool functions
+    function setTool(t) {
+      tool = t;
+      document.querySelectorAll('.wb-toolbar button[id^="tool"]').forEach(b => b.classList.remove('active'));
+      const btn = document.getElementById('tool' + t.charAt(0).toUpperCase() + t.slice(1));
+      if (btn) btn.classList.add('active');
+      canvas.style.cursor = t === 'text' ? 'text' : t === 'eraser' ? 'cell' : 'crosshair';
+    }
+
+    function setColor(c) { color = c; }
+    function setSize(s) {
+      size = parseInt(s);
+      const dot = document.getElementById('sizeDot');
+      const px = Math.min(size * 1.5, 18);
+      dot.style.width = px + 'px';
+      dot.style.height = px + 'px';
+    }
+
+    function undoAction() {
+      if (history.length > 0) {
+        const last = history.pop();
+        restoreState(last);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+
+    function clearCanvas() {
+      if (canvas.toDataURL() === history[history.length - 1]) return;
+      saveState();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function saveCanvas() {
+      const link = document.createElement('a');
+      link.download = 'whiteboard-' + Date.now() + '.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      showToast('✅ 已保存');
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    // Events
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', endDraw);
+    canvas.addEventListener('mouseleave', endDraw);
+    canvas.addEventListener('touchstart', startDraw, { passive: false });
+    canvas.addEventListener('touchmove', draw, { passive: false });
+    canvas.addEventListener('touchend', endDraw, { passive: false });
+
+    // Resize observer
+    const ro = new ResizeObserver(() => resizeCanvas());
+    ro.observe(canvas.parentElement);
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(resizeCanvas, 100);
+    });
+  </script>
+</body>
+</html>

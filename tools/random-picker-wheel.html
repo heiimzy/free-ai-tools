@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>随机转盘/抽奖工具 - 免费在线幸运转盘抽取器 | Free AI Tools</title>
+  <meta name="description" content="免费在线随机转盘/抽奖工具，输入选项列表一键旋转抽取，支持自定义颜色、添加/删除选项、保存结果历史。适合抽奖活动、课堂点名、决策辅助、团队分组等场景。浏览器本地运行，无需注册。">
+  <meta name="keywords" content="随机转盘,抽奖工具,幸运转盘,随机抽取,抽奖转盘,在线转盘,轮盘抽奖,决策转盘,名字抽取器">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/random-picker-wheel.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .rw-layout { max-width: 700px; margin: 0 auto; display: grid; gap: 1.5rem; }
+    .rw-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start; }
+    .rw-canvas-wrap { text-align: center; }
+    .rw-canvas-wrap canvas { max-width: 100%; border-radius: 50%; box-shadow: 0 0 30px rgba(167,139,250,0.2); }
+    .rw-options { display: flex; flex-direction: column; gap: 0.5rem; }
+    .rw-options textarea { width: 100%; min-height: 180px; padding: 0.6rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: inherit; font-size: 0.85rem; resize: vertical; box-sizing: border-box; line-height: 1.6; }
+    .rw-options textarea:focus { outline: none; border-color: var(--primary); }
+    .rw-options .hint { font-size: 0.72rem; color: var(--text-muted); }
+    .rw-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; }
+    .rw-actions button { padding: 0.6rem 1.5rem; border-radius: 8px; border: none; font-family: inherit; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: 0.2s; }
+    .rw-btn-spin { background: linear-gradient(135deg, var(--primary), #7c3aed); color: white; font-size: 1.1rem !important; padding: 0.75rem 2.5rem !important; }
+    .rw-btn-spin:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--glow-purple); }
+    .rw-btn-spin:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .rw-btn-add { background: rgba(167,139,250,0.15); color: var(--primary); }
+    .rw-btn-add:hover { background: rgba(167,139,250,0.25); }
+    .rw-btn-clear { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); }
+    .rw-btn-clear:hover { border-color: var(--danger); color: var(--danger); }
+    .rw-result { text-align: center; padding: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; min-height: 3rem; display: flex; align-items: center; justify-content: center; }
+    .rw-result .winner { font-size: 1.8rem; font-weight: 800; background: linear-gradient(135deg, #a78bfa, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: rwPop 0.5s ease; }
+    @keyframes rwPop { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+    .rw-result .placeholder { color: var(--text-muted); font-size: 0.9rem; }
+    .rw-history { max-height: 120px; overflow-y: auto; font-size: 0.8rem; color: var(--text-muted); }
+    .rw-history div { padding: 0.2rem 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
+    .rw-history .hl { color: var(--secondary); font-weight: 600; }
+    @media (max-width: 600px) { .rw-row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/random-picker-wheel.html">随机转盘</a><a href="../tools/random-generator.html">随机生成</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>随机转盘 / Spinner Wheel</h1>
+      <p>输入选项，一键旋转，随机抽取。适合抽奖、点名、决策等场景。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="rw-layout">
+        <div class="rw-row">
+          <div class="rw-canvas-wrap">
+            <canvas id="wheelCanvas" width="300" height="300"></canvas>
+          </div>
+          <div class="rw-options">
+            <textarea id="optionsInput" placeholder="每行输入一个选项&#10;例如：&#10;选项一&#10;选项二&#10;选项三">选项一
+选项二
+选项三
+选项四
+选项五</textarea>
+            <div class="hint">每行一个选项，最少需要2个选项</div>
+          </div>
+        </div>
+
+        <div class="rw-actions">
+          <button class="rw-btn-spin" id="spinBtn" onclick="spin()">🎰 旋转！</button>
+          <button class="rw-btn-add" onclick="addPresets()">📋 加载示例</button>
+          <button class="rw-btn-clear" onclick="resetWheel()">🔄 重置</button>
+        </div>
+
+        <div class="rw-result" id="resultDisplay">
+          <span class="placeholder">点击"旋转"开始抽取</span>
+        </div>
+
+        <div id="historyBox" style="display:none;">
+          <div style="font-size:0.8rem;color:var(--text-muted);font-weight:600;margin-bottom:0.3rem;">抽取历史</div>
+          <div class="rw-history" id="historyList"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线随机转盘抽奖工具</h2>
+      <p>免费的在线随机转盘/幸运转盘工具，输入你的选项列表，一键旋转随机抽取一个结果。支持自定义选项添加与删除、丰富的配色方案、抽取结果历史记录。可用于课堂随机点名、活动抽奖、日常决策辅助（今天吃什么、去哪儿玩）、团队分组、游戏惩罚抽取等场景。所有处理在浏览器本地完成，无需注册，无需上传数据。转盘使用 Canvas 绘制动画效果流畅，支持移动端触控操作。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/random-picker-wheel.html">随机转盘</a> | <a href="../tools/random-generator.html">随机生成</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const COLORS = [
+      '#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6',
+      '#1abc9c', '#e67e22', '#34495e', '#16a085', '#c0392b',
+      '#2980b9', '#27ae60', '#d35400', '#8e44ad', '#f1c40f',
+      '#2c3e50', '#7f8c8d', '#e91e63', '#00bcd4', '#ff5722'
+    ];
+
+    let items = [];
+    let currentAngle = 0;
+    let spinning = false;
+    let history = [];
+
+    const canvas = document.getElementById('wheelCanvas');
+    const ctx = canvas.getContext('2d');
+    const input = document.getElementById('optionsInput');
+    const resultDisplay = document.getElementById('resultDisplay');
+    const historyList = document.getElementById('historyList');
+    const historyBox = document.getElementById('historyBox');
+
+    // Handle DPI
+    const dpr = window.devicePixelRatio || 1;
+    const size = 300;
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+    canvas.style.width = size + 'px';
+    canvas.style.height = size + 'px';
+    ctx.scale(dpr, dpr);
+
+    function parseItems() {
+      items = input.value.split('\n').map(s => s.trim()).filter(s => s.length > 0);
+      if (items.length < 2) items = ['选项一', '选项二'];
+    }
+
+    function drawWheel(angle) {
+      const cx = size / 2, cy = size / 2, r = size / 2 - 5;
+      const n = items.length;
+      const arc = (2 * Math.PI) / n;
+
+      ctx.clearRect(0, 0, size, size);
+
+      // Draw segments
+      for (let i = 0; i < n; i++) {
+        const startAngle = angle + i * arc;
+        const endAngle = startAngle + arc;
+
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, r, startAngle, endAngle);
+        ctx.closePath();
+        ctx.fillStyle = COLORS[i % COLORS.length];
+        ctx.fill();
+
+        // Draw border
+        ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // Draw text
+        const textAngle = startAngle + arc / 2;
+        ctx.save();
+        ctx.translate(cx + Math.cos(textAngle) * r * 0.65, cy + Math.sin(textAngle) * r * 0.65);
+        ctx.rotate(textAngle);
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 11px sans-serif';
+        ctx.textAlign = 'right';
+        const displayText = items[i].length > 8 ? items[i].slice(0, 7) + '…' : items[i];
+        ctx.fillText(displayText, 0, 4);
+        ctx.restore();
+      }
+
+      // Center circle
+      ctx.beginPath();
+      ctx.arc(cx, cy, 18, 0, 2 * Math.PI);
+      ctx.fillStyle = '#1a1a2e';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(167,139,250,0.5)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Pointer (top)
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - r - 8);
+      ctx.lineTo(cx - 12, cy - r - 25);
+      ctx.lineTo(cx + 12, cy - r - 25);
+      ctx.closePath();
+      ctx.fillStyle = '#f472b6';
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+
+    function updateWheel() {
+      parseItems();
+      drawWheel(currentAngle);
+    }
+
+    function spin() {
+      if (spinning) return;
+      if (items.length < 2) return showToast('⚠️ 至少需要2个选项');
+
+      spinning = true;
+      document.getElementById('spinBtn').disabled = true;
+
+      const spinLength = 5 + Math.random() * 5;
+      const totalAngle = spinLength * 2 * Math.PI + Math.random() * 2 * Math.PI;
+      const duration = 3000 + Math.random() * 1000;
+      const startTime = performance.now();
+      const startAngle = currentAngle;
+
+      function animate(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        // Ease out cubic
+        const ease = 1 - Math.pow(1 - progress, 3);
+        currentAngle = startAngle + totalAngle * ease;
+
+        drawWheel(currentAngle);
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          spinning = false;
+          document.getElementById('spinBtn').disabled = false;
+          const winner = getWinner();
+          showResult(winner);
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    function getWinner() {
+      const n = items.length;
+      const arc = (2 * Math.PI) / n;
+      // The pointer is at top (π/2 or 3π/2 going up)
+      const pointerAngle = -Math.PI / 2;
+      let relAngle = (pointerAngle - currentAngle) % (2 * Math.PI);
+      if (relAngle < 0) relAngle += 2 * Math.PI;
+      const idx = Math.floor(relAngle / arc) % n;
+      return items[idx];
+    }
+
+    function showResult(winner) {
+      resultDisplay.innerHTML = `<span class="winner">🎉 ${winner}</span>`;
+      history.unshift({ item: winner, time: new Date() });
+      if (history.length > 20) history.pop();
+      updateHistory();
+    }
+
+    function updateHistory() {
+      historyBox.style.display = 'block';
+      historyList.innerHTML = history.map((h, i) =>
+        `<div>${i === 0 ? '<span class="hl">▶</span>' : '&nbsp;'} ${h.item} <span style="float:right;font-size:0.7rem;opacity:0.5">${h.time.toLocaleTimeString()}</span></div>`
+      ).join('');
+    }
+
+    function addPresets() {
+      input.value = '今天吃什么？\n火锅\n烧烤\n日料\n川菜\n西餐\n粤菜\n东南亚菜\n韩餐';
+      updateWheel();
+      showToast('✅ 已加载示例');
+    }
+
+    function resetWheel() {
+      currentAngle = 0;
+      drawWheel(currentAngle);
+      resultDisplay.innerHTML = '<span class="placeholder">点击"旋转"开始抽取</span>';
+      showToast('🔄 已重置');
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    // Auto-update on input change
+    let inputTimer;
+    input.addEventListener('input', () => {
+      clearTimeout(inputTimer);
+      inputTimer = setTimeout(updateWheel, 300);
+    });
+
+    // Init
+    window.addEventListener('DOMContentLoaded', updateWheel);
+  </script>
+</body>
+</html>
