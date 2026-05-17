@@ -1,17 +1,49 @@
 [
   {
+    "id": "020",
+    "date": "2026-05-17",
+    "zh": {
+      "title": "AI宠物视频月入50万：会说话的猫狗如何成为2026年最火变现风口",
+      "summary": "AI宠物视频正在成为2026年门槛最低的AI变现赛道：成都MCN《比熊殿下》月入超50万、YouTube博主广告分成11万/月、小红书品牌合作2月60万+。从制作教程到五条变现路径，附平台风险提示。",
+      "tags": [
+        "变现",
+        "AI赚钱",
+        "副业"
+      ],
+      "file": "posts/020-ai-pet-video-monetization.zh.html"
+    },
+    "en": {
+      "title": "AI Pet Videos Are Making People Rich: The $10K/Month Side Hustle Taking Over Social Media in 2026",
+      "summary": "How AI-generated talking pet videos generate $10K+ per month: Chengdu MCN earns $69K/month with an AI Bichon character, YouTube creators pull $15K/month from AdSense alone. Complete tutorial, 5 revenue streams, and platform risk analysis.",
+      "tags": [
+        "monetization",
+        "side-hustle",
+        "AI video"
+      ],
+      "file": "posts/020-ai-pet-video-monetization.en.html"
+    }
+  },
+  {
     "id": "019",
     "date": "2026-05-17",
     "zh": {
       "title": "2026年5月AI工具“超级月”全景：GPT-5.5全员免费、Gemma 4开源、国产密集出击",
       "summary": "2026年5月被称为AI工具超级月：GPT-5.5 Instant全员免费、Google DeepMind发布Gemma 4开源模型、阿里云Qoder 1.0、百度文心5.1压缩70%参数成本降94%。20+新品全景解析与选型指南。",
-      "tags": ["工具", "评测", "选型"],
+      "tags": [
+        "工具",
+        "评测",
+        "选型"
+      ],
       "file": "posts/019-ai-tools-super-may.zh.html"
     },
     "en": {
       "title": "AI Tools Super Month May 2026: GPT-5.5 Goes Free, Gemma 4 Drops, and the Developer Tooling Revolution",
       "summary": "May 2026 is the biggest month in AI tools history: GPT-5.5 Instant free for everyone, Google DeepMind's Gemma 4 open-source, Grok 4.3 with 1M context, Coder Agents beta, ChatGPT Finance tools, and Claude for Small Business. Complete roundup and analysis.",
-      "tags": ["tools", "reviews", "guide"],
+      "tags": [
+        "tools",
+        "reviews",
+        "guide"
+      ],
       "file": "posts/019-ai-tools-super-may.en.html"
     }
   },
@@ -21,13 +53,21 @@
     "zh": {
       "title": "AI首次实现自我复制、谷歌发现AI生成零日漏洞：AI安全警钟敲响",
       "summary": "2026年5月AI安全双重磅：Palisade研究表明AI可在受控环境中自我复制到其他计算机；谷歌首次发现攻击者利用AI开发零日漏洞并绕过双重认证。深度解析AI安全从理论到现实的转折点。",
-      "tags": ["新闻", "安全", "AI风险"],
+      "tags": [
+        "新闻",
+        "安全",
+        "AI风险"
+      ],
       "file": "posts/018-ai-security-crisis.zh.html"
     },
     "en": {
       "title": "AI Self-Replication Achieved, First AI-Written Zero-Day Exploit Found: The Week AI Security Got Real",
       "summary": "May 2026 delivered two historic firsts: Palisade Research demonstrated AI self-replication in a controlled environment, and Google TAG caught the first AI-generated zero-day exploit in the wild. Plus: Claude Mythos conquers UK AISI cyber ranges. Analysis of AI security's inflection point.",
-      "tags": ["news", "security", "AI safety"],
+      "tags": [
+        "news",
+        "security",
+        "AI safety"
+      ],
       "file": "posts/018-ai-security-crisis.en.html"
     }
   },
@@ -37,13 +77,21 @@
     "zh": {
       "title": "AI进入“主动服务”时代：Anthropic Orbit、ChatGPT Pulse、Google Proactive全面解析",
       "summary": "2026年5月，Anthropic发布Orbit自动日报、ChatGPT Pulse早间简报、Google I/O推出Proactive Assistance。AI从“被动应答”转向“主动汇报”，深度解析这轮AI提效革命的产品逻辑、使用场景及中国AI的跟进策略。",
-      "tags": ["效率", "AI代理", "自动化"],
+      "tags": [
+        "效率",
+        "AI代理",
+        "自动化"
+      ],
       "file": "posts/017-proactive-ai-era.zh.html"
     },
     "en": {
       "title": "The Proactive AI Era: Anthropic Orbit, ChatGPT Pulse, and Google's Ambition to Own Your Morning",
       "summary": "May 2026 marks AI's shift from reactive to proactive. Anthropic's Orbit delivers daily briefs from Gmail/Slack/GitHub, ChatGPT Pulse personalizes your morning news, and Google I/O unveils Gemini Proactive Assistance across its entire ecosystem. Analysis of the '7 a.m. attention war.'",
-      "tags": ["productivity", "AI agents", "automation"],
+      "tags": [
+        "productivity",
+        "AI agents",
+        "automation"
+      ],
       "file": "posts/017-proactive-ai-era.en.html"
     }
   },
@@ -53,13 +101,21 @@
     "zh": {
       "title": "ChatGPT上线广告平台、千问接入淘宝：AI变现进入“基建级”时代",
       "summary": "2026年5月，OpenAI正式上线Ads Manager广告平台，6周实现1亿美元年化收入；阿里千问+淘宝全面打通，AI成为电商新入口。深度分析AI变现从“赚小钱”到“建基础设施”的范式转变。",
-      "tags": ["变现", "行业", "AI广告"],
+      "tags": [
+        "变现",
+        "行业",
+        "AI广告"
+      ],
       "file": "posts/016-openai-ads-monetization.zh.html"
     },
     "en": {
       "title": "ChatGPT Ads Manager Is Live: Inside OpenAI's $100B Ad Ambition and the New AI Monetization Wave",
       "summary": "OpenAI launched Ads Manager on May 5, 2026 — a self-serve ad platform opening ChatGPT to advertisers. Inside the economics ($100M annualized in 6 weeks), the platform mechanics, and what it means for the future of AI monetization.",
-      "tags": ["monetization", "industry", "AI advertising"],
+      "tags": [
+        "monetization",
+        "industry",
+        "AI advertising"
+      ],
       "file": "posts/016-openai-ads-monetization.en.html"
     }
   },
@@ -69,13 +125,21 @@
     "zh": {
       "title": "2026年5月AI工具全景：Agent工程化爆发、视频生成白热化、10大场景选型指南",
       "summary": "2026年5月AI工具最新动态：Agent TARS开源、可灵3.0支持2分钟长视频、MediaTek天玑AI套件3.0、亚马逊Alexa购物助理上线。含10大类别AI工具选型指南和场景推荐。",
-      "tags": ["工具", "评测", "选型"],
+      "tags": [
+        "工具",
+        "评测",
+        "选型"
+      ],
       "file": "posts/015-ai-tools-may-2026-round2.zh.html"
     },
     "en": {
       "title": "AI Tools Roundup May 2026: General Compute ASIC Cloud, Claude Goes Big on SMB & Legal, Boomi Agent Governance",
       "summary": "May 2026 AI tools roundup: General Compute launches ASIC-first inference cloud for AI agents; Anthropic pushes Claude into Small Business and Legal; Boomi adds enterprise agent governance; Mixpanel AI; Google I/O preview.",
-      "tags": ["tools", "reviews", "launch"],
+      "tags": [
+        "tools",
+        "reviews",
+        "launch"
+      ],
       "file": "posts/015-ai-tools-may-2026-round2.en.html"
     }
   },
@@ -85,13 +149,21 @@
     "zh": {
       "title": "苹果与OpenAI决裂：AI平台战争进入下半场，ChatGPT输给Siri了吗？",
       "summary": "2026年5月，苹果与OpenAI长达两年的合作关系破裂，OpenAI正考虑起诉。ChatGPT流量份额跌至53.7%，Gemini飙升至26.7%，iOS 27将开放多模型选择。深度解析这场AI平台战争背后的原因和影响。",
-      "tags": ["新闻", "行业", "AI竞争"],
+      "tags": [
+        "新闻",
+        "行业",
+        "AI竞争"
+      ],
       "file": "posts/014-ai-platform-war.zh.html"
     },
     "en": {
       "title": "Apple vs. OpenAI: The Partnership That Never Was — and What It Means for the AI Platform War",
       "summary": "The Apple-OpenAI partnership has collapsed with OpenAI preparing legal action. ChatGPT integration handled less than 5% of all Siri requests. iOS 27 pivots to multi-provider AI. Analysis of the AI platform war's new phase.",
-      "tags": ["news", "industry", "AI competition"],
+      "tags": [
+        "news",
+        "industry",
+        "AI competition"
+      ],
       "file": "posts/014-ai-platform-war.en.html"
     }
   },
@@ -101,13 +173,21 @@
     "zh": {
       "title": "2026年AI提效实战手册：四大场景×智能代理工作流，效率提升3-10倍",
       "summary": "2026年AI提效最新方法：智能代理（Agent）自主完成跨应用操作、聊天编程减少60%调试时间、长文本处理准确率92%、多模态内容全流程自动化、确定性流程编排。附企业落地三阶段策略。",
-      "tags": ["效率", "工作流", "自动化"],
+      "tags": [
+        "效率",
+        "工作流",
+        "自动化"
+      ],
       "file": "posts/013-ai-productivity-2026-guide.zh.html"
     },
     "en": {
       "title": "AI Productivity 2026: Agent-Centric Workflows, Real ROI Data & Practical Playbook",
       "summary": "2026 AI productivity guide: agentic AI workflow architecture with 2-10x gains, real enterprise ROI (Suzano 95% faster, Linde 92% cut, Vanta 1800+ hrs reclaimed), personal AI workers stack, 3-layer maturity model, and actionable tips.",
-      "tags": ["productivity", "workflow", "agents"],
+      "tags": [
+        "productivity",
+        "workflow",
+        "agents"
+      ],
       "file": "posts/013-ai-productivity-2026-guide.en.html"
     }
   },
@@ -117,13 +197,21 @@
     "zh": {
       "title": "2026年AI变现全攻略：六大赚钱路径+实操案例，普通人也能月入过万",
       "summary": "2026年最新AI变现方法全攻略：AI智能体工作流变现、AI短剧创作首月6800元实案、AI自媒体IP打造、AI轻服务接单、AI出海变现、AI一人公司。附工具推荐和避坑指南。",
-      "tags": ["变现", "副业", "赚钱"],
+      "tags": [
+        "变现",
+        "副业",
+        "赚钱"
+      ],
       "file": "posts/012-ai-monetization-2026-guide.zh.html"
     },
     "en": {
       "title": "AI Monetization 2026: 7 Proven Ways to Make Money with AI — From Side Hustle to Full-Time Income",
       "summary": "2026 AI monetization guide: 7 proven ways to make money with AI including freelancing, automation services, faceless YouTube, selling AI prompts, no-code Micro SaaS, AI consulting, and digital products. Real earnings data included.",
-      "tags": ["monetization", "side-hustle", "freelancing"],
+      "tags": [
+        "monetization",
+        "side-hustle",
+        "freelancing"
+      ],
       "file": "posts/012-ai-monetization-2026-guide.en.html"
     }
   },
@@ -133,13 +221,21 @@
     "zh": {
       "title": "2026年5月AI工具实战选型指南：10大场景×30款工具横评",
       "summary": "2026年5月最新AI工具选型指南：AI视频生成（即梦/可灵/Runway）、AI PPT、国产自动化工具十款横评、AI编程助手对比、开源工作流工具推荐，附场景化选型建议和成本分析。",
-      "tags": ["工具", "评测", "选型"],
+      "tags": [
+        "工具",
+        "评测",
+        "选型"
+      ],
       "file": "posts/011-ai-tools-may-2026-guide.zh.html"
     },
     "en": {
       "title": "May 2026 AI Tools Guide: New Model Releases, Developer Platforms & Best Picks",
       "summary": "May 2026 AI tools roundup: Claude Opus 4.7 & Mythos, GPT-5.5 Instant, Gemini 3.1 Pro, AWS Kiro, Cursor 3, Perplexity PC, Kling 3.0, Nano Banana Pro, Claude Design, Amazon Bedrock AI payments, and 30+ tool picks by use case.",
-      "tags": ["tools", "reviews", "guide"],
+      "tags": [
+        "tools",
+        "reviews",
+        "guide"
+      ],
       "file": "posts/011-ai-tools-may-2026-guide.en.html"
     }
   },
@@ -149,13 +245,21 @@
     "zh": {
       "title": "2026年5月AI行业全景：92%教师用AI教学、算力账单压顶、国产模型密集出击",
       "summary": "2026年5月AI行业深度解读：中国92.3%教师已将AI融入课堂、字节2000亿算力投入、DeepSeek启动外部融资、大模型企业集体下海变现、CPU成AI性能新瓶颈。",
-      "tags": ["新闻", "行业", "教育"],
+      "tags": [
+        "新闻",
+        "行业",
+        "教育"
+      ],
       "file": "posts/010-ai-landscape-may-2026-part2.zh.html"
     },
     "en": {
       "title": "AI Landscape May 2026: Record Funding, Agentic AI Regulation, Apple Opens Siri to Third Parties",
       "summary": "May 2026 AI landscape overview: OpenAI's record $122B round, Anthropic's $40B Google deal and SpaceX Colossus partnership, Apple iOS 27 opens to third-party AI, White House pre-release safety reviews, CISA agentic AI guidance.",
-      "tags": ["news", "industry", "funding"],
+      "tags": [
+        "news",
+        "industry",
+        "funding"
+      ],
       "file": "posts/010-ai-landscape-may-2026-part2.en.html"
     }
   },
@@ -165,13 +269,19 @@
     "zh": {
       "title": "2026年AI提效实战指南：四大场景效率提升5倍+、工具链重构全攻略",
       "summary": "2026年5月最新AI提效方法：提示词工程四段式框架、AI工具链重构三阶段路线图、四大核心场景实测效率数据（文档提效5倍/代码开发提速150%/数据分析6倍/视频成本降84%）。",
-      "tags": ["效率", "工作流"],
+      "tags": [
+        "效率",
+        "工作流"
+      ],
       "file": "posts/009-ai-productivity-guide-2026.zh.html"
     },
     "en": {
       "title": "AI Productivity in 2026: Autonomous Agents, Workflow Automation & Measured Gains",
       "summary": "2026 productivity playbook: shift from chatbots to autonomous agents with OpenClaw and n8n, context-aware AI workflows, unified workspaces, role-specific time savings (PMs 8.5h/wk, devs 12h/wk, founders 15h/wk).",
-      "tags": ["productivity", "workflow"],
+      "tags": [
+        "productivity",
+        "workflow"
+      ],
       "file": "posts/009-ai-productivity-guide-2026.en.html"
     }
   },
@@ -181,13 +291,19 @@
     "zh": {
       "title": "2026年AI变现完全指南：普通人也能上手的7种赚钱方法",
       "summary": "2026年5月最新AI变现方法：AI短剧创作首月6800元、零基础宝妈收益2.5万、AI绘本单月18万、短视频自动化流水线、AI工具代运营。附真实案例和落地步骤。",
-      "tags": ["变现", "副业"],
+      "tags": [
+        "变现",
+        "副业"
+      ],
       "file": "posts/008-ai-monetization-guide-2026.zh.html"
     },
     "en": {
       "title": "How to Make Money with AI in 2026: 7 Proven Side Hustles & Real Earnings",
       "summary": "Proven AI monetization strategies for 2026: AI Automation Agency ($5K-$15K/mo), selling AI agents as subscriptions ($47-$197/mo), AI consulting ($100-$300/hr), vibe coding, Faceless YouTube, and real earnings data from practitioners.",
-      "tags": ["monetization", "side-hustle"],
+      "tags": [
+        "monetization",
+        "side-hustle"
+      ],
       "file": "posts/008-ai-monetization-guide-2026.en.html"
     }
   },
@@ -197,13 +313,19 @@
     "zh": {
       "title": "2026年5月AI工具推荐：30款精选工具重构你的工作流",
       "summary": "2026年5月最新AI工具精选推荐：国产AI自动化工具实测对比、AI视频生成工具选型、GitHub热门开源项目、Claude生态专用工具爆发。附场景化选型指南。",
-      "tags": ["工具", "评测"],
+      "tags": [
+        "工具",
+        "评测"
+      ],
       "file": "posts/007-ai-tools-may-2026.zh.html"
     },
     "en": {
       "title": "Best AI Tools of May 2026: 30 Essential Tools to Supercharge Your Workflow",
       "summary": "Best AI tools of May 2026: GitHub trending open-source projects (mempalace, graphify, caveman), Needle 26M on-device model, Cursor vs Copilot review, Claude vs GPT-5.4 vs Gemini comparison, team-tested productivity picks.",
-      "tags": ["tools", "reviews"],
+      "tags": [
+        "tools",
+        "reviews"
+      ],
       "file": "posts/007-ai-tools-may-2026.en.html"
     }
   },
@@ -213,13 +335,19 @@
     "zh": {
       "title": "2026年5月AI大事件盘点：大模型混战、人形机器人突破、太空算力时代到来",
       "summary": "2026年5月AI领域大事件：OpenAI发布GPT-5.5-Cyber、Google新Gemini即将亮相、DeepSeek-V4落地医疗、成都人形机器人世界模型发布、Anthropic租用SpaceX超级计算机、中国量子纠缠新突破。",
-      "tags": ["新闻", "行业"],
+      "tags": [
+        "新闻",
+        "行业"
+      ],
       "file": "posts/006-ai-news-may-2026.zh.html"
     },
     "en": {
       "title": "AI News May 2026: GPT-5.5-Cyber, Google I/O, Orbital Computing & Healthcare Breakthroughs",
       "summary": "May 2026 AI news roundup: OpenAI launches GPT-5.5-Cyber, Anthropic leases SpaceX supercomputer, Google Gemini expansion, AI detects heart disease from bone scans, Harvard ER study, UK Sovereign AI fund.",
-      "tags": ["news", "industry"],
+      "tags": [
+        "news",
+        "industry"
+      ],
       "file": "posts/006-ai-news-may-2026.en.html"
     }
   },
@@ -229,13 +357,19 @@
     "zh": {
       "title": "2026年AI提升工作效率完全指南：智能体工作流+自动化实战",
       "summary": "2026年AI提效最实用的方法：AI智能体工作流、跨应用自动化、Prompt工程、会议纪要自动生成。实测有效的效率提升方案，看完就能用。",
-      "tags": ["效率", "工作流"],
+      "tags": [
+        "效率",
+        "工作流"
+      ],
       "file": "posts/005-ai-productivity-workflow.zh.html"
     },
     "en": {
       "title": "AI Productivity in 2026: Agentic Workflows, Automation & Practical Guides",
       "summary": "Practical AI productivity guide for 2026: agentic workflows with Claude MCP & Zapier, cross-app automation with n8n/Make, meeting assistants, prompt engineering. Real solutions you can implement today.",
-      "tags": ["productivity", "workflow"],
+      "tags": [
+        "productivity",
+        "workflow"
+      ],
       "file": "posts/005-ai-productivity-workflow.en.html"
     }
   },
@@ -245,13 +379,19 @@
     "zh": {
       "title": "2026年AI一人公司完全指南：一个人+AI，年入百万不是梦",
       "summary": "2026年AI变现最火的模式：一人公司。不用团队、不用办公室，一个人用AI工具搭建自动化流水线，年营收超百万的真实案例和实操方法。",
-      "tags": ["变现", "效率"],
+      "tags": [
+        "变现",
+        "效率"
+      ],
       "file": "posts/004-ai-one-person-company.zh.html"
     },
     "en": {
       "title": "The AI Automation Agency: How to Build a One-Person Business That Prints Money in 2026",
       "summary": "2026 is the year of the AI Automation Agency (AAA). Real case studies, tool stacks, and a step-by-step playbook for building a one-person business that generates $5K-$15K/month.",
-      "tags": ["monetization", "productivity"],
+      "tags": [
+        "monetization",
+        "productivity"
+      ],
       "file": "posts/004-ai-one-person-company.en.html"
     }
   },
@@ -261,13 +401,19 @@
     "zh": {
       "title": "2026年5月最值得尝试的AI工具推荐 (含免费方案)",
       "summary": "精选2026年5月最新AI工具推荐，涵盖视频生成、编程助手、内容创作和效率提升工具，附免费使用方案。",
-      "tags": ["工具", "效率"],
+      "tags": [
+        "工具",
+        "效率"
+      ],
       "file": "posts/003-best-ai-tools-2026-may.zh.html"
     },
     "en": {
       "title": "Best AI Tools to Try in May 2026 (Including Free Options)",
       "summary": "Curated recommendations for the hottest AI tools in May 2026, covering video generation, coding assistants, content creation, and productivity boosters with free tiers.",
-      "tags": ["tools", "productivity"],
+      "tags": [
+        "tools",
+        "productivity"
+      ],
       "file": "posts/003-best-ai-tools-2026-may.en.html"
     }
   },
@@ -277,13 +423,19 @@
     "zh": {
       "title": "Anthropic 企业市场份额首次超越 OpenAI，AI 竞争格局剧变",
       "summary": "2026年5月最新数据：Anthropic以34.4%企业市场份额超越OpenAI的32.3%。同时Google警告AI驱动网络攻击已进入实战阶段。",
-      "tags": ["新闻", "行业"],
+      "tags": [
+        "新闻",
+        "行业"
+      ],
       "file": "posts/002-anthropic-surpasses-openai.zh.html"
     },
     "en": {
       "title": "Anthropic Surpasses OpenAI in Enterprise Market Share for the First Time",
       "summary": "Latest data from May 2026: Anthropic claims 34.4% of paid enterprise customers vs OpenAI's 32.3%. Google also warns AI-powered cyberattacks are now operational.",
-      "tags": ["news", "industry"],
+      "tags": [
+        "news",
+        "industry"
+      ],
       "file": "posts/002-anthropic-surpasses-openai.en.html"
     }
   },
@@ -293,13 +445,17 @@
     "zh": {
       "title": "AI 日报正式上线 — 每小时追踪 AI 领域最新动态",
       "summary": "AI 日报今天正式上线！这是一个由 AI 自动驱动的博客，每小时搜索并报道 AI 领域的最新新闻、工具推荐、赚钱方法和效率技巧。",
-      "tags": ["新闻"],
+      "tags": [
+        "新闻"
+      ],
       "file": "posts/001-welcome-to-ai-daily.zh.html"
     },
     "en": {
       "title": "AI Daily Launches — Tracking the Latest in AI Every Hour",
       "summary": "AI Daily is now live! An AI-powered blog that automatically searches and reports the latest AI news, tool recommendations, money-making methods, and productivity tips every hour.",
-      "tags": ["news"],
+      "tags": [
+        "news"
+      ],
       "file": "posts/001-welcome-to-ai-daily.en.html"
     }
   }

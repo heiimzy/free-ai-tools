@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS阴影生成器 - 在线Box Shadow可视化工具 | Free AI Tools</title>
+  <meta name="description" content="免费在线CSS Box Shadow生成器，可视化编辑元素阴影，实时预览。支持多层阴影、内外阴影、颜色/模糊/扩展/偏移自定义，一键复制CSS代码。前端设计师和开发者必备工具。">
+  <meta name="keywords" content="CSS阴影生成器,box-shadow在线工具,CSS阴影,元素阴影,内阴影,外阴影,阴影效果,CSS box shadow generator">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/shadow-generator.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .sd-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+    .sd-preview-wrap { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; display: flex; align-items: center; justify-content: center; min-height: 260px; }
+    .sd-box { width: 200px; height: 200px; background: linear-gradient(135deg, #6366f1, #a78bfa); border-radius: 16px; transition: box-shadow 0.1s; }
+    .sd-controls { display: flex; flex-direction: column; gap: 0.8rem; }
+    .sd-row { display: flex; align-items: center; gap: 0.5rem; }
+    .sd-row label { min-width: 55px; font-size: 0.8rem; color: var(--text-muted); }
+    .sd-row input[type="range"] { flex: 1; accent-color: var(--primary); }
+    .sd-row input[type="color"] { width: 36px; height: 36px; border: 2px solid var(--border); border-radius: 6px; cursor: pointer; padding: 0; background: none; }
+    .sd-row .val { font-size: 0.8rem; font-family: monospace; color: var(--text); min-width: 40px; text-align: right; }
+    .sd-code-wrap { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; margin-top: 0.5rem; }
+    .sd-code-wrap code { font-size: 0.85rem; color: var(--primary); word-break: break-all; }
+    .sd-layer { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 0.8rem; margin-bottom: 0.5rem; }
+    .sd-layer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; }
+    .sd-layer-header span { font-size: 0.8rem; color: var(--text-muted); }
+    .sd-layer-header button { background: none; border: none; color: #ff6b6b; cursor: pointer; font-size: 0.8rem; padding: 0.2rem 0.4rem; border-radius: 4px; }
+    .sd-layer-header button:hover { background: rgba(255,107,107,0.1); }
+    .sd-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.8rem; }
+    .sd-actions button { padding: 0.4rem 1rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); cursor: pointer; font-size: 0.8rem; transition: 0.15s; }
+    .sd-actions button:hover { border-color: var(--primary); }
+    .sd-checkbox { display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; color: var(--text-muted); cursor: pointer; }
+    .sd-checkbox input { accent-color: var(--primary); }
+    @media (max-width: 768px) { .sd-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/gradient-generator.html">渐变生成</a><a href="../tools/shadow-generator.html">阴影生成</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>CSS Box Shadow 生成器</h1>
+      <p>可视化编辑元素阴影效果，支持多层阴影叠加，实时预览，一键复制CSS代码。</p>
+    </div>
+
+    <div class="tool-container" id="app">
+      <div class="sd-grid">
+        <div class="sd-preview-wrap">
+          <div class="sd-box" id="previewBox"></div>
+        </div>
+        <div class="sd-controls" id="controlsWrap">
+          <div id="layersWrap"></div>
+          <div class="sd-actions">
+            <button onclick="addLayer()">+ 添加阴影层</button>
+            <button onclick="copyCSS()">复制 CSS</button>
+            <button onclick="resetAll()">重置</button>
+          </div>
+        </div>
+      </div>
+      <div class="sd-code-wrap">
+        <code id="cssOutput">box-shadow: none;</code>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>CSS Box Shadow 可视化生成器</h2>
+      <p>自由调整水平偏移、垂直偏移、模糊半径、扩展半径和颜色，实时预览效果。支持叠加多层阴影打造复杂视觉层次，内阴影模拟凹陷效果。适合设计师快速原型验证和开发者调试UI组件时使用。所有操作在浏览器本地完成，无需上传数据。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/gradient-generator.html">渐变生成</a> | <a href="../tools/color-picker.html">颜色选择器</a></p>
+    </div>
+  </footer>
+
+  <script>
+    let layers = [];
+
+    function defaultLayer(inset) {
+      return { inset, h: 0, v: 0, blur: 20, spread: 0, color: '#00000040', opacity: 0.25 };
+    }
+
+    function addLayer(inset) {
+      layers.push(defaultLayer(inset || false));
+      render();
+    }
+
+    function removeLayer(i) {
+      layers.splice(i, 1);
+      render();
+    }
+
+    function updateLayer(i, key, val) {
+      layers[i][key] = key === 'opacity' ? parseFloat(val) : val;
+      render();
+    }
+
+    function render() {
+      const wrap = document.getElementById('layersWrap');
+      wrap.innerHTML = '';
+      layers.forEach((l, i) => {
+        const div = document.createElement('div');
+        div.className = 'sd-layer';
+        div.innerHTML = `
+          <div class="sd-layer-header">
+            <span>阴影层 ${i+1}${l.inset ? ' (内阴影)' : ''}</span>
+            <button onclick="removeLayer(${i})">删除</button>
+          </div>
+          <div class="sd-row">
+            <label>偏移X</label>
+            <input type="range" min="-50" max="50" value="${l.h}" oninput="updateLayer(${i},'h',this.value)">
+            <span class="val">${l.h}px</span>
+          </div>
+          <div class="sd-row">
+            <label>偏移Y</label>
+            <input type="range" min="-50" max="50" value="${l.v}" oninput="updateLayer(${i},'v',this.value)">
+            <span class="val">${l.v}px</span>
+          </div>
+          <div class="sd-row">
+            <label>模糊</label>
+            <input type="range" min="0" max="100" value="${l.blur}" oninput="updateLayer(${i},'blur',this.value)">
+            <span class="val">${l.blur}px</span>
+          </div>
+          <div class="sd-row">
+            <label>扩展</label>
+            <input type="range" min="-20" max="50" value="${l.spread}" oninput="updateLayer(${i},'spread',this.value)">
+            <span class="val">${l.spread}px</span>
+          </div>
+          <div class="sd-row">
+            <label>颜色</label>
+            <input type="color" value="${l.color.slice(0,7)}" oninput="updateLayer(${i},'color',this.value+hexAlpha(l.opacity))">
+            <span class="val">${l.color}</span>
+          </div>
+          <div class="sd-row">
+            <label>不透明度</label>
+            <input type="range" min="0" max="1" step="0.05" value="${l.opacity}" oninput="updateLayer(${i},'opacity',this.value); updateLayer(${i},'color',l.color.slice(0,7)+hexAlpha(this.value))">
+            <span class="val">${Math.round(l.opacity*100)}%</span>
+          </div>
+          <label class="sd-checkbox">
+            <input type="checkbox" ${l.inset?'checked':''} onchange="updateLayer(${i},'inset',this.checked)">
+            内阴影 (inset)
+          </label>
+        `;
+        wrap.appendChild(div);
+      });
+      updatePreview();
+      updateCode();
+    }
+
+    function hexAlpha(opacity) {
+      const a = Math.round(opacity * 255).toString(16).padStart(2,'0');
+      return a;
+    }
+
+    function shadowCSS(l) {
+      const parts = [];
+      if (l.inset) parts.push('inset');
+      parts.push(`${l.h}px ${l.v}px ${l.blur}px ${l.spread}px ${l.color}`);
+      return parts.join(' ');
+    }
+
+    function updatePreview() {
+      const box = document.getElementById('previewBox');
+      if (layers.length === 0) {
+        box.style.boxShadow = 'none';
+        return;
+      }
+      box.style.boxShadow = layers.map(shadowCSS).join(', ');
+    }
+
+    function updateCode() {
+      const el = document.getElementById('cssOutput');
+      if (layers.length === 0) {
+        el.textContent = 'box-shadow: none;';
+        return;
+      }
+      el.textContent = 'box-shadow: ' + layers.map(shadowCSS).join(',\n             ') + ';';
+    }
+
+    function copyCSS() {
+      const code = document.getElementById('cssOutput').textContent;
+      navigator.clipboard.writeText(code);
+      showToast('CSS 已复制到剪贴板');
+    }
+
+    function resetAll() {
+      layers = [defaultLayer(false)];
+      render();
+    }
+
+    let toastTimer;
+    function showToast(msg) {
+      let t = document.getElementById('toast');
+      if (!t) {
+        t = document.createElement('div');
+        t.id = 'toast';
+        t.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:var(--primary);color:#fff;padding:0.6rem 1.5rem;border-radius:8px;font-size:0.85rem;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:100;';
+        document.body.appendChild(t);
+      }
+      t.textContent = msg;
+      t.style.opacity = '1';
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.style.opacity = '0', 2000);
+    }
+
+    // Init
+    resetAll();
+  </script>
+</body>
+</html>
