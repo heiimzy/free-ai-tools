@@ -1,5 +1,31 @@
 [
   {
+    "id": "027",
+    "date": "2026-05-18",
+    "zh": {
+      "title": "2026年5月AI工具实战选型：从30+工具中选出你的最佳组合",
+      "summary": "2026年5月AI工具最新实测指南：ChatGPT vs Claude vs 文心一言 vs DeepSeek全面对比；程序员工具链推荐（Cursor+Claude Code+Copilot）；内容创作者最佳组合；个人知识管理AI工具链。附按场景的选型建议和成本分析。",
+      "tags": [
+        "AI工具",
+        "选型指南",
+        "工作流",
+        "生产力"
+      ],
+      "file": "posts/027-ai-tools-may-2026-picks.zh.html"
+    },
+    "en": {
+      "title": "Best AI Tools of May 2026: The $20 Subscription War and the Open-Source Revolution",
+      "summary": "May 2026 AI tools guide: ChatGPT Plus vs Claude Pro vs Google AI Pro comparison; trending open-source tools (caveman 53K stars, openclaw 368K, mempalace 51K); developer toolchain recommendations; the free AI revolution with Meta Muse Spark.",
+      "tags": [
+        "ai-tools",
+        "review",
+        "productivity",
+        "workflow"
+      ],
+      "file": "posts/027-ai-tools-may-2026-picks.en.html"
+    }
+  },
+  {
     "id": "026",
     "date": "2026-05-18",
     "zh": {
