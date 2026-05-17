@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>在线录音机 - 免费在线录音/音频录制工具 | Free AI Tools</title>
+  <meta name="description" content="免费在线录音机，使用浏览器麦克风录制音频。支持录音、暂停、继续、回放、下载为WAV格式。可视化音频波形，实时显示录音时长。适合语音笔记、会议记录、播客录制、语言学习、个人备忘。浏览器本地录制，不上传服务器。">
+  <meta name="keywords" content="在线录音,录音工具,音频录制,语音录制,在线录音机,免费录音,Audio Recorder,语音备忘录,麦克风录制">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/audio-recorder.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .ar-layout { max-width: 550px; margin: 0 auto; display: grid; gap: 1.5rem; text-align: center; }
+    .ar-display { position: relative; width: 280px; height: 280px; margin: 0 auto; }
+    .ar-canvas { position: absolute; top: 0; left: 0; }
+    .ar-time { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 2.8rem; font-weight: 800; color: var(--text); font-family: 'Courier New', monospace; letter-spacing: 2px; }
+    .ar-status { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem; }
+    .ar-controls { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
+    .ar-controls button { padding: 0.6rem 1.5rem; border-radius: 50%; border: none; font-size: 1.2rem; cursor: pointer; transition: 0.2s; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; }
+    .ar-btn-rec { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
+    .ar-btn-rec:hover { transform: scale(1.05); box-shadow: 0 4px 15px rgba(239,68,68,0.4); }
+    .ar-btn-rec.recording { animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.7); } 70% { box-shadow: 0 0 0 15px rgba(239,68,68,0); } 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); } }
+    .ar-btn-pause { background: rgba(244,183,64,0.15); color: #f4b740; }
+    .ar-btn-pause:hover { background: rgba(244,183,64,0.25); }
+    .ar-btn-stop { background: rgba(167,139,250,0.15); color: var(--primary); }
+    .ar-btn-stop:hover { background: rgba(167,139,250,0.25); }
+    .ar-btn-play { background: rgba(52,211,153,0.12); color: #34d399; }
+    .ar-btn-play:hover { background: rgba(52,211,153,0.25); }
+    .ar-btn-dl { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); border-radius: 8px; padding: 0.5rem 1.2rem; border-radius: 8px; border: none; font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .ar-btn-dl:hover { border-color: #34d399; color: #34d399; }
+    .ar-waveform { width: 100%; height: 80px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .ar-waveform canvas { width: 100%; height: 100%; }
+    .ar-info { font-size: 0.75rem; color: var(--text-muted); padding: 0.5rem; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border); }
+    .ar-recordings { text-align: left; }
+    .ar-recordings h4 { color: var(--text-muted); font-size: 0.8rem; margin: 0 0 0.5rem; font-weight: 600; }
+    .ar-recording-item { display: flex; justify-content: space-between; align-items: center; padding: 0.4rem 0.75rem; border-radius: 6px; background: var(--bg-card); border: 1px solid var(--border); margin-bottom: 0.3rem; font-size: 0.8rem; }
+    .ar-recording-item .name { color: var(--text); }
+    .ar-recording-item .size { color: var(--text-muted); }
+    .ar-recording-item button { background: none; border: none; color: var(--secondary); cursor: pointer; font-size: 0.8rem; padding: 0.2rem 0.5rem; }
+    .ar-recording-item button:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/audio-recorder.html">录音机</a><a href="../tools/meme-generator.html">梗图</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>在线录音机 / Audio Recorder</h1>
+      <p>使用浏览器录制麦克风音频，支持暂停、回放，下载为 WAV 格式。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="ar-layout">
+        <div class="ar-display">
+          <canvas class="ar-canvas" id="arCanvas" width="280" height="280"></canvas>
+          <div class="ar-time" id="arTime">00:00</div>
+          <div class="ar-status" id="arStatus">点击录制按钮开始</div>
+        </div>
+
+        <div class="ar-controls">
+          <button class="ar-btn-rec" id="arRecBtn" onclick="toggleRecord()" title="录制">🎤</button>
+          <button class="ar-btn-pause" id="arPauseBtn" onclick="togglePause()" title="暂停" style="display:none;">⏸</button>
+          <button class="ar-btn-play" id="arPlayBtn" onclick="togglePlayback()" title="播放" style="display:none;">▶</button>
+          <button class="ar-btn-stop" onclick="stopAll()" title="停止">⏹</button>
+        </div>
+
+        <div>
+          <button class="ar-btn-dl" id="arDlBtn" onclick="downloadRecording()" style="display:none;">⬇️ 下载 WAV</button>
+        </div>
+
+        <div class="ar-waveform">
+          <canvas id="waveCanvas"></canvas>
+        </div>
+
+        <div class="ar-info" id="arInfo">录音前请确保浏览器已授权麦克风权限</div>
+
+        <div class="ar-recordings" id="arRecordings">
+          <h4>录音历史</h4>
+          <div id="arHistory">暂无录音</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线录音机</h2>
+      <p>免费的在线录音工具，通过浏览器直接使用麦克风录制音频。无需安装任何软件，打开网页即可使用。支持录制、暂停、继续录制、回放播放。录制完成后可下载为 WAV 音频文件。可视化音频波形实时显示声音变化，帮助确认录音质量。适合快速录制语音笔记、会议纪要、语言学习跟读练习、播客片段录制、个人语音备忘。所有录音数据在浏览器本地处理，不会上传到任何服务器，保护你的隐私安全。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/audio-recorder.html">录音机</a> | <a href="../tools/meme-generator.html">梗图</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let audioBlob = null;
+    let audioUrl = null;
+    let audioPlayer = null;
+    let stream = null;
+    let isRecording = false;
+    let isPaused = false;
+    let startTime = 0;
+    let timerInterval = null;
+    let recordings = [];
+
+    // Waveform visualization
+    let analyser = null;
+    let dataArray = null;
+    let source = null;
+    let animFrame = null;
+
+    function drawRing(progress, color) {
+      const c = document.getElementById('arCanvas');
+      const ctx = c.getContext('2d');
+      const cx = 140, cy = 140, r = 120, w = 8;
+      ctx.clearRect(0, 0, 280, 280);
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(167,139,250,0.12)';
+      ctx.lineWidth = w;
+      ctx.stroke();
+      if (progress > 0) {
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * progress);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = w;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+      }
+    }
+
+    function formatTime(sec) {
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+    }
+
+    function updateTime() {
+      if (!startTime) return;
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      document.getElementById('arTime').textContent = formatTime(elapsed);
+      document.getElementById('arStatus').textContent = isPaused ? '已暂停' : '录制中...';
+      const totalMins = 10;
+      drawRing((elapsed % (totalMins * 60)) / (totalMins * 60), '#ef4444');
+    }
+
+    function drawWave() {
+      if (!analyser || !dataArray) return;
+      const canvas = document.getElementById('waveCanvas');
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width = canvas.parentElement.clientWidth;
+      const h = canvas.height = 80;
+      ctx.clearRect(0, 0, w, h);
+
+      analyser.getByteTimeDomainData(dataArray);
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#a78bfa';
+      ctx.beginPath();
+
+      const sliceW = w / dataArray.length;
+      let x = 0;
+      for (let i = 0; i < dataArray.length; i++) {
+        const v = dataArray[i] / 128.0;
+        const y = v * h / 2;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+        x += sliceW;
+      }
+      ctx.stroke();
+      animFrame = requestAnimationFrame(drawWave);
+    }
+
+    async function toggleRecord() {
+      if (isRecording) {
+        stopRecording();
+        return;
+      }
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream, { mimeType: MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : 'audio/mp4' });
+        audioChunks = [];
+
+        // Set up analyser
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        source = audioCtx.createMediaStreamSource(stream);
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 256;
+        source.connect(analyser);
+        dataArray = new Uint8Array(analyser.frequencyBinCount);
+        drawWave();
+
+        mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+        mediaRecorder.onstop = () => {
+          audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+          audioUrl = URL.createObjectURL(audioBlob);
+          document.getElementById('arDlBtn').style.display = 'inline-block';
+          document.getElementById('arPlayBtn').style.display = 'inline-flex';
+
+          const dur = Math.floor((Date.now() - startTime) / 1000);
+          recordings.unshift({ blob: audioBlob, url: audioUrl, duration: dur, time: new Date().toLocaleTimeString() });
+          updateHistory();
+          showToast('✅ 录音完成 (' + formatTime(dur) + ')');
+        };
+
+        mediaRecorder.start(100);
+        isRecording = true;
+        isPaused = false;
+        startTime = Date.now();
+        timerInterval = setInterval(updateTime, 200);
+        document.getElementById('arRecBtn').classList.add('recording');
+        document.getElementById('arRecBtn').textContent = '⏹';
+        document.getElementById('arPauseBtn').style.display = 'inline-flex';
+        document.getElementById('arInfo').textContent = '🎙️ 正在录音...';
+      } catch(e) {
+        showToast('⚠️ 无法访问麦克风，请检查权限设置');
+      }
+    }
+
+    function stopRecording() {
+      if (mediaRecorder && isRecording) {
+        mediaRecorder.stop();
+        isRecording = false;
+        clearInterval(timerInterval);
+        document.getElementById('arRecBtn').classList.remove('recording');
+        document.getElementById('arRecBtn').textContent = '🎤';
+        document.getElementById('arPauseBtn').style.display = 'none';
+        document.getElementById('arStatus').textContent = '录制完成';
+        document.getElementById('arInfo').textContent = '点击播放试听，或下载WAV文件';
+        if (stream) stream.getTracks().forEach(t => t.stop());
+        if (animFrame) cancelAnimationFrame(animFrame);
+        const wCanvas = document.getElementById('waveCanvas');
+        wCanvas.getContext('2d').clearRect(0, 0, wCanvas.width, wCanvas.height);
+        drawRing(1, '#34d399');
+      }
+    }
+
+    function togglePause() {
+      if (!mediaRecorder || !isRecording) return;
+      if (isPaused) {
+        mediaRecorder.resume();
+        isPaused = false;
+        document.getElementById('arPauseBtn').textContent = '⏸';
+        document.getElementById('arStatus').textContent = '录制中...';
+        drawWave();
+      } else {
+        mediaRecorder.pause();
+        isPaused = true;
+        document.getElementById('arPauseBtn').textContent = '▶';
+        document.getElementById('arStatus').textContent = '已暂停';
+        if (animFrame) cancelAnimationFrame(animFrame);
+      }
+    }
+
+    function togglePlayback() {
+      if (!audioUrl) return;
+      if (audioPlayer && !audioPlayer.paused) {
+        audioPlayer.pause();
+        document.getElementById('arPlayBtn').textContent = '▶';
+        return;
+      }
+      audioPlayer = new Audio(audioUrl);
+      audioPlayer.onended = () => document.getElementById('arPlayBtn').textContent = '▶';
+      audioPlayer.play();
+      document.getElementById('arPlayBtn').textContent = '⏹';
+    }
+
+    function stopAll() {
+      if (isRecording) stopRecording();
+      if (audioPlayer) { audioPlayer.pause(); audioPlayer = null; }
+      document.getElementById('arPlayBtn').textContent = '▶';
+      document.getElementById('arStatus').textContent = '已停止';
+    }
+
+    function downloadRecording() {
+      if (!audioBlob) return showToast('⚠️ 没有可下载的录音');
+      const link = document.createElement('a');
+      link.download = 'recording-' + new Date().toISOString().slice(0, 19).replace(/[:-]/g, '') + '.wav';
+      link.href = audioUrl;
+      link.click();
+      showToast('✅ 正在下载');
+    }
+
+    function updateHistory() {
+      const div = document.getElementById('arHistory');
+      if (recordings.length === 0) {
+        div.innerHTML = '暂无录音';
+        return;
+      }
+      div.innerHTML = recordings.map((r, i) =>
+        `<div class="ar-recording-item">
+          <span class="name">录音 #${recordings.length - i}</span>
+          <span class="size">${formatTime(r.duration)}</span>
+          <button onclick="playHistory(${i})">▶ 播放</button>
+          <button onclick="downloadHistory(${i})">⬇️</button>
+        </div>`
+      ).join('');
+    }
+
+    function playHistory(idx) {
+      const r = recordings[idx];
+      if (!r) return;
+      const audio = new Audio(r.url);
+      audio.play();
+    }
+
+    function downloadHistory(idx) {
+      const r = recordings[idx];
+      if (!r) return;
+      const link = document.createElement('a');
+      link.download = 'recording-' + idx + '.webm';
+      link.href = r.url;
+      link.click();
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+  </script>
+</body>
+</html>
