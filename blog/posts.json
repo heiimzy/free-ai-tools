@@ -1,5 +1,31 @@
 [
   {
+    "id": "028",
+    "date": "2026-05-18",
+    "zh": {
+      "title": "2026年5月AI变现最新趋势：从AI智能体自主赚钱到本地企业自动化服务",
+      "summary": "2026年5月AI变现最新动态：OpenAI Codex自主完成悬赏赚取16美元、Goldman Sachs预测AI盈利拐点来临、生成式AI应用收入同比暴涨232%、本地企业AI自动化服务月入500-2000美元实操指南。附普通人可落地的4条变现路径和避坑建议。",
+      "tags": [
+        "变现",
+        "赚钱",
+        "副业",
+        "自动化"
+      ],
+      "file": "posts/028-ai-monetization-may-2026.zh.html"
+    },
+    "en": {
+      "title": "AI Monetization in May 2026: Codex Earns Its First Dollar, Sensor Tower Reports 232% Growth, and the Agent Economy Takes Off",
+      "summary": "May 2026 AI monetization update: OpenAI Codex autonomously completes a bounty for $16.88, the first real-world AI-earned income; Sensor Tower reports 232% YoY growth in gen AI app revenue to $6.1B; Goldman Sachs predicts margin inflection in H1 2026; OpenAI pivots to advertising with $2.5B projected revenue. Analysis of consumption-era pricing and creator monetization strategies.",
+      "tags": [
+        "ai-monetization",
+        "agents",
+        "advertising",
+        "economy"
+      ],
+      "file": "posts/028-ai-monetization-may-2026.en.html"
+    }
+  },
+  {
     "id": "027",
     "date": "2026-05-18",
     "zh": {
