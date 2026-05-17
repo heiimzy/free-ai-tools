@@ -1,5 +1,33 @@
 [
   {
+    "id": "033",
+    "date": "2026-05-22",
+    "zh": {
+      "title": "2026年5月AI提效全景：桌面智能体超越人类、灵玑OS开源、Agent驱动企业生产力革命",
+      "summary": "2026年5月AI提效最新趋势：桌面操作智能体基准测试首次超越人类平均水平、国内首个开源AI智能体基础设施灵玑OS发布、Google Cloud Next 26提出Agentic Enterprise战略、Productive 5.0 AI Agent解放专业服务团队、Boomi平台已有90,000+智能体在生产环境运行、Red Hat AI Factory+NVIDIA发布自主Agent沙箱运行时OpenShell。含AI提效疲惫感分析与双脑模式方法。",
+      "tags": [
+        "提效",
+        "智能体",
+        "Agentic Enterprise",
+        "开源",
+        "企业效率"
+      ],
+      "file": "posts/033-ai-productivity-may-2026.zh.html"
+    },
+    "en": {
+      "title": "AI Productivity May 2026: Google Cloud Next '26, Red Hat AI Factory, Productive 5.0 — The Agentic Enterprise Goes Mainstream",
+      "summary": "May 2026 AI productivity report: Google Cloud Next '26 reveals 75% of customers use AI products; Red Hat AI Factory with NVIDIA launches OpenShell sandboxed runtime for autonomous agents; Productive 5.0 brings always-on AI agents to professional services; Coupa Compose launches 20+ procurement agents; Boomi and Couchbase power 90,000+ production AI agents; CaptivateIQ launches compensation planning agents; Teradata unveils Tera agentic workspace. Plus: the AI productivity paradox — why efficiency gains come with cognitive costs.",
+      "tags": [
+        "productivity",
+        "agentic enterprise",
+        "Google Cloud",
+        "enterprise AI",
+        "AI governance"
+      ],
+      "file": "posts/033-ai-productivity-may-2026.en.html"
+    }
+  },
+  {
     "id": "032",
     "date": "2026-05-21",
     "zh": {
