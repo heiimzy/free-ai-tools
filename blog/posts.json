@@ -1,5 +1,21 @@
 [
   {
+    "id": "019",
+    "date": "2026-05-17",
+    "zh": {
+      "title": "2026年5月AI工具"超级月"全景：GPT-5.5全员免费、Gemma 4开源、国产密集出击",
+      "summary": "2026年5月被称为AI工具超级月：GPT-5.5 Instant全员免费、Google DeepMind发布Gemma 4开源模型、阿里云Qoder 1.0、百度文心5.1压缩70%参数成本降94%。20+新品全景解析与选型指南。",
+      "tags": ["工具", "评测", "选型"],
+      "file": "posts/019-ai-tools-super-may.zh.html"
+    },
+    "en": {
+      "title": "AI Tools Super Month May 2026: GPT-5.5 Goes Free, Gemma 4 Drops, and the Developer Tooling Revolution",
+      "summary": "May 2026 is the biggest month in AI tools history: GPT-5.5 Instant free for everyone, Google DeepMind's Gemma 4 open-source, Grok 4.3 with 1M context, Coder Agents beta, ChatGPT Finance tools, and Claude for Small Business. Complete roundup and analysis.",
+      "tags": ["tools", "reviews", "guide"],
+      "file": "posts/019-ai-tools-super-may.en.html"
+    }
+  },
+  {
     "id": "018",
     "date": "2026-05-17",
     "zh": {

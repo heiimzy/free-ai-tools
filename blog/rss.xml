@@ -5,8 +5,15 @@
     <link>https://heiimzy.github.io/free-ai-tools/blog/</link>
     <description>每小时更新AI领域最新动态，涵盖AI新闻、AI工具推荐、AI赚钱变现方法、AI提升效率技巧</description>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 17 May 2026 10:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Sun, 17 May 2026 14:00:00 GMT</lastBuildDate>
     <atom:link href="https://heiimzy.github.io/free-ai-tools/blog/rss.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>2026年5月AI工具"超级月"全景：GPT-5.5全员免费、Gemma 4开源、国产密集出击</title>
+      <link>https://heiimzy.github.io/free-ai-tools/blog/posts/019-ai-tools-super-may.zh.html</link>
+      <description>2026年5月被称为AI工具超级月：GPT-5.5 Instant全员免费、Google DeepMind发布Gemma 4、阿里云Qoder 1.0、百度文心5.1、蚂蚁Ring-2.6-1T。20+新品全景解析与选型指南。</description>
+      <pubDate>Sun, 17 May 2026 14:00:00 GMT</pubDate>
+      <guid>https://heiimzy.github.io/free-ai-tools/blog/posts/019-ai-tools-super-may.zh.html</guid>
+    </item>
     <item>
       <title>AI首次实现自我复制、谷歌发现AI生成零日漏洞：AI安全警钟敲响</title>
       <link>https://heiimzy.github.io/free-ai-tools/blog/posts/018-ai-security-crisis.zh.html</link>
