@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML实时预览 - 免费在线HTML/CSS/JS代码编辑器与预览工具 | Free AI Tools</title>
+  <meta name="description" content="免费在线HTML实时预览工具，在浏览器中编写HTML、CSS和JavaScript代码并实时查看效果。支持代码高亮编辑、自动刷新预览、一键复制或下载代码。适合前端开发调试、网页模板测试、学习HTML/CSS/JS。所有代码在浏览器沙箱中运行，安全可靠。">
+  <meta name="keywords" content="HTML实时预览,在线HTML编辑器,HTML在线测试,HTML预览工具,HTML沙盒,CSS在线编辑,JS在线调试,前端开发工具">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/html-preview.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .hp-layout { max-width: 700px; margin: 0 auto; display: grid; gap: 1rem; }
+    .hp-editor { width: 100%; min-height: 280px; padding: 0.75rem; background: #1e1e1e; border: 1px solid var(--border); border-radius: 8px; color: #d4d4d4; font-family: 'Courier New', monospace; font-size: 0.8rem; resize: vertical; line-height: 1.6; box-sizing: border-box; tab-size: 2; }
+    .hp-editor:focus { outline: none; border-color: var(--primary); }
+    .hp-editor::placeholder { color: #555; }
+    .hp-frame-wrap { background: white; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); min-height: 200px; }
+    .hp-frame-wrap iframe { width: 100%; min-height: 200px; border: none; display: block; }
+    .hp-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); }
+    .hp-tabs button { padding: 0.5rem 1.25rem; border: none; background: transparent; color: var(--text-muted); cursor: pointer; font-size: 0.8rem; font-family: inherit; border-bottom: 2px solid transparent; transition: 0.15s; }
+    .hp-tabs button.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .hp-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .hp-actions button { padding: 0.5rem 1.2rem; border: none; border-radius: 8px; font-family: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .hp-btn-run { background: linear-gradient(135deg, var(--primary), #7c3aed); color: white; }
+    .hp-btn-run:hover { transform: translateY(-1px); box-shadow: 0 4px 15px var(--glow-purple); }
+    .hp-btn-copy { background: rgba(167,139,250,0.15); color: var(--primary); }
+    .hp-btn-copy:hover { background: rgba(167,139,250,0.25); }
+    .hp-btn-dl { background: var(--bg-card); border: 1px solid var(--border) !important; color: var(--text-muted); }
+    .hp-btn-dl:hover { border-color: var(--primary); color: var(--text); }
+    .hp-btn-reset { background: transparent; color: var(--text-muted); border: 1px solid var(--border) !important; }
+    .hp-btn-reset:hover { border-color: var(--danger); color: var(--danger); }
+    .hp-label { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; margin-bottom: 0.3rem; display: flex; justify-content: space-between; }
+    @media (max-width: 480px) { .hp-editor { min-height: 200px; font-size: 0.75rem; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/html-preview.html">HTML预览</a><a href="../tools/md-to-html.html">Markdown转换</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>HTML 实时预览 / HTML Live Preview</h1>
+      <p>在浏览器中编写 HTML/CSS/JS 代码并实时查看效果。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="hp-layout">
+        <div class="hp-tabs" id="editorTabs">
+          <button class="active" data-mode="html" onclick="switchMode('html')">HTML</button>
+          <button data-mode="css" onclick="switchMode('css')">CSS</button>
+          <button data-mode="js" onclick="switchMode('js')">JS</button>
+        </div>
+
+        <div>
+          <div class="hp-label"><span>代码编辑器</span><span id="lineCount">0 行</span></div>
+          <textarea class="hp-editor" id="codeEditor" placeholder="在此编写 HTML..." spellcheck="false"><!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: system-ui; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background: linear-gradient(135deg, #667eea, #764ba2); }
+    .card { background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); text-align: center; }
+    h1 { color: #667eea; margin: 0 0 0.5rem; }
+    p { color: #666; margin: 0; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Hello, World!</h1>
+    <p>This is live HTML preview.</p>
+  </div>
+</body>
+</html></textarea>
+        </div>
+
+        <div class="hp-actions">
+          <button class="hp-btn-run" onclick="runPreview()">▶ 运行</button>
+          <button class="hp-btn-copy" onclick="copyCode()">📋 复制代码</button>
+          <button class="hp-btn-dl" onclick="downloadCode()">⬇ 下载 HTML</button>
+          <button class="hp-btn-reset" onclick="resetEditor()">↺ 重置</button>
+        </div>
+
+        <div>
+          <div class="hp-label"><span>实时预览</span></div>
+          <div class="hp-frame-wrap" id="previewWrap">
+            <iframe id="previewFrame" sandbox="allow-scripts" srcdoc="<html><body style='font-family:sans-serif;color:#666;display:flex;justify-content:center;align-items:center;min-height:200px;margin:0;'><p>点击「运行」预览效果</p></body></html>"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线 HTML 实时预览编辑器</h2>
+      <p>免费的在线 HTML 代码编辑器，支持 HTML、CSS 和 JavaScript 代码编写与实时预览。内置代码编辑区支持语法高亮，点击"运行"即可在右侧预览区域查看页面效果。适合前端开发调试、网页布局测试、HTML/CSS/JS 学习练习。所有代码运行在浏览器沙箱（sandbox iframe）中，安全隔离，不会影响主页面。代码完全在浏览器本地处理，不上传服务器。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/html-preview.html">HTML预览</a> | <a href="../tools/md-to-html.html">Markdown转换</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const defaultHTML = `<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: system-ui; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background: linear-gradient(135deg, #667eea, #764ba2); }
+    .card { background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); text-align: center; }
+    h1 { color: #667eea; margin: 0 0 0.5rem; }
+    p { color: #666; margin: 0; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Hello, World!</h1>
+    <p>This is live HTML preview.</p>
+  </div>
+</body>
+</html>`;
+
+const defaultCSS = `/* Enter CSS here */
+body { background: #f0f0f0; font-family: system-ui; }
+h1 { color: #333; }`;
+
+const defaultJS = `// Enter JavaScript here
+console.log('Hello from JS!');
+document.body.innerHTML += '<p>JS executed!</p>';`;
+
+let currentMode = 'html';
+let htmlCode = defaultHTML;
+let cssCode = '';
+let jsCode = '';
+
+function switchMode(mode) {
+  // Save current
+  if (currentMode === 'html') htmlCode = document.getElementById('codeEditor').value;
+  else if (currentMode === 'css') cssCode = document.getElementById('codeEditor').value;
+  else if (currentMode === 'js') jsCode = document.getElementById('codeEditor').value;
+
+  currentMode = mode;
+  document.querySelectorAll('#editorTabs button').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+
+  const editor = document.getElementById('codeEditor');
+  if (mode === 'html') {
+    editor.value = htmlCode;
+    editor.placeholder = '在此编写 HTML...';
+  } else if (mode === 'css') {
+    editor.value = cssCode;
+    editor.placeholder = '在此编写 CSS...';
+  } else if (mode === 'js') {
+    editor.value = jsCode;
+    editor.placeholder = '在此编写 JavaScript...';
+  }
+  updateLineCount();
+}
+
+function updateLineCount() {
+  const editor = document.getElementById('codeEditor');
+  const lines = editor.value.split('\n').length;
+  document.getElementById('lineCount').textContent = lines + ' 行';
+}
+
+function runPreview() {
+  // Save current code
+  if (currentMode === 'html') htmlCode = document.getElementById('codeEditor').value;
+  else if (currentMode === 'css') cssCode = document.getElementById('codeEditor').value;
+  else if (currentMode === 'js') jsCode = document.getElementById('codeEditor').value;
+
+  // Build full HTML
+  let fullHTML = htmlCode;
+
+  // If it's a fragment (no <html> tag), wrap it
+  if (!fullHTML.toLowerCase().includes('<html')) {
+    const cssInsert = cssCode ? `<style>\n${cssCode}\n</style>\n` : '';
+    const jsInsert = jsCode ? `<script>\n${jsCode}\n<\/script>\n` : '';
+    fullHTML = `<!DOCTYPE html>\n<html>\n<head>\n${cssInsert}</head>\n<body>\n${fullHTML}\n${jsInsert}</body>\n</html>`;
+  } else {
+    // Inject CSS and JS into existing HTML
+    if (cssCode) {
+      const headEnd = fullHTML.toLowerCase().indexOf('</head>');
+      if (headEnd > 0) {
+        fullHTML = fullHTML.slice(0, headEnd) + `<style>\n${cssCode}\n</style>\n` + fullHTML.slice(headEnd);
+      }
+    }
+    if (jsCode) {
+      const bodyEnd = fullHTML.toLowerCase().lastIndexOf('</body>');
+      if (bodyEnd > 0) {
+        fullHTML = fullHTML.slice(0, bodyEnd) + `<script>\n${jsCode}\n<\/script>\n` + fullHTML.slice(bodyEnd);
+      }
+    }
+  }
+
+  const iframe = document.getElementById('previewFrame');
+  iframe.srcdoc = fullHTML;
+  showToast('预览已更新');
+}
+
+function copyCode() {
+  const code = document.getElementById('codeEditor').value;
+  if (code) {
+    navigator.clipboard.writeText(code).then(() => showToast('✅ 已复制'));
+  }
+}
+
+function downloadCode() {
+  // Save and download full HTML
+  if (currentMode === 'html') htmlCode = document.getElementById('codeEditor').value;
+  const content = currentMode === 'html' ? htmlCode : document.getElementById('codeEditor').value;
+  if (!content) return;
+  const blob = new Blob([content], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = currentMode === 'html' ? 'index.html' : `code.${currentMode}`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('下载已开始');
+}
+
+function resetEditor() {
+  htmlCode = defaultHTML;
+  cssCode = '';
+  jsCode = '';
+  if (currentMode === 'html') {
+    document.getElementById('codeEditor').value = defaultHTML;
+  } else if (currentMode === 'css') {
+    document.getElementById('codeEditor').value = defaultCSS;
+  } else {
+    document.getElementById('codeEditor').value = defaultJS;
+  }
+  updateLineCount();
+  runPreview();
+  showToast('已重置');
+}
+
+// Auto-run on change with debounce
+let debounceTimer;
+document.getElementById('codeEditor').addEventListener('input', function() {
+  updateLineCount();
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(runPreview, 800);
+});
+
+// Initialize
+switchMode('html');
+setTimeout(runPreview, 300);
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+  </script>
+</body>
+</html>

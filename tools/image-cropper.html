@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>在线裁剪图片 - 免费图片裁剪工具/尺寸裁切 | Free AI Tools</title>
+  <meta name="description" content="免费在线图片裁剪工具，支持自由裁剪和固定比例裁剪（1:1、4:3、16:9、3:4、9:16等）。可旋转图片、调整裁剪区域、实时预览裁剪结果并下载。所有处理在浏览器本地完成，图片不上传服务器，保护隐私。">
+  <meta name="keywords" content="图片裁剪,在线裁剪图片,图片裁切,照片裁剪,裁剪工具,图片编辑,正方形裁剪,免费裁剪图片">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/image-cropper.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .ic-layout { max-width: 600px; margin: 0 auto; display: grid; gap: 1.5rem; }
+    .ic-dropzone { border: 2px dashed var(--border); border-radius: 16px; padding: 2.5rem 1rem; cursor: pointer; transition: all 0.25s; background: var(--bg-card); text-align: center; }
+    .ic-dropzone:hover, .ic-dropzone.dragover { border-color: var(--primary); background: rgba(167,139,250,0.05); }
+    .ic-dropzone .icon { font-size: 3rem; margin-bottom: 0.5rem; }
+    .ic-dropzone p { color: var(--text-muted); font-size: 0.9rem; margin: 0; }
+    .ic-canvas-wrap { position: relative; overflow: hidden; border-radius: 12px; border: 1px solid var(--border); background: repeating-conic-gradient(rgba(255,255,255,0.04) 0% 25%, transparent 0% 50%) 0 0 / 20px 20px; min-height: 200px; text-align: center; }
+    .ic-canvas-wrap canvas { max-width: 100%; display: block; margin: 0 auto; }
+    .ic-controls { display: grid; gap: 0.8rem; }
+    .ic-ratios { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .ic-ratios button { padding: 0.35rem 0.8rem; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); cursor: pointer; font-size: 0.75rem; font-family: inherit; transition: 0.15s; }
+    .ic-ratios button.active { border-color: var(--primary); color: var(--text); background: rgba(167,139,250,0.1); }
+    .ic-actions { display: flex; gap: 0.5rem; }
+    .ic-actions button { flex: 1; padding: 0.6rem; border: none; border-radius: 8px; font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .ic-btn-crop { background: linear-gradient(135deg, var(--primary), #7c3aed); color: white; }
+    .ic-btn-crop:hover { transform: translateY(-1px); box-shadow: 0 4px 15px var(--glow-purple); }
+    .ic-btn-crop:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+    .ic-btn-dl { background: var(--bg-card); border: 1px solid var(--border) !important; color: var(--text-muted); }
+    .ic-btn-dl:hover { border-color: var(--primary); color: var(--text); }
+    .ic-btn-dl:disabled { opacity: 0.4; cursor: not-allowed; }
+    .ic-btn-reset { background: transparent; color: var(--text-muted); border: 1px solid var(--border) !important; }
+    .ic-btn-reset:hover { border-color: var(--danger); color: var(--danger); }
+    .ic-preview { max-width: 100%; max-height: 220px; border-radius: 8px; border: 1px solid var(--border); display: none; background: repeating-conic-gradient(rgba(255,255,255,0.04) 0% 25%, transparent 0% 50%) 0 0 / 20px 20px; }
+    .ic-info { font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 1rem; justify-content: center; }
+    .ic-info span { color: var(--primary); font-weight: 700; }
+    @media (max-width: 480px) { .ic-actions { flex-direction: column; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/image-cropper.html">图片裁剪</a><a href="../tools/image-resizer.html">尺寸调整</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>在线裁剪图片 / Image Cropper</h1>
+      <p>自由裁剪或按比例裁剪图片，支持旋转和实时预览。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="ic-layout">
+        <div class="ic-dropzone" id="dropzone">
+          <div class="icon">🖼️</div>
+          <p><strong>点击上传</strong> 或拖放图片</p>
+          <p class="hint" style="font-size:0.75rem;color:var(--text-muted);margin-top:0.4rem;">支持 PNG / JPG / WebP / BMP</p>
+          <input type="file" id="fileInput" accept="image/*" style="display:none">
+        </div>
+
+        <div id="editorArea" style="display:none;">
+          <div class="ic-ratios" id="ratioBtns">
+            <button class="active" data-ratio="free">自由</button>
+            <button data-ratio="1:1">1:1</button>
+            <button data-ratio="4:3">4:3</button>
+            <button data-ratio="3:4">3:4</button>
+            <button data-ratio="16:9">16:9</button>
+            <button data-ratio="9:16">9:16</button>
+            <button data-ratio="3:2">3:2</button>
+            <button data-ratio="2:3">2:3</button>
+          </div>
+
+          <div class="ic-canvas-wrap" id="canvasWrap">
+            <canvas id="cropCanvas"></canvas>
+          </div>
+
+          <div class="ic-ratios" style="justify-content:center;">
+            <button onclick="rotateImg(-90)">↺ 左旋 90°</button>
+            <button onclick="rotateImg(90)">↻ 右旋 90°</button>
+          </div>
+
+          <div class="ic-actions">
+            <button class="ic-btn-crop" id="btnCrop" onclick="doCrop()">✂️ 裁剪</button>
+            <button class="ic-btn-dl" id="btnDownload" onclick="downloadResult()" disabled>⬇ 下载</button>
+            <button class="ic-btn-reset" onclick="resetAll()">清空</button>
+          </div>
+
+          <div class="ic-info">
+            <span id="origDims">原始: —</span>
+            <span id="cropDims">裁剪: —</span>
+          </div>
+
+          <img class="ic-preview" id="resultPreview" alt="裁剪结果">
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线图片裁剪工具</h2>
+      <p>免费的在线图片裁剪工具，支持自由裁剪和预设比例裁剪（1:1正方形、4:3、16:9、3:4、9:16等常用比例）。支持图片左旋/右旋调整方向，裁剪结果实时预览并下载。所有图片处理在浏览器本地完成，不上传到任何服务器，保护你的隐私。适合社交媒体图片裁剪、证件照裁切、产品图片标准化、网页素材裁剪等场景。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/image-cropper.html">图片裁剪</a> | <a href="../tools/image-resizer.html">尺寸调整</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let originalImage = null;
+    let currentRotation = 0;
+    let croppedDataUrl = null;
+    let isCropping = false;
+    let cropStartX, cropStartY, cropEndX, cropEndY;
+    let currentRatio = 'free';
+    let canvasImg = null;
+
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileInput');
+    const canvas = document.getElementById('cropCanvas');
+    const ctx = canvas.getContext('2d');
+
+    dropzone.addEventListener('click', () => fileInput.click());
+    dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+    dropzone.addEventListener('drop', (e) => { e.preventDefault(); dropzone.classList.remove('dragover'); handleFile(e.dataTransfer.files[0]); });
+    fileInput.addEventListener('change', (e) => { if (e.target.files[0]) handleFile(e.target.files[0]); });
+
+    // Ratio selection
+    document.querySelectorAll('#ratioBtns button').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('#ratioBtns button').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        currentRatio = this.dataset.ratio;
+        if (originalImage) loadAndRender();
+      });
+    });
+
+    function handleFile(file) {
+      if (!file) return;
+      if (!file.type.startsWith('image/')) { showToast('请上传图片文件'); return; }
+      if (file.size > 50 * 1024 * 1024) { showToast('图片过大，请上传小于 50MB 的图片'); return; }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          originalImage = img;
+          currentRotation = 0;
+          document.getElementById('editorArea').style.display = 'block';
+          document.getElementById('origDims').textContent = `原始: ${img.naturalWidth} × ${img.naturalHeight}`;
+          loadAndRender();
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function loadAndRender() {
+      if (!originalImage) return;
+      const img = originalImage;
+
+      // Determine displayed dimensions
+      const maxW = Math.min(560, img.naturalWidth);
+      const maxH = Math.min(400, img.naturalHeight);
+      const scale = Math.min(maxW / img.naturalWidth, maxH / img.naturalHeight, 1);
+      const dispW = Math.round(img.naturalWidth * scale);
+      const dispH = Math.round(img.naturalHeight * scale);
+
+      canvas.width = dispW;
+      canvas.height = dispH;
+      canvas.style.width = dispW + 'px';
+      canvas.style.height = dispH + 'px';
+
+      ctx.clearRect(0, 0, dispW, dispH);
+
+      ctx.save();
+      ctx.translate(dispW / 2, dispH / 2);
+      ctx.rotate(currentRotation * Math.PI / 180);
+      ctx.drawImage(img, -dispW / 2, -dispH / 2, dispW, dispH);
+      ctx.restore();
+
+      // Draw crop overlay
+      canvasImg = ctx.getImageData(0, 0, dispW, dispH);
+
+      // Draw initial crop area (default: 80% centered)
+      const cx = dispW / 2, cy = dispH / 2;
+      let cw = dispW * 0.8, ch = dispH * 0.8;
+      if (currentRatio !== 'free') {
+        const parts = currentRatio.split(':');
+        const rw = parseInt(parts[0]), rh = parseInt(parts[1]);
+        const area = cw * ch;
+        const ratio = rw / rh;
+        cw = Math.sqrt(area * ratio);
+        ch = cw / ratio;
+        if (cw > dispW) { cw = dispW * 0.8; ch = cw / ratio; }
+        if (ch > dispH) { ch = dispH * 0.8; cw = ch * ratio; }
+      }
+      cropStartX = cx - cw / 2;
+      cropStartY = cy - ch / 2;
+      cropEndX = cx + cw / 2;
+      cropEndY = cy + ch / 2;
+
+      drawCropOverlay();
+    }
+
+    function drawCropOverlay() {
+      if (!canvasImg) return;
+      ctx.putImageData(canvasImg, 0, 0);
+
+      const x = Math.min(cropStartX, cropEndX);
+      const y = Math.min(cropStartY, cropEndY);
+      const w = Math.abs(cropEndX - cropStartX);
+      const h = Math.abs(cropEndY - cropStartY);
+
+      // Dim outside
+      ctx.fillStyle = 'rgba(0,0,0,0.45)';
+      ctx.fillRect(0, 0, canvas.width, y);
+      ctx.fillRect(0, y + h, canvas.width, canvas.height - y - h);
+      ctx.fillRect(0, y, x, h);
+      ctx.fillRect(x + w, y, canvas.width - x - w, h);
+
+      // Border
+      ctx.strokeStyle = '#a78bfa';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x, y, w, h);
+
+      // Corner handles
+      const hs = 8;
+      ctx.fillStyle = 'white';
+      ctx.strokeStyle = '#a78bfa';
+      ctx.lineWidth = 2;
+      const corners = [[x,y], [x+w,y], [x,y+h], [x+w,y+h]];
+      corners.forEach(([cx, cy]) => {
+        ctx.fillRect(cx - hs/2, cy - hs/2, hs, hs);
+        ctx.strokeRect(cx - hs/2, cy - hs/2, hs, hs);
+      });
+
+      // Info text
+      ctx.fillStyle = 'white';
+      ctx.font = '12px sans-serif';
+      ctx.textAlign = 'center';
+      const actualW = Math.round(w * (originalImage.naturalWidth / canvas.width));
+      const actualH = Math.round(h * (originalImage.naturalHeight / canvas.height));
+      ctx.fillText(`${actualW} × ${actualH}`, x + w / 2, y - 8);
+    }
+
+    // Mouse drag for crop area
+    let isDragging = false;
+    let dragHandle = null;
+    let dragOrigX, dragOrigY, dragOrigSX, dragOrigSY, dragOrigEX, dragOrigEY;
+
+    canvas.addEventListener('mousedown', (e) => {
+      if (!canvasImg) return;
+      const rect = canvas.getBoundingClientRect();
+      const mx = (e.clientX - rect.left) * (canvas.width / rect.width);
+      const my = (e.clientY - rect.top) * (canvas.height / rect.height);
+      const x = Math.min(cropStartX, cropEndX);
+      const y = Math.min(cropStartY, cropEndY);
+      const w = Math.abs(cropEndX - cropStartX);
+      const h = Math.abs(cropEndY - cropStartY);
+
+      // Check corners
+      const hs = 12;
+      const corners = [[x,y,'nw'], [x+w,y,'ne'], [x,y+h,'sw'], [x+w,y+h,'se']];
+      for (const [cx, cy, handle] of corners) {
+        if (Math.abs(mx - cx) < hs && Math.abs(my - cy) < hs) {
+          isDragging = true;
+          dragHandle = handle;
+          dragOrigX = mx; dragOrigY = my;
+          dragOrigSX = cropStartX; dragOrigSY = cropStartY;
+          dragOrigEX = cropEndX; dragOrigEY = cropEndY;
+          return;
+        }
+      }
+
+      // Inside crop area - move entire crop
+      if (mx >= x && mx <= x + w && my >= y && my <= y + h) {
+        isDragging = true;
+        dragHandle = 'move';
+        dragOrigX = mx; dragOrigY = my;
+        dragOrigSX = cropStartX; dragOrigSY = cropStartY;
+        dragOrigEX = cropEndX; dragOrigEY = cropEndY;
+        return;
+      }
+
+      // Outside - new crop area
+      cropStartX = mx; cropStartY = my;
+      cropEndX = mx; cropEndY = my;
+      isDragging = true;
+      dragHandle = 'new';
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+      if (!isDragging || !canvasImg) return;
+      const rect = canvas.getBoundingClientRect();
+      const mx = (e.clientX - rect.left) * (canvas.width / rect.width);
+      const my = (e.clientY - rect.top) * (canvas.height / rect.height);
+
+      if (dragHandle === 'new') {
+        cropEndX = mx;
+        cropEndY = my;
+        // Constrain ratio if set
+        if (currentRatio !== 'free') {
+          enforceRatio();
+        }
+      } else if (dragHandle === 'move') {
+        const dx = mx - dragOrigX;
+        const dy = my - dragOrigY;
+        const cw = Math.abs(dragOrigEX - dragOrigSX);
+        const ch = Math.abs(dragOrigEY - dragOrigSY);
+        let nx = dragOrigSX + dx;
+        let ny = dragOrigSY + dy;
+        if (nx < 0) nx = 0;
+        if (ny < 0) ny = 0;
+        if (nx + cw > canvas.width) nx = canvas.width - cw;
+        if (ny + ch > canvas.height) ny = canvas.height - ch;
+        cropStartX = nx; cropStartY = ny;
+        cropEndX = nx + cw; cropEndY = ny + ch;
+      } else {
+        // Resize from corner
+        let sx = dragOrigSX, sy = dragOrigSY, ex = dragOrigEX, ey = dragOrigEY;
+        if (dragHandle.includes('w')) sx = mx;
+        if (dragHandle.includes('n')) sy = my;
+        if (dragHandle.includes('e')) ex = mx;
+        if (dragHandle.includes('s')) ey = my;
+        // Ensure minimum size
+        if (Math.abs(ex - sx) < 20 || Math.abs(ey - sy) < 20) return;
+        cropStartX = sx; cropStartY = sy;
+        cropEndX = ex; cropEndY = ey;
+        if (currentRatio !== 'free') enforceRatio();
+      }
+
+      drawCropOverlay();
+    });
+
+    function enforceRatio() {
+      const parts = currentRatio.split(':');
+      const rw = parseInt(parts[0]), rh = parseInt(parts[1]);
+      let w = Math.abs(cropEndX - cropStartX);
+      let h = Math.abs(cropEndY - cropStartY);
+      const targetH = w * (rh / rw);
+      if (dragHandle === 'new' || dragHandle === 'move') {
+        // Use width to determine height
+        const centerX = (cropStartX + cropEndX) / 2;
+        const centerY = (cropStartY + cropEndY) / 2;
+        h = w * (rh / rw);
+        cropStartX = centerX - w / 2;
+        cropEndX = centerX + w / 2;
+        cropStartY = centerY - h / 2;
+        cropEndY = centerY + h / 2;
+      } else {
+        // Resizing from corner - maintain ratio
+        const isWider = (w / h) > (rw / rh);
+        if (isWider) { h = w * (rh / rw); }
+        else { w = h * (rw / rh); }
+        // Recompute based on which corner is being dragged
+        if (dragHandle.includes('w')) { cropStartX = cropEndX - w; }
+        if (dragHandle.includes('e')) { cropEndX = cropStartX + w; }
+        if (dragHandle.includes('n')) { cropStartY = cropEndY - h; }
+        if (dragHandle.includes('s')) { cropEndY = cropStartY + h; }
+      }
+    }
+
+    document.addEventListener('mouseup', () => {
+      isDragging = false;
+    });
+
+    canvas.addEventListener('mouseleave', () => {
+      isDragging = false;
+    });
+
+    function rotateImg(deg) {
+      if (!originalImage) return;
+      currentRotation = (currentRotation + deg) % 360;
+      loadAndRender();
+    }
+
+    function doCrop() {
+      if (!originalImage) return;
+      const x = Math.min(cropStartX, cropEndX);
+      const y = Math.min(cropStartY, cropEndY);
+      const w = Math.abs(cropEndX - cropStartX);
+      const h = Math.abs(cropEndY - cropStartY);
+
+      if (w < 2 || h < 2) { showToast('裁剪区域太小'); return; }
+
+      const scaleX = originalImage.naturalWidth / canvas.width;
+      const scaleY = originalImage.naturalHeight / canvas.height;
+
+      // Create offscreen canvas at full resolution
+      const cropCanvas = document.createElement('canvas');
+      cropCanvas.width = Math.round(w * scaleX);
+      cropCanvas.height = Math.round(h * scaleY);
+      const cropCtx = cropCanvas.getContext('2d');
+
+      // Apply rotation and crop
+      cropCtx.save();
+      cropCtx.translate(cropCanvas.width / 2, cropCanvas.height / 2);
+      cropCtx.rotate(currentRotation * Math.PI / 180);
+      cropCtx.drawImage(originalImage,
+        -originalImage.naturalWidth / 2, -originalImage.naturalHeight / 2,
+        originalImage.naturalWidth, originalImage.naturalHeight);
+      cropCtx.restore();
+
+      // Actually, the above doesn't account for the crop offset. Let me use a simpler approach.
+      cropCtx.setTransform(1, 0, 0, 1, 0, 0);
+      cropCtx.clearRect(0, 0, cropCanvas.width, cropCanvas.height);
+
+      // Draw rotated image then crop
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = originalImage.naturalWidth;
+      tempCanvas.height = originalImage.naturalHeight;
+      const tempCtx = tempCanvas.getContext('2d');
+      tempCtx.translate(tempCanvas.width / 2, tempCanvas.height / 2);
+      tempCtx.rotate(currentRotation * Math.PI / 180);
+      tempCtx.drawImage(originalImage, -originalImage.naturalWidth / 2, -originalImage.naturalHeight / 2);
+
+      // Now crop from the rotated temp canvas
+      const sx = Math.round(x * scaleX);
+      const sy = Math.round(y * scaleY);
+      cropCtx.drawImage(tempCanvas, sx, sy, cropCanvas.width, cropCanvas.height, 0, 0, cropCanvas.width, cropCanvas.height);
+
+      croppedDataUrl = cropCanvas.toDataURL('image/png');
+
+      document.getElementById('resultPreview').src = croppedDataUrl;
+      document.getElementById('resultPreview').style.display = 'block';
+      document.getElementById('cropDims').textContent = `裁剪: ${cropCanvas.width} × ${cropCanvas.height}`;
+      document.getElementById('btnDownload').disabled = false;
+      showToast('裁剪完成');
+    }
+
+    function downloadResult() {
+      if (!croppedDataUrl) return;
+      const a = document.createElement('a');
+      a.href = croppedDataUrl;
+      a.download = 'cropped.png';
+      a.click();
+      showToast('下载已开始');
+    }
+
+    function resetAll() {
+      originalImage = null;
+      currentRotation = 0;
+      croppedDataUrl = null;
+      document.getElementById('editorArea').style.display = 'none';
+      document.getElementById('resultPreview').style.display = 'none';
+      document.getElementById('resultPreview').src = '';
+      document.getElementById('btnDownload').disabled = true;
+      document.getElementById('fileInput').value = '';
+      document.getElementById('origDims').textContent = '原始: —';
+      document.getElementById('cropDims').textContent = '裁剪: —';
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+  </script>
+</body>
+</html>

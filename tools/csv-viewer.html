@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSV格式化查看工具 - 免费在线CSV/TSV表格查看与编辑 | Free AI Tools</title>
+  <meta name="description" content="免费在线CSV格式化工具，将CSV/TSV数据转为可排序的表格视图。支持分隔符自动检测、列排序、数据搜索过滤、一键复制为Markdown或JSON格式。浏览器本地处理，不上传服务器，保护数据隐私。">
+  <meta name="keywords" content="CSV查看器,CSV格式化,CSV转表格,CSV在线查看,CSV排序,TSV查看器,CSV转Markdown,CSV转JSON,数据表格工具">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/csv-viewer.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .cv-layout { max-width: 650px; margin: 0 auto; display: grid; gap: 1.5rem; }
+    .cv-textarea { width: 100%; min-height: 180px; padding: 0.75rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'Courier New', monospace; font-size: 0.8rem; resize: vertical; line-height: 1.5; box-sizing: border-box; }
+    .cv-textarea:focus { outline: none; border-color: var(--primary); }
+    .cv-options { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+    .cv-options select { padding: 0.4rem 0.6rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: inherit; font-size: 0.8rem; cursor: pointer; }
+    .cv-options select:focus { outline: none; border-color: var(--primary); }
+    .cv-options label { display: flex; align-items: center; gap: 0.3rem; font-size: 0.8rem; color: var(--text-muted); cursor: pointer; }
+    .cv-options label input { accent-color: var(--primary); }
+    .cv-info { font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 1rem; flex-wrap: wrap; }
+    .cv-info span { color: var(--primary); font-weight: 700; }
+    .cv-table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; }
+    .cv-table-wrap table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    .cv-table-wrap th { background: var(--bg-input); padding: 0.6rem 0.75rem; text-align: left; font-weight: 600; color: var(--primary); cursor: pointer; user-select: none; white-space: nowrap; border-bottom: 2px solid var(--border); position: relative; }
+    .cv-table-wrap th:hover { background: rgba(167,139,250,0.08); }
+    .cv-table-wrap th .sort { font-size: 0.65rem; margin-left: 0.3rem; color: var(--text-muted); }
+    .cv-table-wrap td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); color: var(--text); max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .cv-table-wrap tr:hover td { background: rgba(167,139,250,0.03); }
+    .cv-table-wrap .empty { color: var(--text-muted); padding: 2rem; text-align: center; }
+    .cv-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .cv-actions button { padding: 0.5rem 1.2rem; border: none; border-radius: 8px; font-family: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .cv-btn-parse { background: linear-gradient(135deg, var(--primary), #7c3aed); color: white; }
+    .cv-btn-parse:hover { transform: translateY(-1px); box-shadow: 0 4px 15px var(--glow-purple); }
+    .cv-btn-copy { background: rgba(167,139,250,0.15); color: var(--primary); }
+    .cv-btn-copy:hover { background: rgba(167,139,250,0.25); }
+    .cv-btn-copy:disabled { opacity: 0.4; cursor: not-allowed; }
+    .cv-search { width: 100%; padding: 0.5rem 0.75rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: inherit; font-size: 0.85rem; box-sizing: border-box; }
+    .cv-search:focus { outline: none; border-color: var(--primary); }
+    @media (max-width: 480px) { .cv-table-wrap td, .cv-table-wrap th { padding: 0.4rem 0.5rem; font-size: 0.75rem; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/csv-viewer.html">CSV查看</a><a href="../tools/json-csv.html">JSON CSV互转</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>CSV 格式化查看 / CSV Viewer</h1>
+      <p>将 CSV/TSV 数据转为可排序的表格视图，支持多种导出格式。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="cv-layout">
+        <div>
+          <div style="font-size:0.85rem;color:var(--text-muted);font-weight:600;margin-bottom:0.4rem;">粘贴 CSV / TSV 数据</div>
+          <textarea class="cv-textarea" id="inputCsv" placeholder="粘贴 CSV 或 TSV 数据..." spellcheck="false">Name,Email,Role,Department,Salary
+Alice Wang,alice@example.com,Engineer,Engineering,85000
+Bob Chen,bob@example.com,Designer,Design,72000
+Carol Li,carol@example.com,Manager,Engineering,95000
+David Zhang,david@example.com,Analyst,Data,68000
+Eve Liu,eve@example.com,Engineer,Engineering,88000
+Frank Wu,frank@example.com,Intern,Design,42000
+Grace Zhou,grace@example.com,Director,Product,125000
+Henry Yang,henry@example.com,Engineer,Data,82000
+Ivy Sun,ivy@example.com,Designer,Design,76000
+Jack Huang,jack@example.com,Manager,Product,105000</textarea>
+        </div>
+
+        <div class="cv-options">
+          <select id="delimiterSelect">
+            <option value="auto">自动检测</option>
+            <option value=",">逗号 (,)</option>
+            <option value="\t">制表符 (TSV)</option>
+            <option value=";">分号 (;)</option>
+            <option value="|">竖线 (|)</option>
+          </select>
+          <label><input type="checkbox" id="optHeader" checked onchange="parseCSV()"> 首行为标题</label>
+          <input class="cv-search" id="searchInput" placeholder="搜索表格..." oninput="parseCSV()" style="flex:1;min-width:120px;">
+        </div>
+
+        <div class="cv-info">
+          <span>行: <span id="rowCount">0</span></span>
+          <span>列: <span id="colCount">0</span></span>
+          <span id="activeRowInfo"></span>
+        </div>
+
+        <div class="cv-actions">
+          <button class="cv-btn-parse" onclick="parseCSV()">🔄 解析</button>
+          <button class="cv-btn-copy" id="btnMarkdown" onclick="copyMarkdown()" disabled>📋 复制 Markdown</button>
+          <button class="cv-btn-copy" id="btnJSON" onclick="copyJSON()" disabled>📋 复制 JSON</button>
+        </div>
+
+        <div class="cv-table-wrap" id="tableContainer">
+          <div class="empty">点击"解析"查看表格</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线 CSV 格式化查看工具</h2>
+      <p>免费的在线 CSV 数据查看工具，自动检测分隔符（逗号、制表符、分号、竖线），将原始数据渲染为格式化的可排序表格。支持点击列头排序、关键词搜索过滤、一键复制为 Markdown 表格或 JSON 格式。无需上传服务器，所有数据在浏览器本地处理，保护敏感信息。适合数据分析师、开发者、运营人员日常处理表格数据。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/csv-viewer.html">CSV查看</a> | <a href="../tools/json-csv.html">JSON CSV互转</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let parsedData = [];
+    let headers = [];
+    let sortCol = -1;
+    let sortAsc = true;
+
+    function getDelimiter() {
+      const val = document.getElementById('delimiterSelect').value;
+      if (val === 'auto') return null;
+      if (val === '\\t') return '\t';
+      return val;
+    }
+
+    function detectDelimiter(firstLine) {
+      const candidates = [',', '\t', ';', '|'];
+      let best = ',';
+      let bestCount = 0;
+      for (const d of candidates) {
+        const count = (firstLine.match(new RegExp(d === '\t' ? '\\t' : d.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length;
+        if (count > bestCount) { bestCount = count; best = d; }
+      }
+      return best;
+    }
+
+    function parseCSV() {
+      const text = document.getElementById('inputCsv').value.trim();
+      if (!text) {
+        document.getElementById('tableContainer').innerHTML = '<div class="empty">请粘贴 CSV 数据</div>';
+        document.getElementById('rowCount').textContent = '0';
+        document.getElementById('colCount').textContent = '0';
+        parsedData = [];
+        headers = [];
+        return;
+      }
+
+      const delimiter = getDelimiter() || detectDelimiter(text.split('\n')[0]);
+      const hasHeader = document.getElementById('optHeader').checked;
+      const searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
+
+      const lines = text.split('\n').filter(line => line.trim());
+      if (lines.length === 0) return;
+
+      function splitLine(line) {
+        const result = [];
+        let current = '';
+        let inQuotes = false;
+        for (let i = 0; i < line.length; i++) {
+          const ch = line[i];
+          if (ch === '"') { inQuotes = !inQuotes; }
+          else if (ch === delimiter && !inQuotes) { result.push(current.trim()); current = ''; }
+          else { current += ch; }
+        }
+        result.push(current.trim());
+        return result;
+      }
+
+      const rawRows = lines.map(splitLine);
+      const maxCols = Math.max(...rawRows.map(r => r.length));
+
+      let startIdx = 0;
+      headers = [];
+      if (hasHeader) {
+        headers = rawRows[0];
+        startIdx = 1;
+      } else {
+        headers = Array.from({length: maxCols}, (_, i) => `Column ${i+1}`);
+      }
+
+      // Pad headers
+      while (headers.length < maxCols) headers.push(`Col ${headers.length + 1}`);
+
+      parsedData = [];
+      for (let i = startIdx; i < rawRows.length; i++) {
+        const row = rawRows[i];
+        while (row.length < maxCols) row.push('');
+        const obj = {};
+        headers.forEach((h, idx) => { obj[h || `Col${idx}`] = row[idx] || ''; });
+        parsedData.push(obj);
+      }
+
+      // Filter
+      if (searchQuery) {
+        parsedData = parsedData.filter(row =>
+          Object.values(row).some(v => v.toLowerCase().includes(searchQuery))
+        );
+      }
+
+      document.getElementById('rowCount').textContent = parsedData.length;
+      document.getElementById('colCount').textContent = headers.length;
+      document.getElementById('btnMarkdown').disabled = parsedData.length === 0;
+      document.getElementById('btnJSON').disabled = parsedData.length === 0;
+      document.getElementById('activeRowInfo').textContent = searchQuery ? `(已过滤)` : '';
+
+      renderTable();
+    }
+
+    function renderTable() {
+      const container = document.getElementById('tableContainer');
+      if (parsedData.length === 0) {
+        container.innerHTML = '<div class="empty">无匹配数据</div>';
+        return;
+      }
+
+      let html = '<table><thead><tr>';
+      headers.forEach((h, i) => {
+        const sortArrow = i === sortCol ? (sortAsc ? ' ▲' : ' ▼') : '';
+        html += `<th onclick="sortTable(${i})">${escapeHtml(h)}<span class="sort">${sortArrow}</span></th>`;
+      });
+      html += '</tr></thead><tbody>';
+
+      parsedData.forEach(row => {
+        html += '<tr>';
+        headers.forEach(h => {
+          html += `<td title="${escapeHtml(row[h] || '')}">${escapeHtml(row[h] || '')}</td>`;
+        });
+        html += '</tr>';
+      });
+
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    function sortTable(col) {
+      const h = headers[col];
+      if (sortCol === col) sortAsc = !sortAsc;
+      else { sortCol = col; sortAsc = true; }
+
+      parsedData.sort((a, b) => {
+        const va = a[h] || '';
+        const vb = b[h] || '';
+        const na = parseFloat(va), nb = parseFloat(vb);
+        if (!isNaN(na) && !isNaN(nb)) return sortAsc ? na - nb : nb - na;
+        return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
+      });
+      renderTable();
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function copyMarkdown() {
+      if (parsedData.length === 0) return;
+      let md = '| ' + headers.join(' | ') + ' |\n';
+      md += '| ' + headers.map(() => '---').join(' | ') + ' |\n';
+      parsedData.forEach(row => {
+        md += '| ' + headers.map(h => row[h] || '').join(' | ') + ' |\n';
+      });
+      navigator.clipboard.writeText(md).then(() => showToast('✅ Markdown 表格已复制'));
+    }
+
+    function copyJSON() {
+      if (parsedData.length === 0) return;
+      const json = JSON.stringify(parsedData, null, 2);
+      navigator.clipboard.writeText(json).then(() => showToast('✅ JSON 已复制'));
+    }
+
+    // Initialize
+    parseCSV();
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+  </script>
+</body>
+</html>
