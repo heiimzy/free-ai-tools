@@ -1,5 +1,31 @@
 [
   {
+    "id": "030",
+    "date": "2026-05-19",
+    "zh": {
+      "title": "2026年5月AI行业全景：OpenAI万亿估值、Claude神话召回、具身智能落地",
+      "summary": "2026年5月AI行业大事件全景解读：OpenAI完成1220亿美元融资估值8520亿、Anthropic Mythos因过于强大被召回、GPT-5.5 Instant全面推送、月之暗面启动IPO筹备、DeepSeek首次外部融资、深圳AI终端展火热开幕。含中国AI APP最新月活数据与行业格局分析。",
+      "tags": [
+        "新闻",
+        "行业",
+        "大模型",
+        "具身智能"
+      ],
+      "file": "posts/030-ai-news-may-2026-roundup.zh.html"
+    },
+    "en": {
+      "title": "AI News Roundup May 2026: OpenAI's $122B, Mythos Recalled, Cyber Offense Threshold Crossed",
+      "summary": "May 2026 AI news roundup: OpenAI closes $122B at $852B valuation — largest private financing in history; Anthropic pulls Claude Mythos after it breaks UK cyber range; AI cyber-offensive capability doubles every 4 months; Google's DiLoCo enables distributed training across global data centers; open-weight coding models from China close the gap. Plus: agent enterprise adoption, healthcare breakthroughs, and the geopolitics of AI governance.",
+      "tags": [
+        "news",
+        "industry",
+        "models",
+        "security"
+      ],
+      "file": "posts/030-ai-news-may-2026-roundup.en.html"
+    }
+  },
+  {
     "id": "029",
     "date": "2026-05-19",
     "zh": {

@@ -5,8 +5,15 @@
     <link>https://heiimzy.github.io/free-ai-tools/blog/en/</link>
     <description>Hourly-updated AI blog covering the latest AI news, tool reviews, money-making methods, and productivity tips.</description>
     <language>en</language>
-    <lastBuildDate>Tue, 19 May 2026 10:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 19 May 2026 18:00:00 GMT</lastBuildDate>
     <atom:link href="https://heiimzy.github.io/free-ai-tools/blog/en/rss.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>AI News Roundup May 2026: OpenAI's $122B, Mythos Recalled, Cyber Offense Threshold Crossed</title>
+      <link>https://heiimzy.github.io/free-ai-tools/blog/posts/030-ai-news-may-2026-roundup.en.html</link>
+      <description>May 2026 AI news roundup: OpenAI closes $122B at $852B valuation — largest private financing in history; Anthropic pulls Claude Mythos after it breaks UK cyber range; AI cyber-offensive capability doubles every 4 months; Google's DiLoCo enables distributed training across global data centers; open-weight coding models from China close the gap. Plus: agent enterprise adoption, healthcare breakthroughs, and the geopolitics of AI governance.</description>
+      <pubDate>Tue, 19 May 2026 18:00:00 GMT</pubDate>
+      <guid>https://heiimzy.github.io/free-ai-tools/blog/posts/030-ai-news-may-2026-roundup.en.html</guid>
+    </item>
     <item>
       <title>AI Productivity in May 2026: The Agent Engineering Era — From Assistance to Autonomous Execution</title>
       <link>https://heiimzy.github.io/free-ai-tools/blog/posts/029-ai-productivity-may-2026.en.html</link>
