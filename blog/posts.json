@@ -1,5 +1,33 @@
 [
   {
+    "id": "032",
+    "date": "2026-05-21",
+    "zh": {
+      "title": "2026年5月AI变现全景：OpenAI广告平台上线、Codex赚到第一桶金、AI收入有望破2000亿",
+      "summary": "2026年5月AI变现最新趋势：OpenAI上线Ads Manager广告平台目标1000亿美元广告收入、Codex自主22小时赚取16.88美元、Menlo Ventures预测全球AI收入有望飙升5倍至2000亿美元、Anthropic年化收入440亿美元超越OpenAI、豆包推出付费订阅计划、美国报业AI授权收入暴涨125%。含5条真实AI副业路径详细对比与风险提示。",
+      "tags": [
+        "变现",
+        "商业化",
+        "OpenAI",
+        "AI收入",
+        "副业"
+      ],
+      "file": "posts/032-ai-monetization-may-2026-roundup.zh.html"
+    },
+    "en": {
+      "title": "AI Monetization May 2026: OpenAI Ads Manager, AI Revenue Projected at $200B, Big Tech Earnings Show Cloud AI Surge",
+      "summary": "May 2026 AI monetization roundup: OpenAI launches Ads Manager targeting $2.5B ad revenue in 2026; Menlo Ventures projects AI revenue could reach $200B, up 5x from $37B; Big Tech Q1 earnings show cloud AI revenue surging 63% YoY; publisher AI licensing deals drive 125% revenue growth at USA Today; News Corp targets $1B EBITDA through AI content licensing; Figma raises revenue forecast on AI adoption; Goldman Sachs warns 95% of AI investments haven't delivered ROI yet.",
+      "tags": [
+        "monetization",
+        "AI revenue",
+        "OpenAI ads",
+        "Big Tech",
+        "AI licensing"
+      ],
+      "file": "posts/032-ai-monetization-may-2026-roundup.en.html"
+    }
+  },
+  {
     "id": "031",
     "date": "2026-05-20",
     "zh": {
