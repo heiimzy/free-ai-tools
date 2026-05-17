@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>在线秒表 - 免费计时器带计次功能 | Free AI Tools</title>
+  <meta name="description" content="免费在线秒表工具，支持精确计时到毫秒、计次/分段时间记录、导出历史记录。适合运动计时、实验计时、烹饪计时、演讲练习等场景。浏览器本地运行，无需安装。">
+  <meta name="keywords" content="在线秒表,秒表计时器,计次秒表,分段时间,毫秒计时,免费秒表,秒表工具">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/stopwatch.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .sw-layout { max-width: 450px; margin: 0 auto; display: grid; gap: 1.5rem; text-align: center; }
+    .sw-display { font-size: 4rem; font-weight: 800; letter-spacing: 0.05em; background: linear-gradient(135deg, #a78bfa, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.2; font-variant-numeric: tabular-nums; font-family: 'Courier New', monospace; }
+    .sw-display-sub { font-size: 0.8rem; color: var(--text-muted); margin-top: -0.3rem; }
+    .sw-btns { display: flex; gap: 0.75rem; justify-content: center; }
+    .sw-btns button { padding: 0.7rem 1.8rem; border: none; border-radius: 8px; font-family: inherit; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: 0.2s; min-width: 90px; }
+    .sw-btn-start { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; }
+    .sw-btn-start:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(34,197,94,0.3); }
+    .sw-btn-stop { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
+    .sw-btn-stop:hover { transform: translateY(-2px); }
+    .sw-btn-lap { background: linear-gradient(135deg, var(--primary), #7c3aed); color: white; }
+    .sw-btn-lap:hover { transform: translateY(-2px); }
+    .sw-btn-reset { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); }
+    .sw-btn-reset:hover { border-color: var(--danger); color: var(--danger); }
+    .sw-laps { text-align: left; max-height: 250px; overflow-y: auto; border: 1px solid var(--border); border-radius: 12px; background: var(--bg-card); }
+    .sw-laps .header { display: grid; grid-template-columns: 3rem 1fr 1fr; padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--border); font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+    .sw-laps .row { display: grid; grid-template-columns: 3rem 1fr 1fr; padding: 0.5rem 0.8rem; border-bottom: 1px solid var(--border); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+    .sw-laps .row:last-child { border-bottom: none; }
+    .sw-laps .row .idx { color: var(--text-muted); }
+    .sw-laps .row .total { color: var(--text); }
+    .sw-laps .row .lap { color: var(--primary); }
+    .sw-laps .row.fastest { background: rgba(34,197,94,0.05); }
+    .sw-laps .row.fastest .lap { color: #22c55e; }
+    .sw-laps .row.slowest { background: rgba(239,68,68,0.05); }
+    .sw-laps .row.slowest .lap { color: #ef4444; }
+    .sw-no-laps { color: var(--text-muted); font-size: 0.85rem; padding: 1.5rem; }
+    .sw-actions { display: flex; gap: 0.5rem; justify-content: center; }
+    .sw-actions button { padding: 0.4rem 1rem; border-radius: 6px; font-size: 0.75rem; font-family: inherit; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--text-muted); transition: 0.15s; }
+    .sw-actions button:hover { border-color: var(--primary); color: var(--text); }
+    @media (max-width: 480px) { .sw-display { font-size: 2.8rem; } .sw-btns button { padding: 0.6rem 1rem; min-width: 70px; font-size: 0.85rem; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/timer.html">倒计时</a><a href="../tools/stopwatch.html">秒表</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>在线秒表 / Stopwatch</h1>
+      <p>精确到毫秒的秒表工具，支持计次/分段时间记录。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="sw-layout">
+        <div class="sw-display" id="display">00:00.0</div>
+        <div class="sw-display-sub" id="statusText">就绪</div>
+
+        <div class="sw-btns">
+          <button class="sw-btn-start" id="btnStart" onclick="startStopwatch()">▶ 开始</button>
+          <button class="sw-btn-lap" id="btnLap" onclick="recordLap()" style="display:none;">⏱ 计次</button>
+          <button class="sw-btn-stop" id="btnStop" onclick="stopStopwatch()" style="display:none;">⏹ 停止</button>
+          <button class="sw-btn-reset" onclick="resetStopwatch()">↺ 重置</button>
+        </div>
+
+        <div class="sw-actions">
+          <button onclick="exportLaps()" id="btnExport" style="display:none;">导出CSV</button>
+        </div>
+
+        <div class="sw-laps" id="lapsContainer">
+          <div class="sw-no-laps">点击"开始"后使用"计次"记录分段时间</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线秒表 - 精确到毫秒的计次计时器</h2>
+      <p>精确到0.1秒的在线秒表工具，支持开始/停止/计次分段计时。每次按下"计次"按钮会记录当前总时间和本次分段时间，自动标记最快和最慢圈速。适合运动训练计时、实验室计时、演讲时间控制、烹饪计时等多种场景。所有计时在浏览器本地运行，无需联网。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/timer.html">倒计时</a> | <a href="../tools/stopwatch.html">秒表</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let startTime = 0;
+    let elapsed = 0;
+    let isRunning = false;
+    let interval = null;
+    let laps = [];
+    let lastLapTime = 0;
+
+    function formatTime(ms) {
+      const totalSec = ms / 1000;
+      const m = Math.floor(totalSec / 60);
+      const s = Math.floor(totalSec % 60);
+      const ds = Math.floor((totalSec % 1) * 10);
+      return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}.${ds}`;
+    }
+
+    function updateDisplay() {
+      const now = isRunning ? Date.now() : startTime;
+      const current = isRunning ? now - startTime + elapsed : elapsed;
+      document.getElementById('display').textContent = formatTime(current);
+    }
+
+    function startStopwatch() {
+      if (isRunning) return;
+      isRunning = true;
+      startTime = Date.now();
+
+      document.getElementById('btnStart').style.display = 'none';
+      document.getElementById('btnLap').style.display = 'inline-block';
+      document.getElementById('btnStop').style.display = 'inline-block';
+      document.getElementById('statusText').textContent = '计时中...';
+
+      if (laps.length === 0) {
+        document.getElementById('lapsContainer').innerHTML = '<div class="header"><span>#</span><span>总时间</span><span>分段</span></div>';
+      }
+
+      interval = setInterval(updateDisplay, 100);
+    }
+
+    function stopStopwatch() {
+      if (!isRunning) return;
+      isRunning = false;
+      elapsed += Date.now() - startTime;
+      clearInterval(interval);
+
+      document.getElementById('btnStart').textContent = '▶ 继续';
+      document.getElementById('btnStart').style.display = 'inline-block';
+      document.getElementById('btnLap').style.display = 'none';
+      document.getElementById('btnStop').style.display = 'none';
+      document.getElementById('statusText').textContent = '已暂停';
+    }
+
+    function resetStopwatch() {
+      isRunning = false;
+      clearInterval(interval);
+      elapsed = 0;
+      laps = [];
+      lastLapTime = 0;
+      startTime = 0;
+
+      document.getElementById('display').textContent = '00:00.0';
+      document.getElementById('btnStart').textContent = '▶ 开始';
+      document.getElementById('btnStart').style.display = 'inline-block';
+      document.getElementById('btnLap').style.display = 'none';
+      document.getElementById('btnStop').style.display = 'none';
+      document.getElementById('btnExport').style.display = 'none';
+      document.getElementById('statusText').textContent = '已重置';
+      document.getElementById('lapsContainer').innerHTML = '<div class="sw-no-laps">点击"开始"后使用"计次"记录分段时间</div>';
+    }
+
+    function recordLap() {
+      if (!isRunning) return;
+      const now = Date.now();
+      const currentTotal = elapsed + (now - startTime);
+      const lapTime = currentTotal - lastLapTime;
+      laps.push({ total: currentTotal, lap: lapTime });
+      lastLapTime = currentTotal;
+
+      renderLaps();
+      document.getElementById('btnExport').style.display = 'inline-block';
+    }
+
+    function renderLaps() {
+      const container = document.getElementById('lapsContainer');
+      let html = '<div class="header"><span>#</span><span>总时间</span><span>分段</span></div>';
+
+      // Find fastest/slowest lap
+      let fastestIdx = -1, slowestIdx = -1;
+      if (laps.length > 1) {
+        let fastest = Infinity, slowest = -Infinity;
+        laps.forEach((l, i) => {
+          if (l.lap < fastest) { fastest = l.lap; fastestIdx = i; }
+          if (l.lap > slowest) { slowest = l.lap; slowestIdx = i; }
+        });
+      }
+
+      laps.forEach((l, i) => {
+        let cls = '';
+        if (i === fastestIdx && laps.length > 1) cls = ' fastest';
+        else if (i === slowestIdx && laps.length > 1) cls = ' slowest';
+        html += `<div class="row${cls}"><span class="idx">${i + 1}</span><span class="total">${formatTime(l.total)}</span><span class="lap">+${formatTime(l.lap)}</span></div>`;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function exportLaps() {
+      if (laps.length === 0) return;
+      let csv = 'Lap,Total,LapTime\n';
+      laps.forEach((l, i) => {
+        csv += `${i + 1},${formatTime(l.total)},${formatTime(l.lap)}\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'stopwatch-laps.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('CSV 已导出');
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+  </script>
+</body>
+</html>

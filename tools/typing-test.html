@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>打字速度测试 - 免费在线WPM打字测速工具 | Free AI Tools</title>
+  <meta name="description" content="免费在线打字速度测试工具，实时测量每分钟打字速度（WPM）和准确率。支持多段英文文本、计时模式、实时统计最高分和准确率曲线。无需安装，即开即用，适合练习盲打和提升键盘输入速度。">
+  <meta name="keywords" content="打字速度测试,打字测速,WPM测试,打字练习,盲打练习,键盘速度测试,在线打字测试">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/typing-test.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .tp-layout { max-width: 650px; margin: 0 auto; display: grid; gap: 1.5rem; }
+    .tp-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; }
+    .tp-stat { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 0.8rem; text-align: center; }
+    .tp-stat .num { font-size: 1.6rem; font-weight: 800; color: var(--primary); }
+    .tp-stat .lbl { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.2rem; }
+    .tp-text-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; font-size: 1.1rem; line-height: 1.8; min-height: 120px; font-family: 'Courier New', monospace; user-select: none; }
+    .tp-text-box .char { color: var(--text-muted); }
+    .tp-text-box .char.correct { color: #4ade80; }
+    .tp-text-box .char.incorrect { color: #ff6b6b; background: rgba(255,107,107,0.15); border-radius: 2px; }
+    .tp-text-box .char.current { border-left: 2px solid var(--primary); animation: blink 1s step-end infinite; }
+    @keyframes blink { 50% { border-color: transparent; } }
+    .tp-input { position: absolute; opacity: 0; pointer-events: none; }
+    .tp-actions { display: flex; gap: 0.75rem; justify-content: center; }
+    .tp-actions button { padding: 0.6rem 2rem; border: none; border-radius: 8px; font-family: inherit; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .tp-btn-start { background: linear-gradient(135deg, var(--primary), #7c3aed); color: white; }
+    .tp-btn-start:hover { transform: translateY(-2px); box-shadow: 0 4px 15px var(--glow-purple); }
+    .tp-btn-new { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); }
+    .tp-btn-new:hover { border-color: var(--primary); color: var(--text); }
+    .tp-modes { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
+    .tp-modes button { padding: 0.3rem 1rem; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); cursor: pointer; font-size: 0.8rem; transition: 0.2s; }
+    .tp-modes button.active { border-color: var(--primary); color: var(--text); background: rgba(167,139,250,0.1); }
+    .tp-result { display: none; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; text-align: center; }
+    .tp-result .big { font-size: 2.5rem; font-weight: 800; color: var(--primary); }
+    .tp-result .sub { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.3rem; }
+    @media (max-width: 480px) { .tp-stats { grid-template-columns: repeat(2, 1fr); } .tp-text-box { font-size: 0.95rem; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/word-counter.html">字数统计</a><a href="../tools/typing-test.html">打字测试</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>打字速度测试 / Typing Speed Test</h1>
+      <p>测试你的英文打字速度（WPM）和准确率，多段文本随机切换。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="tp-layout">
+        <div class="tp-modes" id="modeBtns">
+          <button class="active" data-idx="0">短文 (30词)</button>
+          <button data-idx="1">中等 (60词)</button>
+          <button data-idx="2">长文 (120词)</button>
+        </div>
+
+        <div class="tp-stats">
+          <div class="tp-stat"><div class="num" id="wpmDisplay">0</div><div class="lbl">WPM</div></div>
+          <div class="tp-stat"><div class="num" id="accDisplay">100</div><div class="lbl">准确率 %</div></div>
+          <div class="tp-stat"><div class="num" id="charTyped">0</div><div class="lbl">已输入</div></div>
+          <div class="tp-stat"><div class="num" id="timerDisplay">0</div><div class="lbl">计时 (秒)</div></div>
+        </div>
+
+        <div class="tp-text-box" id="textDisplay">
+          <span class="char">点击"开始测试"</span>
+        </div>
+
+        <input class="tp-input" id="hiddenInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+
+        <div class="tp-actions">
+          <button class="tp-btn-start" id="btnStart" onclick="startTest()">▶ 开始测试</button>
+          <button class="tp-btn-new" onclick="resetTest()">↺ 重新开始</button>
+        </div>
+
+        <div class="tp-result" id="resultBox">
+          <div class="big" id="finalWpm">0</div>
+          <div class="sub">WPM (每分钟字数)</div>
+          <div style="margin-top:0.5rem;color:var(--text-muted);font-size:0.85rem;">
+            准确率: <span id="finalAcc">100</span>% ·
+            正确: <span id="finalCorrect">0</span> ·
+            错误: <span id="finalWrong">0</span> ·
+            用时: <span id="finalTime">0</span>秒
+          </div>
+          <div style="margin-top:0.5rem;" id="rating"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线打字速度测试</h2>
+      <p>测试你的英文打字速度，实时显示每分钟打字数（WPM）和输入准确率。内置多段不同长度的随机文本，支持计时模式和实时统计。适合日常打字练习、盲打训练以及键盘输入速度评估。所有字符对比在浏览器本地完成，无需联网。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/word-counter.html">字数统计</a> | <a href="../tools/typing-test.html">打字测试</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const TEXTS = [
+      // Short (30 words)
+      ["The quick brown fox jumps over the lazy dog near the bank of the river. She sells sea shells by the sea shore every single day."],
+      // Medium (60 words)
+      ["The sun was setting behind the mountains as the small village prepared for the night. Children played in the streets while their parents gathered around the fire. The smell of fresh bread filled the air coming from the local bakery. Everyone knew each other and life moved at a peaceful pace in this quiet corner of the world where time seemed to stand still."],
+      // Long (120 words)
+      ["Artificial intelligence has transformed the way we work and live in ways that were unimaginable just a decade ago. From virtual assistants that manage our schedules to recommendation systems that suggest what we should watch or buy, AI has become deeply integrated into our daily routines. In healthcare, machine learning models help doctors diagnose diseases earlier and more accurately than ever before. In education, personalized learning platforms adapt to each student's unique needs and pace of learning. Businesses use AI to optimize supply chains, predict customer behavior, and automate routine tasks that once consumed hours of human effort. As these technologies continue to evolve at an accelerating rate, the question is no longer whether AI will change our world, but how we will adapt to the changes that are already underway."]
+    ];
+
+    let texts = [];
+    let currentPos = 0;
+    let isActive = false;
+    let startTime = null;
+    let timerInterval = null;
+    let correctCount = 0;
+    let wrongCount = 0;
+    let mode = 0;
+    let finished = false;
+
+    function initTexts() {
+      texts = TEXTS.map(arr => arr[0].split('').map(c => ({ char: c, typed: null })));
+    }
+
+    function renderText() {
+      const display = document.getElementById('textDisplay');
+      const t = texts[mode];
+      display.innerHTML = t.map((item, i) => {
+        let cls = 'char';
+        if (i === currentPos && isActive && !finished) cls += ' current';
+        if (item.typed === true) cls += ' correct';
+        else if (item.typed === false) cls += ' incorrect';
+        return `<span class="${cls}">${item.char === ' ' ? '&nbsp;' : item.char}</span>`;
+      }).join('');
+    }
+
+    function updateStats() {
+      const elapsed = startTime ? (Date.now() - startTime) / 1000 : 0;
+      const totalTyped = correctCount + wrongCount;
+      const minutes = elapsed / 60;
+      const wpm = minutes > 0 ? Math.round((correctCount / 5) / minutes) : 0;
+      const acc = totalTyped > 0 ? Math.round((correctCount / totalTyped) * 100) : 100;
+
+      document.getElementById('wpmDisplay').textContent = wpm;
+      document.getElementById('accDisplay').textContent = acc;
+      document.getElementById('charTyped').textContent = totalTyped;
+      document.getElementById('timerDisplay').textContent = Math.floor(elapsed);
+    }
+
+    function startTest() {
+      initTexts();
+      currentPos = 0;
+      correctCount = 0;
+      wrongCount = 0;
+      finished = false;
+      isActive = true;
+      startTime = Date.now();
+
+      document.getElementById('btnStart').style.display = 'none';
+      document.getElementById('resultBox').style.display = 'none';
+      document.getElementById('hiddenInput').focus();
+      renderText();
+      updateStats();
+
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = setInterval(updateStats, 200);
+    }
+
+    function resetTest() {
+      isActive = false;
+      finished = false;
+      currentPos = 0;
+      correctCount = 0;
+      wrongCount = 0;
+      startTime = null;
+      if (timerInterval) clearInterval(timerInterval);
+
+      initTexts();
+      renderText();
+      updateStats();
+      document.getElementById('btnStart').style.display = 'inline-block';
+      document.getElementById('resultBox').style.display = 'none';
+      document.getElementById('hiddenInput').value = '';
+    }
+
+    document.getElementById('hiddenInput').addEventListener('input', function(e) {
+      if (!isActive || finished) return;
+      const val = this.value;
+      if (val.length === 0) return;
+
+      const expected = texts[mode];
+      if (currentPos >= expected.length) return;
+
+      const lastChar = val[val.length - 1];
+      const expectedChar = expected[currentPos].char;
+
+      if (lastChar === expectedChar) {
+        expected[currentPos].typed = true;
+        correctCount++;
+      } else {
+        expected[currentPos].typed = false;
+        wrongCount++;
+      }
+
+      currentPos++;
+      this.value = '';
+      renderText();
+      updateStats();
+
+      if (currentPos >= expected.length) {
+        finishTest();
+      }
+    });
+
+    function finishTest() {
+      finished = true;
+      isActive = false;
+      if (timerInterval) clearInterval(timerInterval);
+
+      const elapsed = (Date.now() - startTime) / 1000;
+      const minutes = elapsed / 60;
+      const totalTyped = correctCount + wrongCount;
+      const wpm = minutes > 0 ? Math.round((correctCount / 5) / minutes) : 0;
+      const acc = totalTyped > 0 ? Math.round((correctCount / totalTyped) * 100) : 100;
+
+      document.getElementById('finalWpm').textContent = wpm;
+      document.getElementById('finalAcc').textContent = acc;
+      document.getElementById('finalCorrect').textContent = correctCount;
+      document.getElementById('finalWrong').textContent = wrongCount;
+      document.getElementById('finalTime').textContent = Math.floor(elapsed);
+
+      let rating = '';
+      if (wpm >= 80) rating = '🏆 专家级 — 你是键盘大师！';
+      else if (wpm >= 60) rating = '🥇 优秀 — 远高于平均水平';
+      else if (wpm >= 45) rating = '🥈 良好 — 高于平均水平';
+      else if (wpm >= 30) rating = '🥉 一般 — 继续练习吧';
+      else rating = '💪 新手 — 多练练会越来越好';
+      document.getElementById('rating').textContent = rating;
+
+      document.getElementById('resultBox').style.display = 'block';
+      document.getElementById('hiddenInput').blur();
+    }
+
+    // Mode switching
+    document.querySelectorAll('#modeBtns button').forEach(btn => {
+      btn.addEventListener('click', function() {
+        if (isActive) return;
+        document.querySelectorAll('#modeBtns button').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        mode = parseInt(this.dataset.idx);
+        resetTest();
+      });
+    });
+
+    // Keyboard shortcut: press any key to start
+    document.addEventListener('keydown', function(e) {
+      if (!isActive && !finished && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+        startTest();
+      }
+    });
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    initTexts();
+    renderText();
+  </script>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>图片转Base64 - 免费在线图片Base64编码工具 | Free AI Tools</title>
+  <meta name="description" content="免费在线图片转Base64工具，将PNG/JPG/WebP/SVG/GIF图片转为Base64 Data URI编码。支持拖放上传、实时预览、一键复制Base64字符串。编码在浏览器本地完成，图片不上传服务器，保护隐私。">
+  <meta name="keywords" content="图片转Base64,Base64编码,图片编码,Data URI,图片转码,在线Base64,前端开发工具">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/image-to-base64.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .ib-layout { max-width: 550px; margin: 0 auto; display: grid; gap: 1.5rem; }
+    .ib-dropzone { border: 2px dashed var(--border); border-radius: 16px; padding: 2.5rem 1rem; cursor: pointer; transition: all 0.25s; background: var(--bg-card); text-align: center; }
+    .ib-dropzone:hover, .ib-dropzone.dragover { border-color: var(--primary); background: rgba(167,139,250,0.05); }
+    .ib-dropzone .icon { font-size: 3rem; margin-bottom: 0.5rem; }
+    .ib-dropzone p { color: var(--text-muted); font-size: 0.9rem; margin: 0; }
+    .ib-dropzone .hint { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.4rem; }
+    .ib-preview { max-width: 200px; max-height: 200px; margin: 0 auto; border-radius: 12px; border: 1px solid var(--border); display: none; }
+    .ib-info { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .ib-info .item { font-size: 0.8rem; color: var(--text-muted); }
+    .ib-info .item strong { color: var(--primary); }
+    .ib-output { width: 100%; min-height: 100px; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: monospace; font-size: 0.8rem; resize: vertical; line-height: 1.5; box-sizing: border-box; word-break: break-all; }
+    .ib-output:focus { outline: none; border-color: var(--primary); }
+    .ib-actions { display: flex; gap: 0.5rem; }
+    .ib-actions button { flex: 1; padding: 0.6rem; border-radius: 8px; border: none; font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .ib-btn-copy { background: linear-gradient(135deg, var(--primary), #7c3aed); color: white; }
+    .ib-btn-copy:hover { transform: translateY(-1px); box-shadow: 0 4px 15px var(--glow-purple); }
+    .ib-btn-clear { background: var(--bg-card); border: 1px solid var(--border) !important; color: var(--text-muted); }
+    .ib-btn-clear:hover { border-color: var(--danger); color: var(--danger); }
+    .ib-formats { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
+    .ib-formats button { padding: 0.3rem 1rem; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); cursor: pointer; font-size: 0.8rem; transition: 0.2s; }
+    .ib-formats button.active { border-color: var(--primary); color: var(--text); background: rgba(167,139,250,0.1); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/base64.html">Base64编解码</a><a href="../tools/image-to-base64.html">图片转Base64</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>图片转 Base64 / Image to Base64 Converter</h1>
+      <p>将图片转换为 Base64 Data URI 编码，支持拖放上传和格式选择。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="ib-layout">
+        <div class="ib-formats">
+          <button class="active" data-fmt="image/png">PNG</button>
+          <button data-fmt="image/jpeg">JPEG</button>
+          <button data-fmt="image/webp">WebP</button>
+          <button data-fmt="image/svg+xml">SVG</button>
+          <button data-fmt="image/gif">GIF</button>
+        </div>
+
+        <div class="ib-dropzone" id="dropzone">
+          <div class="icon">🖼️</div>
+          <p><strong>点击上传</strong> 或拖放图片</p>
+          <p class="hint">支持 PNG / JPG / WebP / SVG / GIF</p>
+          <input type="file" id="fileInput" accept="image/*" style="display:none">
+        </div>
+
+        <img class="ib-preview" id="previewImg" alt="图片预览">
+
+        <div class="ib-info" id="infoBox" style="display:none;">
+          <span class="item">原始大小: <strong id="originalSize">0</strong></span>
+          <span class="item">Base64长度: <strong id="b64Length">0</strong></span>
+        </div>
+
+        <div class="ib-field">
+          <label>Base64 Data URI</label>
+          <textarea class="ib-output" id="outputText" readonly placeholder="上传图片后将在此处显示Base64编码..." onclick="copyResult()" style="cursor:pointer;"></textarea>
+        </div>
+
+        <div class="ib-actions">
+          <button class="ib-btn-copy" onclick="copyResult()">📋 复制 Base64</button>
+          <button class="ib-btn-clear" onclick="clearAll()">清空</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线图片转 Base64 工具</h2>
+      <p>将图片转换为 Base64 Data URI 格式，方便直接嵌入 HTML、CSS 或 JavaScript 代码中。支持 PNG、JPEG、WebP、SVG 和 GIF 格式，可自由选择输出格式。编码过程在浏览器本地完成，图片数据不会上传到服务器。常用于前端开发中的小图标、背景图嵌入，减少HTTP请求数。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/base64.html">Base64编解码</a> | <a href="../tools/image-to-base64.html">图片转Base64</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let currentFormat = 'image/png';
+    let currentFile = null;
+
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileInput');
+    const previewImg = document.getElementById('previewImg');
+    const outputText = document.getElementById('outputText');
+    const infoBox = document.getElementById('infoBox');
+    const originalSize = document.getElementById('originalSize');
+    const b64Length = document.getElementById('b64Length');
+
+    // Format selection
+    document.querySelectorAll('.ib-formats button').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.ib-formats button').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        currentFormat = this.dataset.fmt;
+        if (currentFile) encodeFile(currentFile);
+      });
+    });
+
+    // Upload handlers
+    dropzone.addEventListener('click', () => fileInput.click());
+    dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+    dropzone.addEventListener('drop', (e) => { e.preventDefault(); dropzone.classList.remove('dragover'); handleFile(e.dataTransfer.files[0]); });
+    fileInput.addEventListener('change', (e) => { if (e.target.files[0]) handleFile(e.target.files[0]); });
+
+    function handleFile(file) {
+      if (!file) return;
+      if (!file.type.startsWith('image/')) { showToast('请上传图片文件'); return; }
+      if (file.size > 50 * 1024 * 1024) { showToast('图片过大，请上传小于 50MB 的图片'); return; }
+      currentFile = file;
+      encodeFile(file);
+    }
+
+    function encodeFile(file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const dataUrl = e.target.result;
+        previewImg.src = dataUrl;
+        previewImg.style.display = 'block';
+
+        if (currentFormat === 'image/png' || currentFormat === 'image/jpeg' || currentFormat === 'image/webp') {
+          // Re-encode via canvas to change format
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.naturalWidth;
+            canvas.height = img.naturalHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+            const reencoded = canvas.toDataURL(currentFormat, 0.92);
+            setResult(reencoded, file);
+          };
+          img.src = dataUrl;
+        } else {
+          setResult(dataUrl, file);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function setResult(dataUrl, file) {
+      outputText.value = dataUrl;
+      infoBox.style.display = 'flex';
+      originalSize.textContent = formatSize(file.size);
+      b64Length.textContent = dataUrl.length.toLocaleString() + ' 字符';
+    }
+
+    function formatSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+
+    function copyResult() {
+      if (outputText.value) {
+        navigator.clipboard.writeText(outputText.value).then(() => showToast('✅ 已复制到剪贴板'));
+      }
+    }
+
+    function clearAll() {
+      currentFile = null;
+      previewImg.style.display = 'none';
+      previewImg.src = '';
+      outputText.value = '';
+      infoBox.style.display = 'none';
+      fileInput.value = '';
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+  </script>
+</body>
+</html>
