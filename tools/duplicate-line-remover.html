@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>重复行去除工具 - 免费在线文本去重工具 | Free AI Tools</title>
+  <meta name="description" content="免费在线文本去重工具，一键删除重复行。支持保留/删除空行、排序输出、忽略大小写、统计重复次数。适合清理CSV数据、去重列表、整理日志文件、清洗文本数据。浏览器本地处理，无需上传。">
+  <meta name="keywords" content="去除重复行,文本去重,重复行删除,去重工具,Duplicate Line Remover,文本清洗,列表去重,CSV清洗">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/duplicate-line-remover.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .dl-layout { max-width: 650px; margin: 0 auto; display: grid; gap: 1rem; }
+    .dl-options { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; }
+    .dl-options label { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+    .dl-options label.check { flex-direction: row; align-items: center; gap: 0.4rem; cursor: pointer; }
+    .dl-options input[type="checkbox"] { width: auto; cursor: pointer; }
+    .dl-options input, .dl-options select { padding: 0.4rem 0.5rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: inherit; font-size: 0.85rem; }
+    .dl-textareas { display: grid; grid-template-columns: 1fr 1fr; gap: 01rem; }
+    .dl-textarea { width: 100%; min-height: 200px; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: 'Courier New', monospace; font-size: 0.82rem; resize: vertical; box-sizing: border-box; line-height: 1.5; }
+    .dl-textarea:focus { outline: none; border-color: var(--primary); }
+    .dl-textarea::placeholder { color: var(--text-muted); opacity: 0.4; }
+    .dl-output { background: #1a1a2e; color: #d4d4d4; }
+    .dl-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; }
+    .dl-actions button { padding: 0.5rem 1.2rem; border-radius: 8px; border: none; font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .dl-btn-gen { background: linear-gradient(135deg, var(--primary), #7c3aed); color: white; }
+    .dl-btn-gen:hover { transform: translateY(-1px); box-shadow: 0 4px 15px var(--glow-purple); }
+    .dl-btn-copy { background: rgba(167,139,250,0.15); color: var(--primary); }
+    .dl-btn-copy:hover { background: rgba(167,139,250,0.25); }
+    .dl-btn-clear { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); }
+    .dl-btn-clear:hover { border-color: var(--danger); color: var(--danger); }
+    .dl-stats { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; font-size: 0.75rem; color: var(--text-muted); }
+    .dl-stats span { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 0.3rem 0.75rem; }
+    .dl-stats .num { color: var(--primary); font-weight: 700; }
+    @media (max-width: 500px) { .dl-textareas { grid-template-columns: 1fr; } .dl-options { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/duplicate-line-remover.html">去重</a><a href="../tools/lorem-ipsum-generator.html">Lorem Ipsum</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>重复行去除工具 / Duplicate Line Remover</h1>
+      <p>一键删除文本中的重复行，支持排序、忽略大小写、空行处理。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="dl-layout">
+        <div class="dl-options">
+          <label>排序输出 <select id="dlSort">
+            <option value="none">不排序</option>
+            <option value="asc">升序 A-Z</option>
+            <option value="desc">降序 Z-A</option>
+          </select></label>
+          <label class="check"><input type="checkbox" id="dlIgnoreCase"> 忽略大小写</label>
+          <label class="check"><input type="checkbox" id="dlKeepEmpty" checked> 保留空行</label>
+          <label class="check"><input type="checkbox" id="dlShowCount"> 显示重复次数</label>
+          <label class="check"><input type="checkbox" id="dlTrim"> 去除首尾空格</label>
+          <label>去重模式 <select id="dlMode">
+            <option value="unique">保留第一个</option>
+            <option value="all">只保留唯一行</option>
+          </select></label>
+        </div>
+
+        <div class="dl-textareas">
+          <div>
+            <label style="font-size:0.75rem;color:var(--text-muted);font-weight:600;">输入文本</label>
+            <textarea class="dl-textarea" id="dlInput" placeholder="每行一条数据，粘贴要处理的文本..." oninput="autoProcess()">apple
+banana
+apple
+cherry
+banana
+date
+apple</textarea>
+          </div>
+          <div>
+            <label style="font-size:0.75rem;color:var(--text-muted);font-weight:600;">输出结果</label>
+            <textarea class="dl-textarea dl-output" id="dlOutput" readonly></textarea>
+          </div>
+        </div>
+
+        <div class="dl-actions">
+          <button class="dl-btn-gen" onclick="process()">⚡ 去重</button>
+          <button class="dl-btn-copy" onclick="copyOutput()">📋 复制</button>
+          <button class="dl-btn-clear" onclick="clearAll()">🗑️ 清空</button>
+        </div>
+
+        <div class="dl-stats" id="dlStats"></div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线重复行去除工具</h2>
+      <p>免费的在线文本去重工具，快速清理文本中的重复行。支持多种去重选项：排序输出（升序/降序/不排序）、忽略大小写去重、保留或删除空行、显示每行重复次数、去除行首尾空格。两种去重模式可选：保留第一个（保留重复行的首次出现）和只保留唯一行（删除所有重复行，只保留出现过一次的）。适合清理CSV数据中的重复记录、整理名单列表、清洗日志文件中重复的日志条目、处理爬虫数据、整理关键词列表。实时统计输入行数、输出行数和去重数量。所有处理在浏览器本地完成，内容不会上传到服务器。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/duplicate-line-remover.html">去重</a> | <a href="../tools/lorem-ipsum-generator.html">Lorem Ipsum</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function process() {
+      const input = document.getElementById('dlInput').value;
+      const sortMode = document.getElementById('dlSort').value;
+      const ignoreCase = document.getElementById('dlIgnoreCase').checked;
+      const keepEmpty = document.getElementById('dlKeepEmpty').checked;
+      const showCount = document.getElementById('dlShowCount').checked;
+      const trim = document.getElementById('dlTrim').checked;
+      const mode = document.getElementById('dlMode').value;
+
+      if (!input.trim() && !keepEmpty) {
+        document.getElementById('dlOutput').value = '';
+        document.getElementById('dlStats').textContent = '';
+        return;
+      }
+
+      let lines = input.split('\n');
+      const originalCount = lines.length;
+
+      if (trim) lines = lines.map(l => l.trim());
+
+      const seen = {};
+      const counts = {};
+      const result = [];
+
+      for (const line of lines) {
+        const key = ignoreCase ? line.toLowerCase() : line;
+        counts[key] = (counts[key] || 0) + 1;
+      }
+
+      for (const line of lines) {
+        const key = ignoreCase ? line.toLowerCase() : line;
+        if (!line && !keepEmpty) continue;
+
+        if (mode === 'unique') {
+          if (!seen[key]) {
+            seen[key] = true;
+            result.push(showCount ? line + ' (' + counts[key] + 'x)' : line);
+          }
+        } else {
+          // only unique lines (appear exactly once)
+          if (!seen[key]) {
+            seen[key] = true;
+            if (counts[key] === 1) {
+              result.push(line);
+            }
+          }
+        }
+      }
+
+      if (sortMode === 'asc') {
+        result.sort((a, b) => a.localeCompare(b));
+      } else if (sortMode === 'desc') {
+        result.sort((a, b) => b.localeCompare(a));
+      }
+
+      const output = result.join('\n');
+      document.getElementById('dlOutput').value = output;
+
+      const outLines = result.length;
+      const removed = originalCount - outLines;
+      document.getElementById('dlStats').innerHTML = '<span>输入: <span class="num">' + originalCount + '</span> 行</span><span>输出: <span class="num">' + outLines + '</span> 行</span><span>去重: <span class="num">' + removed + '</span> 行</span>';
+    }
+
+    function autoProcess() {
+      clearTimeout(window._dlTimer);
+      window._dlTimer = setTimeout(process, 300);
+    }
+
+    // All option changes should trigger auto-process
+    document.querySelectorAll('.dl-options input, .dl-options select').forEach(el => {
+      el.addEventListener('change', process);
+    });
+
+    function copyOutput() {
+      const val = document.getElementById('dlOutput').value;
+      if (!val) return showToast('⚠️ 没有内容可复制');
+      navigator.clipboard.writeText(val).then(() => showToast('✅ 已复制'));
+    }
+
+    function clearAll() {
+      document.getElementById('dlInput').value = '';
+      document.getElementById('dlOutput').value = '';
+      document.getElementById('dlStats').textContent = '';
+      showToast('🗑️ 已清空');
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    window.addEventListener('DOMContentLoaded', process);
+  </script>
+</body>
+</html>

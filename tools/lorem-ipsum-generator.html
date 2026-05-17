@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lorem Ipsum生成器 - 免费在线占位文本生成工具 | Free AI Tools</title>
+  <meta name="description" content="免费在线Lorem Ipsum占位文本生成器，支持按段落、句子、单词生成虚拟文本。自定义数量、起始短语、HTML格式输出。适合网页设计排版填充、印刷排版样稿、UI/UX设计原型、文档模板测试。浏览器本地生成，即开即用。">
+  <meta name="keywords" content="Lorem Ipsum,占位文本,虚拟文本生成,排版填充文字,文本生成器,Lipsum,草稿文本,设计排版文字">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/lorem-ipsum-generator.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .li-layout { max-width: 650px; margin: 0 auto; display: grid; gap: 1rem; }
+    .li-options { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; }
+    .li-options label { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+    .li-options input, .li-options select { padding: 0.4rem 0.5rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: inherit; font-size: 0.85rem; }
+    .li-options input:focus, .li-options select:focus { outline: none; border-color: var(--primary); }
+    .li-output { width: 100%; min-height: 250px; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: #1a1a2e; color: #d4d4d4; font-family: 'Courier New', monospace; font-size: 0.82rem; resize: vertical; box-sizing: border-box; line-height: 1.5; }
+    .li-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; }
+    .li-actions button { padding: 0.5rem 1.2rem; border-radius: 8px; border: none; font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .li-btn-gen { background: linear-gradient(135deg, var(--primary), #7c3aed); color: white; }
+    .li-btn-gen:hover { transform: translateY(-1px); box-shadow: 0 4px 15px var(--glow-purple); }
+    .li-btn-copy { background: rgba(167,139,250,0.15); color: var(--primary); }
+    .li-btn-copy:hover { background: rgba(167,139,250,0.25); }
+    .li-stats { font-size: 0.75rem; color: var(--text-muted); text-align: center; }
+    @media (max-width: 500px) { .li-options { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/lorem-ipsum-generator.html">Lorem Ipsum</a><a href="../tools/duplicate-line-remover.html">去重</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>Lorem Ipsum 生成器 / Lorem Ipsum Generator</h1>
+      <p>生成虚拟占位文本，支持段落、句子、单词多种模式，适合设计排版。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="li-layout">
+        <div class="li-options">
+          <label>类型 <select id="liType" onchange="generate()">
+            <option value="paragraphs">段落</option>
+            <option value="sentences">句子</option>
+            <option value="words">单词</option>
+          </select></label>
+          <label>数量 <input type="number" id="liCount" value="3" min="1" max="100" oninput="generate()"></label>
+          <label>起始短语 <select id="liStart" onchange="generate()">
+            <option value="classic">Classic Lorem Ipsum</option>
+            <option value="custom">自定义</option>
+          </select></label>
+        </div>
+
+        <div>
+          <textarea class="li-output" id="liOutput" readonly></textarea>
+        </div>
+
+        <div class="li-actions">
+          <button class="li-btn-gen" onclick="generate()">🔄 生成</button>
+          <button class="li-btn-copy" onclick="copyOutput()">📋 复制</button>
+        </div>
+
+        <div class="li-stats" id="liStats"></div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线 Lorem Ipsum 占位文本生成器</h2>
+      <p>免费的在线虚拟文本生成工具，基于经典的 Lorem Ipsum 拉丁文段落。支持三种生成模式：按段落（每段含5-8句）、按句子（每句含8-15词）、按单词（指定数量单词序列）。可自定义生成数量和起始模式。生成的文本可直接复制使用，也适合作为HTML排版填充。Lorem Ipsum 源自西塞罗的《善恶之尽》拉丁文著作，自1500年代以来一直是印刷和排版行业的虚拟占位文本。适合网页设计师填充页面布局、UI/UX设计师制作原型效果、印刷排版查看样稿效果。浏览器本地生成，无需联网。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/lorem-ipsum-generator.html">Lorem Ipsum</a> | <a href="../tools/duplicate-line-remover.html">去重</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const LOREM_WORDS = [
+      'lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscing', 'elit',
+      'sed', 'do', 'eiusmod', 'tempor', 'incididunt', 'ut', 'labore', 'et', 'dolore', 'magna', 'aliqua',
+      'enim', 'ad', 'minim', 'veniam', 'quis', 'nostrud', 'exercitation', 'ullamco', 'laboris',
+      'nisi', 'ut', 'aliquip', 'ex', 'ea', 'commodo', 'consequat', 'duis', 'aute', 'irure',
+      'dolor', 'in', 'reprehenderit', 'voluptate', 'velit', 'esse', 'cillum', 'eu', 'fugiat',
+      'nulla', 'pariatur', 'excepteur', 'sint', 'occaecat', 'cupidatat', 'non', 'proident',
+      'sunt', 'culpa', 'qui', 'officia', 'deserunt', 'mollit', 'anim', 'id', 'est', 'laborum',
+      'fusce', 'feugiat', 'pretium', 'nibh', 'ipsum', 'consequat', 'tempus', 'justo', 'auctor',
+      'augue', 'mauris', 'augue', 'neque', 'gravida', 'in', 'fermentum', 'et', 'sollicitudin',
+      'mattis', 'malesuada', 'fames', 'turpis', 'egestas', 'integer', 'eget', 'aliquet', 'nibh',
+      'praesent', 'tristique', 'magna', 'sit', 'amet', 'purus', 'gravida', 'quis', 'blandit',
+      'turpis', 'cursus', 'in', 'hac', 'habitasse', 'platea', 'dictumst', 'quisque', 'sagittis',
+      'purus', 'sit', 'amet', 'volutpat', 'consequat', 'mauris', 'nunc', 'congue', 'nisi',
+      'vitae', 'suscipit', 'tellus', 'mauris', 'a', 'diam', 'maecenas', 'sed', 'enim', 'ut',
+      'sem', 'viverra', 'aliquet', 'eget', 'sit', 'amet', 'tellus', 'cras', 'adipiscing',
+      'enim', 'eu', 'turpis', 'egestas', 'pretium'
+    ];
+
+    function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+    function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+    function randomWord() { return LOREM_WORDS[rand(0, LOREM_WORDS.length - 1)]; }
+
+    function randomSentence(minWords, maxWords) {
+      const count = rand(minWords || 8, maxWords || 15);
+      const words = [];
+      for (let i = 0; i < count; i++) words.push(randomWord());
+      return capitalize(words.join(' ')) + '. ';
+    }
+
+    function randomParagraph(minSent, maxSent) {
+      const count = rand(minSent || 5, maxSent || 8);
+      let text = '';
+      for (let i = 0; i < count; i++) text += randomSentence();
+      return '<p>' + text.trim() + '</p>';
+    }
+
+    function generate() {
+      const type = document.getElementById('liType').value;
+      const count = parseInt(document.getElementById('liCount').value) || 3;
+      const start = document.getElementById('liStart').value;
+      let output = '';
+
+      if (type === 'paragraphs') {
+        for (let i = 0; i < count; i++) {
+          if (i === 0 && start === 'classic') {
+            output += '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>';
+          } else {
+            output += randomParagraph() + '\n';
+          }
+        }
+      } else if (type === 'sentences') {
+        if (start === 'classic') {
+          output += 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ';
+          for (let i = 0; i < count - 1; i++) output += randomSentence();
+        } else {
+          for (let i = 0; i < count; i++) output += randomSentence();
+        }
+      } else { // words
+        const total = Math.min(count, 500);
+        let words = [];
+        if (start === 'classic') {
+          const classic = 'lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'.split(' ');
+          words.push(...classic);
+        }
+        while (words.length < total) words.push(randomWord());
+        output = words.slice(0, total).join(' ');
+      }
+
+      document.getElementById('liOutput').value = output;
+
+      const chars = output.length;
+      const wordCount = output.replace(/<[^>]+>/g, '').split(/\s+/).filter(Boolean).length;
+      document.getElementById('liStats').textContent = chars + ' 字符 · ' + wordCount + ' 词 · ' + count + ' ' + (type === 'paragraphs' ? '段落' : type === 'sentences' ? '句子' : '词');
+    }
+
+    function copyOutput() {
+      const val = document.getElementById('liOutput').value;
+      if (!val) return showToast('⚠️ 没有内容可复制');
+      navigator.clipboard.writeText(val).then(() => showToast('✅ 已复制 (' + val.length + ' 字符)'));
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    window.addEventListener('DOMContentLoaded', generate);
+  </script>
+</body>
+</html>

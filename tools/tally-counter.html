@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数字计数器 - 免费在线点击计数器/计数工具 | Free AI Tools</title>
+  <meta name="description" content="免费在线数字计数器，支持多个独立计数组。点击加/减计数、一键归零、自定义步长、保存计数状态。适合用于盘点库存、观众统计、实验数据记录、体育比分、活动签到计数等场景。浏览器本地存储，刷新不丢失。">
+  <meta name="keywords" content="数字计数器,点击计数器,Tally Counter,在线计数,计数工具,库存盘点计数器,观众计数器,Click Counter">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/tally-counter.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .tc-layout { max-width: 600px; margin: 0 auto; display: grid; gap: 1rem; }
+    .tc-controls { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; }
+    .tc-controls button, .tc-controls input { padding: 0.4rem 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: inherit; font-size: 0.8rem; cursor: pointer; transition: 0.15s; }
+    .tc-controls button:hover { border-color: var(--primary); }
+    .tc-controls input { width: 60px; cursor: text; }
+    .tc-controls input:focus { outline: none; border-color: var(--primary); }
+    .tc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .tc-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; text-align: center; transition: 0.2s; }
+    .tc-item:hover { border-color: var(--primary); }
+    .tc-item .name { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.3rem; font-weight: 600; }
+    .tc-item .name input { background: none; border: none; color: var(--text-muted); font-size: 0.8rem; text-align: center; width: 80%; font-weight: 600; }
+    .tc-item .name input:focus { color: var(--text); outline: none; }
+    .tc-item .count { font-size: 2.5rem; font-weight: 800; color: var(--primary); padding: 0.3rem 0; cursor: pointer; user-select: none; }
+    .tc-item .count:active { transform: scale(0.95); }
+    .tc-item .btns { display: flex; gap: 0.3rem; justify-content: center; }
+    .tc-item .btns button { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg-input); color: var(--text); font-size: 1.1rem; cursor: pointer; transition: 0.15s; display: flex; align-items: center; justify-content: center; }
+    .tc-item .btns .plus { border-color: rgba(52,211,153,0.3); color: #34d399; }
+    .tc-item .btns .plus:hover { background: rgba(52,211,153,0.1); }
+    .tc-item .btns .minus { border-color: rgba(239,68,68,0.3); color: #ef4444; }
+    .tc-item .btns .minus:hover { background: rgba(239,68,68,0.1); }
+    .tc-item .btns .reset { border-color: rgba(167,139,250,0.2); color: var(--text-muted); font-size: 0.8rem; }
+    .tc-item .btns .reset:hover { border-color: var(--danger); color: var(--danger); }
+    .tc-add { border: 2px dashed var(--border); border-radius: 12px; padding: 1rem; text-align: center; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; color: var(--text-muted); transition: 0.2s; }
+    .tc-add:hover { border-color: var(--primary); color: var(--primary); }
+    .tc-total { text-align: center; font-size: 0.85rem; color: var(--text-muted); background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem; }
+    .tc-total .num { color: var(--primary); font-weight: 800; font-size: 1.1rem; }
+    @media (max-width: 450px) { .tc-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/tally-counter.html">计数器</a><a href="../tools/duplicate-line-remover.html">去重</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>数字计数器 / Tally Counter</h1>
+      <p>多组独立数字计数器，点击计数、自定义步长，数据保存在浏览器中。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="tc-layout">
+        <div class="tc-controls">
+          <span style="font-size:0.75rem;color:var(--text-muted);display:flex;align-items:center;gap:0.3rem;">
+            步长: <input type="number" id="tcStep" value="1" min="1" max="1000" style="width:50px;">
+          </span>
+          <button onclick="addCounter()">➕ 添加计数器</button>
+          <button onclick="resetAll()">🔄 全部归零</button>
+          <button onclick="clearAll()">🗑️ 删除全部</button>
+        </div>
+
+        <div class="tc-grid" id="tcGrid"></div>
+
+        <div class="tc-total" id="tcTotal">总计: <span class="num">0</span></div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线数字计数器</h2>
+      <p>免费的在线数字计数工具，提供多个独立计数组。每个计数器支持自定义名称、点击数字区域快速加一、加减按钮精确控制、一键归零。支持自定义步长（1-1000），满足不同场景的计数需求。数据自动保存在浏览器本地存储中，刷新页面不会丢失。适合仓库库存盘点计数、活动现场观众人数统计、科学实验数据记录、体育比赛比分记录、会议签到人数统计、流水线产品计数等场景。所有数据在浏览器本地处理，不会上传到服务器。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/tally-counter.html">计数器</a> | <a href="../tools/duplicate-line-remover.html">去重</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let counters = [];
+
+    function loadCounters() {
+      try {
+        const saved = localStorage.getItem('tallyCounters');
+        if (saved) counters = JSON.parse(saved);
+      } catch(e) {}
+      if (!counters.length) {
+        counters = [
+          { id: 1, name: '计数器 1', count: 0 },
+          { id: 2, name: '计数器 2', count: 0 },
+          { id: 3, name: '计数器 3', count: 0 },
+        ];
+      }
+    }
+
+    function saveCounters() {
+      try {
+        localStorage.setItem('tallyCounters', JSON.stringify(counters));
+      } catch(e) {}
+    }
+
+    function render() {
+      const grid = document.getElementById('tcGrid');
+      const step = parseInt(document.getElementById('tcStep').value) || 1;
+      let total = 0;
+
+      grid.innerHTML = counters.map(c => {
+        total += c.count;
+        return `<div class="tc-item">
+          <div class="name"><input type="text" value="${c.name}" onchange="rename(${c.id}, this.value)" onclick="event.stopPropagation()"></div>
+          <div class="count" onclick="increment(${c.id})">${c.count}</div>
+          <div class="btns">
+            <button class="plus" onclick="event.stopPropagation(); increment(${c.id})">+${step}</button>
+            <button class="minus" onclick="event.stopPropagation(); decrement(${c.id})">−${step}</button>
+            <button class="reset" onclick="event.stopPropagation(); resetOne(${c.id})">0</button>
+          </div>
+        </div>`;
+      }).join('') + `<div class="tc-add" onclick="addCounter()">
+        <span style="font-size:1.5rem;">+</span> 添加计数器
+      </div>`;
+
+      document.getElementById('tcTotal').innerHTML = '总计: <span class="num">' + total + '</span>';
+      saveCounters();
+    }
+
+    function increment(id) {
+      const step = parseInt(document.getElementById('tcStep').value) || 1;
+      const c = counters.find(x => x.id === id);
+      if (c) { c.count += step; render(); }
+    }
+
+    function decrement(id) {
+      const step = parseInt(document.getElementById('tcStep').value) || 1;
+      const c = counters.find(x => x.id === id);
+      if (c) { c.count = Math.max(0, c.count - step); render(); }
+    }
+
+    function resetOne(id) {
+      const c = counters.find(x => x.id === id);
+      if (c) { c.count = 0; render(); }
+    }
+
+    function rename(id, name) {
+      const c = counters.find(x => x.id === id);
+      if (c) { c.name = name || ('计数器 ' + id); render(); }
+    }
+
+    function addCounter() {
+      const maxId = counters.length ? Math.max(...counters.map(c => c.id)) : 0;
+      counters.push({ id: maxId + 1, name: '计数器 ' + (maxId + 1), count: 0 });
+      render();
+      showToast('✅ 已添加计数器');
+    }
+
+    function resetAll() {
+      counters.forEach(c => c.count = 0);
+      render();
+      showToast('🔄 全部归零');
+    }
+
+    function clearAll() {
+      counters = [];
+      render();
+      showToast('🗑️ 已删除全部');
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    loadCounters();
+    render();
+  </script>
+</body>
+</html>
