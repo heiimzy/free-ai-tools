@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>文字重复生成器 - 免费在线文本重复工具 | Free AI Tools</title>
+  <meta name="description" content="免费在线文字重复生成器，将任意文本重复任意次数。支持自定义重复次数、添加分隔符（空格、换行、逗号等）、实时预览字符数。适合生成占位文本、测试数据、重复性内容填充、刷屏文案制作等场景。浏览器本地处理，简单高效。">
+  <meta name="keywords" content="文字重复,文本生成器,重复文本,文字复制,批量生成文本,占位文本生成,重复内容,Text Repeater">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/text-repeater.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .tr-layout { max-width: 650px; margin: 0 auto; display: grid; gap: 1rem; }
+    .tr-textarea { width: 100%; min-height: 120px; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: inherit; font-size: 0.9rem; resize: vertical; box-sizing: border-box; line-height: 1.6; }
+    .tr-textarea:focus { outline: none; border-color: var(--primary); }
+    .tr-textarea::placeholder { color: var(--text-muted); opacity: 0.5; }
+    .tr-options { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; }
+    .tr-options label { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+    .tr-options input, .tr-options select { padding: 0.4rem 0.5rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: inherit; font-size: 0.85rem; }
+    .tr-options input:focus, .tr-options select:focus { outline: none; border-color: var(--primary); }
+    .tr-output { width: 100%; min-height: 200px; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: #1a1a2e; color: #d4d4d4; font-family: 'Courier New', monospace; font-size: 0.82rem; resize: vertical; box-sizing: border-box; line-height: 1.5; }
+    .tr-stats { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+    .tr-stats .stat { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem 1rem; text-align: center; }
+    .tr-stats .stat .num { font-size: 1.1rem; font-weight: 800; color: var(--primary); }
+    .tr-stats .stat p { font-size: 0.7rem; margin: 0; color: var(--text-muted); }
+    .tr-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .tr-actions button { padding: 0.5rem 1.2rem; border-radius: 8px; border: none; font-family: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .tr-btn-gen { background: linear-gradient(135deg, var(--primary), #7c3aed); color: white; }
+    .tr-btn-gen:hover { transform: translateY(-1px); box-shadow: 0 4px 15px var(--glow-purple); }
+    .tr-btn-copy { background: rgba(167,139,250,0.15); color: var(--primary); }
+    .tr-btn-copy:hover { background: rgba(167,139,250,0.25); }
+    .tr-btn-clear { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); }
+    .tr-btn-clear:hover { border-color: var(--danger); color: var(--danger); }
+    @media (max-width: 500px) { .tr-options { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/text-repeater.html">文字重复</a><a href="../tools/text-rewriter.html">AI改写</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>文字重复生成器 / Text Repeater</h1>
+      <p>将任意文本重复任意次数，支持自定义分隔符，实时统计字符数。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="tr-layout">
+        <div>
+          <label style="font-size:0.8rem;color:var(--text-muted);font-weight:600;">输入要重复的文字</label>
+          <textarea class="tr-textarea" id="inputText" placeholder="输入要重复的内容..." oninput="autoGenerate()">Hello World</textarea>
+        </div>
+
+        <div class="tr-options">
+          <label>重复次数 <input type="number" id="repeatCount" value="5" min="1" max="99999" oninput="autoGenerate()"></label>
+          <label>分隔符 <select id="separator" onchange="autoGenerate()">
+            <option value=" ">空格</option>
+            <option value="\n" selected>换行</option>
+            <option value=",">逗号</option>
+            <option value="、">顿号</option>
+            <option value=";">分号</option>
+            <option value="|">竖线</option>
+            <option value="">无分隔</option>
+          </select></label>
+          <label>添加序号 <select id="addNumbers" onchange="autoGenerate()">
+            <option value="none">不添加</option>
+            <option value="prefix" selected>前缀 (1. )</option>
+            <option value="suffix">后缀 ( .1)</option>
+          </select></label>
+        </div>
+
+        <div class="tr-actions">
+          <button class="tr-btn-gen" onclick="generate()">⚡ 生成</button>
+          <button class="tr-btn-copy" onclick="copyOutput()">📋 复制</button>
+          <button class="tr-btn-clear" onclick="clearAll()">🗑️ 清空</button>
+        </div>
+
+        <div>
+          <label style="font-size:0.8rem;color:var(--text-muted);font-weight:600;">输出结果</label>
+          <textarea class="tr-output" id="outputText" readonly placeholder="输出结果..."></textarea>
+        </div>
+
+        <div class="tr-stats" id="statsArea">
+          <div class="stat"><div class="num" id="statChars">0</div><p>字符数</p></div>
+          <div class="stat"><div class="num" id="statLines">0</div><p>行数</p></div>
+          <div class="stat"><div class="num" id="statRepeat">0</div><p>重复次数</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线文字重复生成器</h2>
+      <p>免费的在线文字重复工具，将任意文本按指定次数重复输出。支持灵活的选项配置：自定义重复次数（最多99999次）、多种分隔符（空格、换行、逗号、顿号、分号、竖线、无分隔）、自动添加序号前缀或后缀。实时显示输出结果的字符数、行数和实际重复次数。适用于生成占位文本用于设计排版、创建批量测试数据用于开发调试、制作重复性内容、生成模板填充文本等场景。浏览器本地处理，速度快、无需上传数据。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/text-repeater.html">文字重复</a> | <a href="../tools/text-rewriter.html">AI改写</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function generate() {
+      const text = document.getElementById('inputText').value;
+      if (!text.trim()) return showToast('⚠️ 请输入要重复的文字');
+
+      let count = parseInt(document.getElementById('repeatCount').value) || 1;
+      if (count < 1) count = 1;
+      if (count > 99999) count = 99999;
+
+      let sep = document.getElementById('separator').value;
+      if (sep === '\\n') sep = '\n';
+
+      const numMode = document.getElementById('addNumbers').value;
+      const parts = [];
+
+      for (let i = 0; i < count; i++) {
+        let item = text;
+        if (numMode === 'prefix') item = (i + 1) + '. ' + item;
+        else if (numMode === 'suffix') item = item + ' .' + (i + 1);
+        parts.push(item);
+      }
+
+      const output = parts.join(sep);
+      document.getElementById('outputText').value = output;
+
+      // Stats
+      document.getElementById('statChars').textContent = output.length;
+      document.getElementById('statLines').textContent = output.split('\n').length;
+      document.getElementById('statRepeat').textContent = count;
+    }
+
+    function autoGenerate() {
+      clearTimeout(window._trTimer);
+      window._trTimer = setTimeout(generate, 300);
+    }
+
+    function copyOutput() {
+      const val = document.getElementById('outputText').value;
+      if (!val) return showToast('⚠️ 没有内容可复制');
+      navigator.clipboard.writeText(val).then(() => showToast('✅ 已复制 (' + val.length + ' 字符)'));
+    }
+
+    function clearAll() {
+      document.getElementById('inputText').value = '';
+      document.getElementById('outputText').value = '';
+      document.getElementById('statChars').textContent = '0';
+      document.getElementById('statLines').textContent = '0';
+      document.getElementById('statRepeat').textContent = '0';
+      showToast('🗑️ 已清空');
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    window.addEventListener('DOMContentLoaded', generate);
+  </script>
+</body>
+</html>

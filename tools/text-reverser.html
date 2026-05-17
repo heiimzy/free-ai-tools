@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>文字反转/倒序工具 - 免费在线文本反转生成器 | Free AI Tools</title>
+  <meta name="description" content="免费在线文字反转工具，支持全文反转、单词顺序反转、字母倒序排列、大小写互换。实时预览转换效果，一键复制结果。适合文字游戏、密码学入门、文本特效制作、社交媒体创意文案。浏览器本地处理，无需上传。">
+  <meta name="keywords" content="文字反转,倒序文本,文本反转,文本倒序,Reverse Text,Backwards Text,文字倒置,字符串反转,文字特效">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/text-reverser.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .trv-layout { max-width: 650px; margin: 0 auto; display: grid; gap: 1rem; }
+    .trv-modes { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+    .trv-mode-btn { padding: 0.6rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-muted); font-family: inherit; font-size: 0.8rem; cursor: pointer; transition: 0.15s; text-align: center; }
+    .trv-mode-btn:hover { border-color: var(--primary); }
+    .trv-mode-btn.active { background: rgba(167,139,250,0.15); color: var(--primary); border-color: var(--primary); }
+    .trv-mode-btn .label { font-weight: 600; font-size: 0.85rem; display: block; }
+    .trv-mode-btn .desc { font-size: 0.65rem; opacity: 0.7; }
+    .trv-textarea { width: 100%; min-height: 150px; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: inherit; font-size: 0.9rem; resize: vertical; box-sizing: border-box; line-height: 1.6; }
+    .trv-textarea:focus { outline: none; border-color: var(--primary); }
+    .trv-textarea::placeholder { color: var(--text-muted); opacity: 0.5; }
+    .trv-output { width: 100%; min-height: 150px; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: #1a1a2e; color: #d4d4d4; font-family: 'Courier New', monospace; font-size: 0.85rem; resize: vertical; box-sizing: border-box; line-height: 1.5; }
+    .trv-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .trv-actions button { padding: 0.5rem 1.2rem; border-radius: 8px; border: none; font-family: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .trv-btn-convert { background: linear-gradient(135deg, var(--primary), #7c3aed); color: white; }
+    .trv-btn-convert:hover { transform: translateY(-1px); box-shadow: 0 4px 15px var(--glow-purple); }
+    .trv-btn-copy { background: rgba(167,139,250,0.15); color: var(--primary); }
+    .trv-btn-copy:hover { background: rgba(167,139,250,0.25); }
+    .trv-btn-clear { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); }
+    .trv-btn-clear:hover { border-color: var(--danger); color: var(--danger); }
+    .trv-preview { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; padding: 0.75rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; }
+    .trv-preview .orig { font-size: 0.8rem; color: var(--text-muted); word-break: break-all; }
+    .trv-preview .reversed { font-size: 0.8rem; color: var(--primary); word-break: break-all; direction: rtl; unicode-bidi: bidi-override; }
+    .trv-stats { font-size: 0.75rem; color: var(--text-muted); text-align: center; }
+    @media (max-width: 500px) { .trv-modes { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/text-reverser.html">文字反转</a><a href="../tools/case-converter.html">大小写转换</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>文字反转 / 倒序工具 / Text Reverser</h1>
+      <p>反转文本顺序、颠倒单词排列、翻转字母序列，多种模式自由切换。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="trv-layout">
+        <div class="trv-modes">
+          <div class="trv-mode-btn active" id="modeReverse" onclick="setMode('reverse')">
+            <span class="label">🔀 全文反转</span>
+            <span class="desc">"ABC def" → "fed CBA"</span>
+          </div>
+          <div class="trv-mode-btn" id="modeWords" onclick="setMode('words')">
+            <span class="label">📝 单词倒序</span>
+            <span class="desc">"Hello World" → "World Hello"</span>
+          </div>
+          <div class="trv-mode-btn" id="modeLetters" onclick="setMode('letters')">
+            <span class="label">🔤 字母倒序</span>
+            <span class="desc">"abc def" → "cba fed"</span>
+          </div>
+          <div class="trv-mode-btn" id="modeSwapCase" onclick="setMode('swapcase')">
+            <span class="label">🔠 大小写互换</span>
+            <span class="desc">"Hello" → "hELLO"</span>
+          </div>
+        </div>
+
+        <div>
+          <label style="font-size:0.8rem;color:var(--text-muted);font-weight:600;">输入文字</label>
+          <textarea class="trv-textarea" id="inputText" placeholder="在此输入文字..." oninput="autoConvert()">Hello World! This is a test.</textarea>
+        </div>
+
+        <div>
+          <label style="font-size:0.8rem;color:var(--text-muted);font-weight:600;">转换结果</label>
+          <textarea class="trv-output" id="outputText" readonly placeholder="转换结果..."></textarea>
+        </div>
+
+        <div class="trv-actions">
+          <button class="trv-btn-convert" onclick="convert()">🔄 转换</button>
+          <button class="trv-btn-copy" onclick="copyOutput()">📋 复制</button>
+          <button class="trv-btn-clear" onclick="clearAll()">🗑️ 清空</button>
+        </div>
+
+        <div class="trv-preview" id="previewBox" style="display:none;">
+          <div class="orig" id="previewOrig"></div>
+          <div class="reversed" id="previewRev"></div>
+        </div>
+
+        <div class="trv-stats" id="statsText"></div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线文字反转/倒序工具</h2>
+      <p>免费的在线文字反转工具，提供四种文本转换模式：全文反转——将整个字符串完全倒序排列（"Hello World" → "dlroW olleH"）；单词倒序——保持单词内字母顺序不变，颠倒单词的排列顺序（"Hello World" → "World Hello"）；字母倒序——保持单词顺序不变，将每个单词内的字母反转（"abc def" → "cba fed"）；大小写互换——将大写字母转为小写，小写字母转为大写（"Hello" → "hELLO"）。适合社交媒体创意文案、文字游戏谜题、基础密码学学习、文本特效制作。所有转换在浏览器本地完成，无需上传数据。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/text-reverser.html">文字反转</a> | <a href="../tools/case-converter.html">大小写转换</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let currentMode = 'reverse';
+
+    function setMode(m) {
+      currentMode = m;
+      document.querySelectorAll('.trv-mode-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('mode' + m.charAt(0).toUpperCase() + m.slice(1)).classList.add('active');
+      const names = { reverse: '全文反转', words: '单词倒序', letters: '字母倒序', swapcase: '大小写互换' };
+      document.querySelector('.trv-btn-convert').textContent = '🔄 ' + names[m];
+      convert();
+    }
+
+    function convertText(text, mode) {
+      switch (mode) {
+        case 'reverse':
+          return text.split('').reverse().join('');
+        case 'words':
+          return text.split(/\s+/).reverse().join(' ');
+        case 'letters':
+          return text.split(/\s+/).map(w => w.split('').reverse().join('')).join(' ');
+        case 'swapcase':
+          return text.split('').map(c => {
+            if (c >= 'a' && c <= 'z') return c.toUpperCase();
+            if (c >= 'A' && c <= 'Z') return c.toLowerCase();
+            return c;
+          }).join('');
+        default:
+          return text;
+      }
+    }
+
+    function convert() {
+      const input = document.getElementById('inputText').value;
+      if (!input.trim()) {
+        document.getElementById('outputText').value = '';
+        document.getElementById('statsText').textContent = '';
+        document.getElementById('previewBox').style.display = 'none';
+        return;
+      }
+
+      const output = convertText(input, currentMode);
+      document.getElementById('outputText').value = output;
+
+      const names = { reverse: '全文反转', words: '单词倒序', letters: '字母倒序', swapcase: '大小写互换' };
+      document.getElementById('statsText').textContent = input.length + ' 字符 → ' + output.length + ' 字符 · 模式: ' + names[currentMode];
+
+      // Show visual preview
+      document.getElementById('previewBox').style.display = 'grid';
+      document.getElementById('previewOrig').textContent = '原文本: ' + input.slice(0, 50) + (input.length > 50 ? '…' : '');
+      document.getElementById('previewRev').textContent = '转换后: ' + output.slice(0, 50) + (output.length > 50 ? '…' : '');
+    }
+
+    function autoConvert() {
+      clearTimeout(window._trvTimer);
+      window._trvTimer = setTimeout(convert, 300);
+    }
+
+    function copyOutput() {
+      const val = document.getElementById('outputText').value;
+      if (!val) return showToast('⚠️ 没有内容可复制');
+      navigator.clipboard.writeText(val).then(() => showToast('✅ 已复制 (' + val.length + ' 字符)'));
+    }
+
+    function clearAll() {
+      document.getElementById('inputText').value = '';
+      document.getElementById('outputText').value = '';
+      document.getElementById('statsText').textContent = '';
+      document.getElementById('previewBox').style.display = 'none';
+      showToast('🗑️ 已清空');
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    window.addEventListener('DOMContentLoaded', convert);
+  </script>
+</body>
+</html>

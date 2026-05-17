@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>二进制转换器 - 免费在线文本与二进制互转工具 | Free AI Tools</title>
+  <meta name="description" content="免费在线二进制转换器，支持文本与二进制代码双向互转。输入文字即时转换为二进制，粘贴二进制解码为原文。支持ASCII/Unicode字符集，一键复制结果。适合编程学习、计算机网络、数字电路等领域。浏览器本地处理，无需上传服务器。">
+  <meta name="keywords" content="二进制转换,文本转二进制,二进制转文本,Binary Translator,二进制编码,在线转换,ASCII二进制,文字转二进制码">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/binary-translator.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .bt-layout { max-width: 700px; margin: 0 auto; display: grid; gap: 1.5rem; }
+    .bt-panels { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .bt-panel { display: flex; flex-direction: column; }
+    .bt-panel label { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; margin-bottom: 0.3rem; display: flex; justify-content: space-between; }
+    .bt-textarea { width: 100%; min-height: 200px; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: 'Courier New', monospace; font-size: 0.85rem; resize: vertical; box-sizing: border-box; line-height: 1.6; }
+    .bt-textarea:focus { outline: none; border-color: var(--primary); }
+    .bt-textarea::placeholder { color: var(--text-muted); opacity: 0.4; }
+    .bt-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; }
+    .bt-actions button { padding: 0.5rem 1.2rem; border-radius: 8px; border: none; font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .bt-btn-convert { background: linear-gradient(135deg, var(--primary), #7c3aed); color: white; }
+    .bt-btn-convert:hover { transform: translateY(-1px); box-shadow: 0 4px 15px var(--glow-purple); }
+    .bt-btn-copy { background: rgba(167,139,250,0.15); color: var(--primary); }
+    .bt-btn-copy:hover { background: rgba(167,139,250,0.25); }
+    .bt-btn-clear { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); }
+    .bt-btn-clear:hover { border-color: var(--danger); color: var(--danger); }
+    .bt-swap { background: rgba(244,114,182,0.1); color: var(--secondary); }
+    .bt-swap:hover { background: rgba(244,114,182,0.2); }
+    .bt-info { text-align: center; font-size: 0.75rem; color: var(--text-muted); padding: 0.5rem; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border); }
+    .bt-mode { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 0.5rem; }
+    .bt-mode button { padding: 0.35rem 1rem; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); font-size: 0.75rem; cursor: pointer; font-family: inherit; transition: 0.15s; }
+    .bt-mode button.active { background: rgba(167,139,250,0.15); color: var(--primary); border-color: var(--primary); }
+    @media (max-width: 600px) { .bt-panels { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/binary-translator.html">二进制转换</a><a href="../tools/base-converter.html">进制转换</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>二进制转换器 / Binary Translator</h1>
+      <p>文本与二进制代码双向互转，支持 ASCII/Unicode。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="bt-layout">
+        <div class="bt-mode">
+          <button class="active" id="modeText" onclick="setMode('text')">📝 文本 → 二进制</button>
+          <button id="modeBinary" onclick="setMode('binary')">💻 二进制 → 文本</button>
+        </div>
+
+        <div class="bt-panels">
+          <div class="bt-panel">
+            <label id="inputLabel">输入文本</label>
+            <textarea class="bt-textarea" id="inputText" placeholder="在此输入文字..." oninput="autoConvert()">Hello, AI!</textarea>
+          </div>
+          <div class="bt-panel">
+            <label id="outputLabel">二进制输出 <span id="charCount" style="font-weight:400;font-size:0.75rem;"></span></label>
+            <textarea class="bt-textarea" id="outputText" readonly placeholder="二进制结果..." style="min-height:200px;"></textarea>
+          </div>
+        </div>
+
+        <div class="bt-actions">
+          <button class="bt-btn-convert" onclick="convert()">🔄 转换</button>
+          <button class="bt-btn-copy" onclick="copyOutput()">📋 复制结果</button>
+          <button class="bt-swap" onclick="swapMode()">🔀 互换模式</button>
+          <button class="bt-btn-clear" onclick="clearAll()">🗑️ 清空</button>
+        </div>
+
+        <div class="bt-info">
+          <span id="infoText">每个字符以空格分隔，每8位为一个字符的二进制表示</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线二进制转换器</h2>
+      <p>免费的在线二进制转换工具，支持文本与二进制代码的双向互转。在"文本→二进制"模式下，输入的每个字符将被转换为8位二进制代码（基于字符的Unicode码点），字符之间以空格分隔。在"二进制→文本"模式下，粘贴空格分隔的二进制代码（每8位一组），即可解码为原文。支持所有ASCII字符和Unicode字符（包括中文、日文、特殊符号等）。适合计算机科学学生理解数据编码、网络工程师调试二进制协议、编程爱好者学习位运算。所有转换在浏览器本地完成，内容不会上传到服务器。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/binary-translator.html">二进制转换</a> | <a href="../tools/base-converter.html">进制转换</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let mode = 'text'; // 'text' or 'binary'
+
+    function setMode(m) {
+      mode = m;
+      document.querySelectorAll('.bt-mode button').forEach(b => b.classList.remove('active'));
+      document.getElementById(m === 'text' ? 'modeText' : 'modeBinary').classList.add('active');
+      document.getElementById('inputLabel').textContent = m === 'text' ? '输入文本' : '输入二进制';
+      document.getElementById('outputLabel').textContent = m === 'text' ? '二进制输出' : '文本输出';
+      document.getElementById('inputText').placeholder = m === 'text' ? '在此输入文字...' : '在此输入二进制（如：01001000 01101001）';
+      document.getElementById('infoText').textContent = m === 'text' ? '每个字符以空格分隔，每8位为一个字符的二进制表示' : '每组8位二进制以空格分隔，不支持分隔符混合使用';
+      document.getElementById('inputText').value = '';
+      document.getElementById('outputText').value = '';
+      document.getElementById('charCount').textContent = '';
+    }
+
+    function textToBinary(str) {
+      return str.split('').map(c => {
+        const code = c.charCodeAt(0);
+        return code.toString(2).padStart(8, '0');
+      }).join(' ');
+    }
+
+    function binaryToText(bin) {
+      const groups = bin.trim().split(/\s+/);
+      return groups.map(g => {
+        // Validate binary
+        if (!/^[01]+$/.test(g)) return '';
+        const code = parseInt(g, 2);
+        return String.fromCodePoint(code);
+      }).join('');
+    }
+
+    function convert() {
+      const input = document.getElementById('inputText').value;
+      if (!input.trim()) return showToast('⚠️ 请输入内容');
+
+      let output;
+      if (mode === 'text') {
+        output = textToBinary(input);
+      } else {
+        output = binaryToText(input);
+      }
+      document.getElementById('outputText').value = output;
+
+      if (mode === 'text') {
+        const bits = output.replace(/ /g, '').length;
+        document.getElementById('charCount').textContent = input.length + ' 字符 → ' + bits + ' 位';
+      } else {
+        document.getElementById('charCount').textContent = output.length + ' 字符';
+      }
+    }
+
+    function autoConvert() {
+      clearTimeout(window._btTimer);
+      window._btTimer = setTimeout(convert, 400);
+    }
+
+    function copyOutput() {
+      const val = document.getElementById('outputText').value;
+      if (!val) return showToast('⚠️ 没有内容可复制');
+      navigator.clipboard.writeText(val).then(() => showToast('✅ 已复制'));
+    }
+
+    function swapMode() {
+      const input = document.getElementById('inputText').value;
+      const output = document.getElementById('outputText').value;
+      if (input || output) {
+        document.getElementById('inputText').value = output || input;
+        setMode(mode === 'text' ? 'binary' : 'text');
+        setTimeout(convert, 100);
+      } else {
+        setMode(mode === 'text' ? 'binary' : 'text');
+      }
+    }
+
+    function clearAll() {
+      document.getElementById('inputText').value = '';
+      document.getElementById('outputText').value = '';
+      document.getElementById('charCount').textContent = '';
+      showToast('🗑️ 已清空');
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    window.addEventListener('DOMContentLoaded', convert);
+  </script>
+</body>
+</html>
