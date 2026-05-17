@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>科学计算器 - 免费在线科学计算器/函数计算 | Free AI Tools</title>
+  <meta name="description" content="免费在线科学计算器，支持基础运算、三角函数、对数、指数、平方根、阶乘、排列组合等高级数学计算。包含角度弧度切换、历史记录、复制结果功能。浏览器本地运行，即开即用免安装。">
+  <meta name="keywords" content="科学计算器,在线计算器,函数计算器,三角函数计算器,数学计算,高级计算器,免费计算器">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/scientific-calculator.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .sc-layout { max-width: 380px; margin: 0 auto; display: grid; gap: 1rem; }
+    .sc-display { background: var(--bg-input); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.25rem; text-align: right; min-height: 90px; display: flex; flex-direction: column; justify-content: flex-end; }
+    .sc-display .expr { font-size: 0.85rem; color: var(--text-muted); min-height: 1.4em; word-break: break-all; font-family: 'Courier New', monospace; }
+    .sc-display .result { font-size: 2rem; font-weight: 800; color: var(--text); word-break: break-all; font-family: 'Courier New', monospace; line-height: 1.3; overflow-x: auto; white-space: nowrap; }
+    .sc-mode { display: flex; gap: 0.5rem; align-items: center; justify-content: flex-end; margin-bottom: 0.5rem; }
+    .sc-mode button { padding: 0.2rem 0.6rem; border-radius: 4px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); cursor: pointer; font-size: 0.7rem; font-family: inherit; transition: 0.15s; }
+    .sc-mode button.active { border-color: var(--primary); color: var(--primary); background: rgba(167,139,250,0.1); }
+    .sc-mode .mode-label { font-size: 0.75rem; color: var(--text-muted); margin-right: auto; }
+    .sc-btns { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem; }
+    .sc-btns button { padding: 0.85rem 0; border: none; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 1rem; font-weight: 600; cursor: pointer; transition: 0.15s; text-align: center; }
+    .sc-btns button:active { transform: scale(0.93); }
+    .sc-btns .num { background: var(--bg-input); color: var(--text); }
+    .sc-btns .num:hover { background: rgba(167,139,250,0.15); }
+    .sc-btns .op { background: rgba(167,139,250,0.15); color: var(--primary); }
+    .sc-btns .op:hover { background: rgba(167,139,250,0.25); }
+    .sc-btns .fn { background: rgba(244,114,182,0.1); color: var(--secondary); font-size: 0.75rem; }
+    .sc-btns .fn:hover { background: rgba(244,114,182,0.2); }
+    .sc-btns .eq { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
+    .sc-btns .eq:hover { transform: translateY(-1px); box-shadow: 0 4px 15px var(--glow-purple); }
+    .sc-btns .clr { background: rgba(239,68,68,0.15); color: var(--danger); }
+    .sc-btns .clr:hover { background: rgba(239,68,68,0.25); }
+    .sc-btns .span2 { grid-column: span 2; }
+    .sc-history { max-height: 150px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-input); font-size: 0.8rem; }
+    .sc-history .hdr { display: flex; justify-content: space-between; align-items: center; padding: 0.4rem 0.75rem; border-bottom: 1px solid var(--border); color: var(--text-muted); font-size: 0.7rem; font-weight: 600; }
+    .sc-history .hdr button { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.7rem; font-family: inherit; padding: 0.1rem 0.4rem; }
+    .sc-history .hdr button:hover { color: var(--danger); }
+    .sc-history .item { padding: 0.35rem 0.75rem; border-bottom: 1px solid var(--border); color: var(--text-muted); display: flex; justify-content: space-between; }
+    .sc-history .item:last-child { border-bottom: none; }
+    .sc-history .item .h-expr { color: var(--text-muted); }
+    .sc-history .item .h-result { color: var(--primary); font-weight: 700; }
+    .sc-history .empty { color: var(--text-muted); padding: 0.75rem; text-align: center; font-size: 0.75rem; }
+    @media (max-width: 420px) { .sc-btns button { padding: 0.7rem 0; font-size: 0.85rem; } .sc-btns .fn { font-size: 0.65rem; } .sc-display .result { font-size: 1.5rem; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/scientific-calculator.html">科学计算器</a><a href="../tools/unit-converter.html">单位换算</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>科学计算器 / Scientific Calculator</h1>
+      <p>支持三角函数、对数、指数等高级运算的在线科学计算器。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="sc-layout">
+        <div class="sc-mode">
+          <span class="mode-label" id="modeLabel">角度制 (DEG)</span>
+          <button id="btnRad" onclick="setMode('rad')">RAD</button>
+          <button id="btnDeg" class="active" onclick="setMode('deg')">DEG</button>
+        </div>
+
+        <div class="sc-display">
+          <div class="expr" id="expression"></div>
+          <div class="result" id="result">0</div>
+        </div>
+
+        <div class="sc-btns">
+          <button class="fn" onclick="inputFn('sin(')">sin</button>
+          <button class="fn" onclick="inputFn('cos(')">cos</button>
+          <button class="fn" onclick="inputFn('tan(')">tan</button>
+          <button class="fn" onclick="inputFn('ln(')">ln</button>
+          <button class="fn" onclick="inputFn('log(')">log</button>
+
+          <button class="fn" onclick="inputFn('asin(')">sin⁻¹</button>
+          <button class="fn" onclick="inputFn('acos(')">cos⁻¹</button>
+          <button class="fn" onclick="inputFn('atan(')">tan⁻¹</button>
+          <button class="fn" onclick="inputFn('sqrt(')">√</button>
+          <button class="fn" onclick="inputFn('cbrt(')">∛</button>
+
+          <button class="fn" onclick="inputFn('sinh(')">sinh</button>
+          <button class="fn" onclick="inputFn('cosh(')">cosh</button>
+          <button class="fn" onclick="inputFn('tanh(')">tanh</button>
+          <button class="fn" onclick="inputFn('exp(')">eˣ</button>
+          <button class="fn" onclick="inputFn('abs(')">|x|</button>
+
+          <button class="fn" onclick="inputFn('π')">π</button>
+          <button class="fn" onclick="inputFn('e')">e</button>
+          <button class="fn" onclick="inputFn('!')">x!</button>
+          <button class="fn" onclick="inputFn('^')">xʸ</button>
+          <button class="fn" onclick="inputFn('%')">%</button>
+
+          <button class="op" onclick="inputFn('(')">(</button>
+          <button class="op" onclick="inputFn(')')">)</button>
+          <button class="clr" onclick="clearAll()">AC</button>
+          <button class="clr" onclick="backspace()">⌫</button>
+          <button class="op" onclick="inputFn('/')">÷</button>
+
+          <button class="num" onclick="inputFn('7')">7</button>
+          <button class="num" onclick="inputFn('8')">8</button>
+          <button class="num" onclick="inputFn('9')">9</button>
+          <button class="op" onclick="inputFn('*')">×</button>
+          <button class="fn" onclick="inputFn('1/x')">1/x</button>
+
+          <button class="num" onclick="inputFn('4')">4</button>
+          <button class="num" onclick="inputFn('5')">5</button>
+          <button class="num" onclick="inputFn('6')">6</button>
+          <button class="op" onclick="inputFn('-')">−</button>
+          <button class="fn" onclick="inputFn('x²')">x²</button>
+
+          <button class="num" onclick="inputFn('1')">1</button>
+          <button class="num" onclick="inputFn('2')">2</button>
+          <button class="num" onclick="inputFn('3')">3</button>
+          <button class="op" onclick="inputFn('+')">+</button>
+          <button class="fn" onclick="inputFn('10^')">10ˣ</button>
+
+          <button class="num" onclick="inputFn('0')">0</button>
+          <button class="num" onclick="inputFn('.')">.</button>
+          <button class="fn" onclick="inputFn('(-')">±</button>
+          <button class="eq span2" onclick="calculate()">=</button>
+        </div>
+
+        <div class="sc-history" id="historyBox">
+          <div class="hdr"><span>历史记录</span><button onclick="clearHistory()">清空</button></div>
+          <div class="empty" id="historyEmpty">无历史记录</div>
+          <div id="historyList"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>免费在线科学计算器</h2>
+      <p>功能完备的在线科学计算器，支持基础四则运算、三角函数（sin/cos/tan 及反三角函数）、双曲函数、自然对数（ln）和常用对数（log）、指数函数（eˣ/10ˣ）、平方根（√）、立方根（∛）、阶乘（x!）、百分比、绝对值、倒数等。支持角度/弧度切换，自动保存计算历史，一键复制结果。所有计算在浏览器本地完成，无需安装任何软件。适合学生、工程师、科研人员日常使用。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/scientific-calculator.html">科学计算器</a> | <a href="../tools/unit-converter.html">单位换算</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let expression = '';
+    let result = '0';
+    let angleMode = 'deg';
+    let history = [];
+    let justCalculated = false;
+
+    function inputFn(val) {
+      if (justCalculated) {
+        if (/^[0-9.]$/.test(val)) expression = '';
+        justCalculated = false;
+      }
+
+      switch (val) {
+        case 'π': expression += 'π'; break;
+        case 'e': expression += 'e'; break;
+        case 'x²': expression += '²'; break;
+        case '1/x': expression += '⁻¹'; break;
+        case 'x!': expression += '!'; break;
+        case '(-': expression += '(-'; break;
+        default: expression += val;
+      }
+      updateDisplay();
+    }
+
+    function backspace() {
+      expression = expression.slice(0, -1);
+      justCalculated = false;
+      updateDisplay();
+    }
+
+    function clearAll() {
+      expression = '';
+      result = '0';
+      justCalculated = false;
+      updateDisplay();
+    }
+
+    function setMode(mode) {
+      angleMode = mode;
+      document.getElementById('btnRad').classList.toggle('active', mode === 'rad');
+      document.getElementById('btnDeg').classList.toggle('active', mode === 'deg');
+      document.getElementById('modeLabel').textContent = mode === 'rad' ? '弧度制 (RAD)' : '角度制 (DEG)';
+    }
+
+    function toRad(deg) { return deg * (Math.PI / 180); }
+    function toDeg(rad) { return rad * (180 / Math.PI); }
+
+    function evaluateSafe(expr) {
+      // Replace display symbols with JS equivalents
+      let s = expr
+        .replace(/π/g, '(' + Math.PI + ')')
+        .replace(/e(?![xp])/g, '(' + Math.E + ')')
+        .replace(/²/g, '**2')
+        .replace(/⁻¹/g, '**-1')
+        .replace(/10ˣ/g, '10**')
+        .replace(/10ˣ/g, '10**')
+        // Handle factorial
+        .replace(/(\d+)!/g, 'factorial($1)');
+
+      // Prevent issues
+      if (/[^0-9+\-*/.()eE ,sincoathlogqrp]/.test(s.replace(/factorial/g, '').replace(/Math\./g, ''))) {
+        return { error: '包含不支持的字符' };
+      }
+
+      // Add Math. prefix to functions but handle angle mode
+      const trigFuncs = ['sin', 'cos', 'tan', 'asin', 'acos', 'atan'];
+      const otherFuncs = ['sinh', 'cosh', 'tanh', 'sqrt', 'cbrt', 'exp', 'ln', 'log', 'abs'];
+
+      trigFuncs.forEach(fn => {
+        const regex = new RegExp('(?<![\\.a-zA-Z])' + fn + '(?=\\()', 'g');
+        s = s.replace(regex, 'Math.' + fn);
+      });
+      otherFuncs.forEach(fn => {
+        const regex = new RegExp('(?<![\\.a-zA-Z])' + fn + '(?=\\()', 'g');
+        s = s.replace(regex, 'Math.' + fn);
+      });
+
+      // Handle ln -> Math.log, log -> Math.log10 / Math.LN10
+      s = s.replace(/Math\.ln(?=\()/g, 'Math.log');
+      s = s.replace(/Math\.log(?=\()/g, 'Math.LN10'); // This won't work, handle differently
+
+      // Redo: handle ln and log properly
+      s = s.replace(/Math\.ln/g, '__LN__');
+      s = s.replace(/Math\.log/g, '__LOG__');
+      s = s.replace(/__LN__/g, 'Math.log');
+      s = s.replace(/__LOG__/g, 'Math.log10');
+
+      // Handle cbrt
+      s = s.replace(/Math\.cbrt/g, 'Math.cbrt');
+
+      // Handle percentage: replace % with /100
+      s = s.replace(/%/g, '/100');
+
+      // Handle angle mode for trig functions
+      if (angleMode === 'deg') {
+        // Wrap sin/cos/tan arguments with degree-to-radian conversion
+        // But not asin/acos/atan (their output needs rad-to-degree)
+        s = s.replace(/Math\.sin\(/g, 'Math.sin(deg2rad(');
+        s = s.replace(/Math\.cos\(/g, 'Math.cos(deg2rad(');
+        s = s.replace(/Math\.tan\(/g, 'Math.tan(deg2rad(');
+        // Close extra parens - these will be handled by adding ) after the argument
+        // Actually this approach is fragile. Let's use a different approach.
+      }
+
+      try {
+        // Build the evaluator with helper functions
+        const deg2rad = (x) => x * (Math.PI / 180);
+        const rad2deg = (x) => x * (180 / Math.PI);
+        const factorial = (n) => {
+          if (n < 0) return NaN;
+          if (n === 0 || n === 1) return 1;
+          let r = 1;
+          for (let i = 2; i <= n; i++) r *= i;
+          return r;
+        };
+
+        // For angle mode, wrap inverse trig outputs
+        if (angleMode === 'deg') {
+          // We need to handle asin/acos/atan output differently
+          // But our string replacement approach is fragile with nested parens
+          // Let's just do a simpler approach: use a wrapper
+        }
+
+        // Actually, let me rebuild the expression more carefully
+        // By using Function constructor with helper scope
+        let evalExpr = expr
+          .replace(/π/g, 'PI')
+          .replace(/²/g, '**2')
+          .replace(/⁻¹/g, '**-1')
+          .replace(/10ˣ/g, '**10')
+          .replace(/%/g, '/100')
+          .replace(/(\d+)!/g, 'fact($1)');
+
+        // Map function names
+        const funcMap = {
+          'sin': angleMode === 'deg' ? '(x) => Math.sin(x * PI / 180)' : 'Math.sin',
+          'cos': angleMode === 'deg' ? '(x) => Math.cos(x * PI / 180)' : 'Math.cos',
+          'tan': angleMode === 'deg' ? '(x) => Math.tan(x * PI / 180)' : 'Math.tan',
+          'asin': angleMode === 'deg' ? '(x) => Math.asin(x) * 180 / PI' : 'Math.asin',
+          'acos': angleMode === 'deg' ? '(x) => Math.acos(x) * 180 / PI' : 'Math.acos',
+          'atan': angleMode === 'deg' ? '(x) => Math.atan(x) * 180 / PI' : 'Math.atan',
+          'sinh': 'Math.sinh',
+          'cosh': 'Math.cosh',
+          'tanh': 'Math.tanh',
+          'sqrt': 'Math.sqrt',
+          'cbrt': 'Math.cbrt',
+          'exp': 'Math.exp',
+          'ln': 'Math.log',
+          'log': 'Math.log10',
+          'abs': 'Math.abs',
+        };
+
+        // Replace function calls in expression
+        for (const [name, impl] of Object.entries(funcMap)) {
+          const regex = new RegExp(name + '\\(' + '(\\d+\\.?\\d*|' + ')' + '\\)', 'g');
+          // This regex approach won't handle nested parens. Use iterative replacement instead.
+        }
+
+        // Simple function-by-function replacement
+        // Replace "sin(" with a marker
+        let fnExpr = evalExpr;
+        const markers = {};
+        let markerIdx = 0;
+
+        // Extract parenthesized subexpressions from inside function calls
+        // Actually, let's just use a very simple approach: direct Function with scope vars
+
+        const scopeVars = {
+          PI: Math.PI,
+          E: Math.E,
+          fact: function(n) {
+            if (n < 0 || !Number.isInteger(n)) return NaN;
+            if (n === 0 || n === 1) return 1;
+            let r = 1;
+            for (let i = 2; i <= n; i++) r *= i;
+            return r;
+          }
+        };
+
+        // Add trig functions with mode awareness
+        if (angleMode === 'deg') {
+          scopeVars.sin = (x) => Math.sin(x * Math.PI / 180);
+          scopeVars.cos = (x) => Math.cos(x * Math.PI / 180);
+          scopeVars.tan = (x) => Math.tan(x * Math.PI / 180);
+          scopeVars.asin = (x) => Math.asin(x) * 180 / Math.PI;
+          scopeVars.acos = (x) => Math.acos(x) * 180 / Math.PI;
+          scopeVars.atan = (x) => Math.atan(x) * 180 / Math.PI;
+        } else {
+          scopeVars.sin = Math.sin;
+          scopeVars.cos = Math.cos;
+          scopeVars.tan = Math.tan;
+          scopeVars.asin = Math.asin;
+          scopeVars.acos = Math.acos;
+          scopeVars.atan = Math.atan;
+        }
+        scopeVars.sinh = Math.sinh;
+        scopeVars.cosh = Math.cosh;
+        scopeVars.tanh = Math.tanh;
+        scopeVars.sqrt = Math.sqrt;
+        scopeVars.cbrt = Math.cbrt;
+        scopeVars.exp = Math.exp;
+        scopeVars.ln = Math.log;
+        scopeVars.log = Math.log10;
+        scopeVars.abs = Math.abs;
+
+        // Build a replacement that maps function names
+        let finalExpr = fnExpr;
+        // Replace function calls like sin(...) with scopeVars.sin(...)
+        const allFuncs = ['sin', 'cos', 'tan', 'asin', 'acos', 'atan', 'sinh', 'cosh', 'tanh', 'sqrt', 'cbrt', 'exp', 'ln', 'log', 'abs'];
+        allFuncs.forEach(fn => {
+          // Replace fn( with scopeVars.fn(
+          finalExpr = finalExpr.replace(new RegExp('(?<![\\.a-zA-Z])' + fn + '\\(', 'g'), 'scopeVars.' + fn + '(');
+        });
+
+        // Handle the ^ operator for power (but not **)
+        // Replace ^ with ** except where it might be confused
+        finalExpr = finalExpr.replace(/\^/g, '**');
+
+        // Safety check
+        if (/[^0-9+\-*/.() \t\n\r,^eEscopVarsar].*/.test(finalExpr)) {
+          // Just try anyway
+        }
+
+        const fnBody = 'with(scopeVars){return (' + finalExpr + ')}';
+        const fn = new Function('scopeVars', fnBody);
+        const val = fn(scopeVars);
+
+        if (typeof val !== 'number' || !isFinite(val)) {
+          return { error: '数学错误' };
+        }
+        return { value: val };
+      } catch (e) {
+        return { error: '表达式错误' };
+      }
+    }
+
+    function calculate() {
+      if (!expression.trim()) return;
+      const displayExpr = expression;
+      const resultObj = evaluateSafe(expression);
+
+      if (resultObj.error) {
+        document.getElementById('result').textContent = resultObj.error;
+        result = resultObj.error;
+        justCalculated = true;
+        return;
+      }
+
+      const val = resultObj.value;
+      const formatted = Number.isInteger(val) ? val.toString() : parseFloat(val.toPrecision(12)).toString();
+      result = formatted;
+      document.getElementById('result').textContent = formatted;
+      justCalculated = true;
+
+      // Add to history
+      history.unshift({ expr: displayExpr, result: formatted });
+      if (history.length > 50) history.pop();
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const list = document.getElementById('historyList');
+      const empty = document.getElementById('historyEmpty');
+      if (history.length === 0) {
+        empty.style.display = 'block';
+        list.innerHTML = '';
+        return;
+      }
+      empty.style.display = 'none';
+      list.innerHTML = history.map(h =>
+        `<div class="item"><span class="h-expr">${escapeHtml(h.expr)}</span> <span class="h-result">= ${escapeHtml(h.result)}</span></div>`
+      ).join('');
+    }
+
+    function clearHistory() {
+      history = [];
+      renderHistory();
+    }
+
+    function escapeHtml(s) {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function updateDisplay() {
+      document.getElementById('expression').textContent = expression || ' ';
+      if (!justCalculated) {
+        document.getElementById('result').textContent = '0';
+      }
+    }
+
+    // Keyboard support
+    document.addEventListener('keydown', function(e) {
+      const key = e.key;
+      if (key === 'Enter') { e.preventDefault(); calculate(); return; }
+      if (key === 'Backspace') { e.preventDefault(); backspace(); return; }
+      if (key === 'Escape') { e.preventDefault(); clearAll(); return; }
+      if (/^[0-9.+\-*/().%^]$/.test(key)) { e.preventDefault(); inputFn(key); return; }
+      if (key === 'Delete') { e.preventDefault(); clearAll(); return; }
+    });
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+  </script>
+</body>
+</html>

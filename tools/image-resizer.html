@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>图片尺寸调整 - 免费在线图片缩放/裁剪工具 | Free AI Tools</title>
+  <meta name="description" content="免费在线图片尺寸调整工具，支持PNG/JPG/WebP图片缩放和裁剪。可自定义宽高、锁定宽高比、选择多种缩放模式，实时预览调整效果并下载结果。所有处理在浏览器本地完成，不上传服务器，保护隐私。">
+  <meta name="keywords" content="图片尺寸调整,图片缩放,图片裁剪,在线改图片尺寸,图片宽高修改,图片大小调整,免费图片处理">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/image-resizer.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .ir-layout { max-width: 550px; margin: 0 auto; display: grid; gap: 1.5rem; }
+    .ir-dropzone { border: 2px dashed var(--border); border-radius: 16px; padding: 2.5rem 1rem; cursor: pointer; transition: all 0.25s; background: var(--bg-card); text-align: center; }
+    .ir-dropzone:hover, .ir-dropzone.dragover { border-color: var(--primary); background: rgba(167,139,250,0.05); }
+    .ir-dropzone .icon { font-size: 3rem; margin-bottom: 0.5rem; }
+    .ir-dropzone p { color: var(--text-muted); font-size: 0.9rem; margin: 0; }
+    .ir-dropzone .hint { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.4rem; }
+    .ir-preview-area { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .ir-preview-box { text-align: center; }
+    .ir-preview-box img { max-width: 100%; max-height: 220px; border-radius: 8px; border: 1px solid var(--border); background: repeating-conic-gradient(rgba(255,255,255,0.05) 0% 25%, transparent 0% 50%) 0 0 / 20px 20px; }
+    .ir-preview-box .label { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.3rem; }
+    .ir-controls { display: grid; gap: 0.8rem; }
+    .ir-row { display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap; }
+    .ir-row label { font-size: 0.85rem; color: var(--text-muted); min-width: 50px; }
+    .ir-row input[type="number"] { width: 90px; padding: 0.5rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: inherit; font-size: 0.9rem; }
+    .ir-row input[type="number"]:focus { outline: none; border-color: var(--primary); }
+    .ir-row .dim-info { font-size: 0.8rem; color: var(--text-muted); }
+    .ir-row .size-info { font-size: 0.75rem; color: var(--text-muted); }
+    .ir-checkbox { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: var(--text-muted); cursor: pointer; }
+    .ir-checkbox input { accent-color: var(--primary); width: 16px; height: 16px; }
+    .ir-fmt-select { padding: 0.5rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: inherit; font-size: 0.85rem; cursor: pointer; }
+    .ir-actions { display: flex; gap: 0.5rem; }
+    .ir-actions button { flex: 1; padding: 0.7rem; border: none; border-radius: 8px; font-family: inherit; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .ir-btn-download { background: linear-gradient(135deg, var(--primary), #7c3aed); color: white; }
+    .ir-btn-download:hover { transform: translateY(-1px); box-shadow: 0 4px 15px var(--glow-purple); }
+    .ir-btn-download:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .ir-btn-clear { background: var(--bg-card); border: 1px solid var(--border) !important; color: var(--text-muted); }
+    .ir-btn-clear:hover { border-color: var(--danger); color: var(--danger); }
+    .ir-modes { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .ir-modes button { padding: 0.3rem 0.8rem; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); cursor: pointer; font-size: 0.75rem; font-family: inherit; transition: 0.15s; }
+    .ir-modes button.active { border-color: var(--primary); color: var(--text); background: rgba(167,139,250,0.1); }
+    @media (max-width: 480px) { .ir-preview-area { grid-template-columns: 1fr; } .ir-row { flex-direction: column; align-items: stretch; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/image-resizer.html">图片尺寸调整</a><a href="../tools/image-compressor.html">图片压缩</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>图片尺寸调整 / Image Resizer</h1>
+      <p>在线缩放图片尺寸，支持自定义宽高、锁定比例、实时预览。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="ir-layout">
+        <div class="ir-dropzone" id="dropzone">
+          <div class="icon">🖼️</div>
+          <p><strong>点击上传</strong> 或拖放图片</p>
+          <p class="hint">支持 PNG / JPG / WebP / BMP / GIF</p>
+          <input type="file" id="fileInput" accept="image/*" style="display:none">
+        </div>
+
+        <div id="editorArea" style="display:none;">
+          <div class="ir-preview-area">
+            <div class="ir-preview-box">
+              <img id="originalPreview" alt="原始图片">
+              <div class="label" id="originalInfo">原始</div>
+            </div>
+            <div class="ir-preview-box">
+              <img id="resultPreview" alt="调整后预览">
+              <div class="label" id="resultInfo">调整后</div>
+            </div>
+          </div>
+
+          <div class="ir-controls">
+            <div class="ir-row">
+              <label>宽度</label>
+              <input type="number" id="widthInput" min="1" max="10000" oninput="onDimensionChange()">
+              <label>高度</label>
+              <input type="number" id="heightInput" min="1" max="10000" oninput="onDimensionChange()">
+            </div>
+
+            <div class="ir-row">
+              <label class="ir-checkbox">
+                <input type="checkbox" id="lockRatio" checked onchange="onLockChange()"> 锁定宽高比
+              </label>
+              <select class="ir-fmt-select" id="formatSelect">
+                <option value="image/png">PNG</option>
+                <option value="image/jpeg">JPEG</option>
+                <option value="image/webp">WebP</option>
+              </select>
+            </div>
+
+            <div class="ir-modes" id="fitModes">
+              <button class="active" data-mode="fit" onclick="setFitMode('fit')">适应</button>
+              <button data-mode="fill" onclick="setFitMode('fill')">填充</button>
+              <button data-mode="stretch" onclick="setFitMode('stretch')">拉伸</button>
+            </div>
+
+            <div class="ir-actions">
+              <button class="ir-btn-download" id="btnDownload" onclick="downloadResult()">⬇ 下载图片</button>
+              <button class="ir-btn-clear" onclick="resetAll()">清空</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线图片尺寸调整工具</h2>
+      <p>免费的在线图片缩放工具，无需安装任何软件即可调整图片尺寸。支持 PNG、JPEG、WebP 等常见格式，可自定义宽度和高度，支持锁定宽高比防止变形。提供三种缩放模式：适应（保持比例缩放至最大尺寸）、填充（保持比例裁剪至目标尺寸）、拉伸（强制拉伸至目标尺寸）。所有图片处理在浏览器本地完成，不上传到任何服务器，保护你的隐私。适合社交媒体图片调整、电商图片批量处理、网页素材尺寸标准化等场景。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/image-resizer.html">图片尺寸调整</a> | <a href="../tools/image-compressor.html">图片压缩</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let originalFile = null;
+    let originalImg = null;
+    let originalWidth = 0;
+    let originalHeight = 0;
+    let currentWidth = 0;
+    let currentHeight = 0;
+    let fitMode = 'fit';
+    let isUpdating = false;
+
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileInput');
+
+    dropzone.addEventListener('click', () => fileInput.click());
+    dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+    dropzone.addEventListener('drop', (e) => { e.preventDefault(); dropzone.classList.remove('dragover'); handleFile(e.dataTransfer.files[0]); });
+    fileInput.addEventListener('change', (e) => { if (e.target.files[0]) handleFile(e.target.files[0]); });
+
+    function handleFile(file) {
+      if (!file) return;
+      if (!file.type.startsWith('image/')) { showToast('请上传图片文件'); return; }
+      if (file.size > 50 * 1024 * 1024) { showToast('图片过大，请上传小于 50MB 的图片'); return; }
+      originalFile = file;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          originalImg = img;
+          originalWidth = img.naturalWidth;
+          originalHeight = img.naturalHeight;
+          currentWidth = originalWidth;
+          currentHeight = originalHeight;
+
+          document.getElementById('originalPreview').src = e.target.result;
+          document.getElementById('originalInfo').textContent = `${originalWidth} × ${originalHeight}`;
+          document.getElementById('editorArea').style.display = 'block';
+
+          document.getElementById('widthInput').value = originalWidth;
+          document.getElementById('heightInput').value = originalHeight;
+          renderPreview();
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function onDimensionChange() {
+      if (isUpdating) return;
+      const w = parseInt(document.getElementById('widthInput').value);
+      const h = parseInt(document.getElementById('heightInput').value);
+      if (!w || !h) return;
+
+      if (document.getElementById('lockRatio').checked && originalWidth > 0) {
+        isUpdating = true;
+        if (w !== currentWidth) {
+          const ratio = originalHeight / originalWidth;
+          document.getElementById('heightInput').value = Math.round(w * ratio);
+        } else if (h !== currentHeight) {
+          const ratio = originalWidth / originalHeight;
+          document.getElementById('widthInput').value = Math.round(h * ratio);
+        }
+        isUpdating = false;
+      }
+
+      currentWidth = parseInt(document.getElementById('widthInput').value);
+      currentHeight = parseInt(document.getElementById('heightInput').value);
+      renderPreview();
+    }
+
+    function onLockChange() {
+      if (document.getElementById('lockRatio').checked && originalWidth > 0) {
+        const w = parseInt(document.getElementById('widthInput').value);
+        if (w > 0) {
+          const ratio = originalHeight / originalWidth;
+          document.getElementById('heightInput').value = Math.round(w * ratio);
+          currentHeight = Math.round(w * ratio);
+          renderPreview();
+        }
+      }
+    }
+
+    function setFitMode(mode) {
+      fitMode = mode;
+      document.querySelectorAll('#fitModes button').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+      renderPreview();
+    }
+
+    function renderPreview() {
+      if (!originalImg) return;
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const targetW = currentWidth;
+      const targetH = currentHeight;
+      let sx = 0, sy = 0, sw = originalWidth, sh = originalHeight;
+      let dw = targetW, dh = targetH;
+
+      if (fitMode === 'fit') {
+        const scale = Math.min(targetW / originalWidth, targetH / originalHeight);
+        dw = Math.round(originalWidth * scale);
+        dh = Math.round(originalHeight * scale);
+        canvas.width = dw;
+        canvas.height = dh;
+      } else if (fitMode === 'fill') {
+        const scale = Math.max(targetW / originalWidth, targetH / originalHeight);
+        const scaledW = Math.round(originalWidth * scale);
+        const scaledH = Math.round(originalHeight * scale);
+        sx = Math.round((scaledW - targetW) / 2 / scale);
+        sy = Math.round((scaledH - targetH) / 2 / scale);
+        sw = Math.round(targetW / scale);
+        sh = Math.round(targetH / scale);
+        canvas.width = targetW;
+        canvas.height = targetH;
+        dw = targetW;
+        dh = targetH;
+      } else {
+        canvas.width = targetW;
+        canvas.height = targetH;
+      }
+
+      ctx.drawImage(originalImg, sx, sy, sw, sh, 0, 0, dw, dh);
+
+      const fmt = document.getElementById('formatSelect').value;
+      const dataUrl = canvas.toDataURL(fmt, 0.92);
+      document.getElementById('resultPreview').src = dataUrl;
+      const sizeKB = (dataUrl.length * 0.75) / 1024;
+      document.getElementById('resultInfo').textContent = `${canvas.width} × ${canvas.height} ~${sizeKB < 1024 ? sizeKB.toFixed(0) + 'KB' : (sizeKB/1024).toFixed(1) + 'MB'}`;
+      document.getElementById('btnDownload').dataset.url = dataUrl;
+      document.getElementById('btnDownload').dataset.fmt = fmt;
+    }
+
+    function downloadResult() {
+      const btn = document.getElementById('btnDownload');
+      const url = btn.dataset.url;
+      if (!url) return;
+      const fmt = btn.dataset.fmt || 'image/png';
+      const ext = fmt.split('/')[1];
+      const a = document.createElement('a');
+      a.href = url;
+      const name = originalFile ? originalFile.name.replace(/\.[^.]+$/, '') : 'image';
+      a.download = `${name}-resized.${ext}`;
+      a.click();
+      showToast('下载已开始');
+    }
+
+    function resetAll() {
+      originalFile = null;
+      originalImg = null;
+      document.getElementById('editorArea').style.display = 'none';
+      document.getElementById('originalPreview').src = '';
+      document.getElementById('resultPreview').src = '';
+      document.getElementById('fileInput').value = '';
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+  </script>
+</body>
+</html>
