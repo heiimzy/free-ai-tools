@@ -3,7 +3,7 @@
     "id": "019",
     "date": "2026-05-17",
     "zh": {
-      "title": "2026年5月AI工具"超级月"全景：GPT-5.5全员免费、Gemma 4开源、国产密集出击",
+      "title": "2026年5月AI工具“超级月”全景：GPT-5.5全员免费、Gemma 4开源、国产密集出击",
       "summary": "2026年5月被称为AI工具超级月：GPT-5.5 Instant全员免费、Google DeepMind发布Gemma 4开源模型、阿里云Qoder 1.0、百度文心5.1压缩70%参数成本降94%。20+新品全景解析与选型指南。",
       "tags": ["工具", "评测", "选型"],
       "file": "posts/019-ai-tools-super-may.zh.html"
@@ -35,8 +35,8 @@
     "id": "017",
     "date": "2026-05-16",
     "zh": {
-      "title": "AI进入"主动服务"时代：Anthropic Orbit、ChatGPT Pulse、Google Proactive全面解析",
-      "summary": "2026年5月，Anthropic发布Orbit自动日报、ChatGPT Pulse早间简报、Google I/O推出Proactive Assistance。AI从"被动应答"转向"主动汇报"，深度解析这轮AI提效革命的产品逻辑、使用场景及中国AI的跟进策略。",
+      "title": "AI进入“主动服务”时代：Anthropic Orbit、ChatGPT Pulse、Google Proactive全面解析",
+      "summary": "2026年5月，Anthropic发布Orbit自动日报、ChatGPT Pulse早间简报、Google I/O推出Proactive Assistance。AI从“被动应答”转向“主动汇报”，深度解析这轮AI提效革命的产品逻辑、使用场景及中国AI的跟进策略。",
       "tags": ["效率", "AI代理", "自动化"],
       "file": "posts/017-proactive-ai-era.zh.html"
     },
@@ -51,8 +51,8 @@
     "id": "016",
     "date": "2026-05-16",
     "zh": {
-      "title": "ChatGPT上线广告平台、千问接入淘宝：AI变现进入"基建级"时代",
-      "summary": "2026年5月，OpenAI正式上线Ads Manager广告平台，6周实现1亿美元年化收入；阿里千问+淘宝全面打通，AI成为电商新入口。深度分析AI变现从"赚小钱"到"建基础设施"的范式转变。",
+      "title": "ChatGPT上线广告平台、千问接入淘宝：AI变现进入“基建级”时代",
+      "summary": "2026年5月，OpenAI正式上线Ads Manager广告平台，6周实现1亿美元年化收入；阿里千问+淘宝全面打通，AI成为电商新入口。深度分析AI变现从“赚小钱”到“建基础设施”的范式转变。",
       "tags": ["变现", "行业", "AI广告"],
       "file": "posts/016-openai-ads-monetization.zh.html"
     },
