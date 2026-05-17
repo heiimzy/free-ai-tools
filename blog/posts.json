@@ -1,5 +1,31 @@
 [
   {
+    "id": "025",
+    "date": "2026-05-18",
+    "zh": {
+      "title": "2026年AI提效完全指南：从工具到智能体的效率革命",
+      "summary": "2026年AI提效实战指南：从Copilot到Agent的范式跃迁、Harness报告揭示AI效率测量困境、信贷审批540倍提效案例、多智能体协同工作流搭建、个人知识工作者AI工具链精选。附企业级提效行动路线图。",
+      "tags": [
+        "提效",
+        "生产力",
+        "工作流",
+        "智能体"
+      ],
+      "file": "posts/025-ai-productivity-2026-guide.zh.html"
+    },
+    "en": {
+      "title": "AI Productivity in 2026: From Tools to Agents — A Complete Guide",
+      "summary": "2026 AI productivity guide: the Copilot-to-Agent paradigm shift, Productive 5.0 AI agents, OpenAI Chronicle pattern recognition, Harness report on the productivity measurement crisis, and actionable productivity stacks for knowledge workers.",
+      "tags": [
+        "productivity",
+        "workflow",
+        "agents",
+        "automation"
+      ],
+      "file": "posts/025-ai-productivity-2026-guide.en.html"
+    }
+  },
+  {
     "id": "024",
     "date": "2026-05-18",
     "zh": {
