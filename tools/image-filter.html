@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>图片滤镜工具 - 在线图片滤镜特效与调色工具 | Free AI Tools</title>
+  <meta name="description" content="免费在线图片滤镜工具，为图片添加多种滤镜特效：模糊、亮度、对比度、饱和度、色相旋转、棕褐色、反色、灰度等。支持实时预览、原始/效果对比、一键下载处理后的图片。浏览器本地处理，不上传服务器，保护隐私。">
+  <meta name="keywords" content="图片滤镜,在线滤镜,图片特效,图片调色,图片美化,图片编辑,滤镜工具,图片处理">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/image-filter.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .ifl-layout { max-width: 700px; margin: 0 auto; display: grid; gap: 1.5rem; }
+    .ifl-upload { border: 2px dashed var(--border); border-radius: 12px; padding: 2rem; text-align: center; cursor: pointer; transition: 0.2s; }
+    .ifl-upload:hover { border-color: var(--primary); background: rgba(167,139,250,0.03); }
+    .ifl-upload .icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+    .ifl-upload p { color: var(--text-muted); margin: 0; font-size: 0.9rem; }
+    .ifl-preview { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .ifl-panel { text-align: center; }
+    .ifl-panel img { max-width: 100%; max-height: 350px; border-radius: 8px; border: 1px solid var(--border); background: #1a1a2e; }
+    .ifl-panel .label { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem; }
+    .ifl-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; }
+    .ifl-controls label { display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.75rem; color: var(--text-muted); }
+    .ifl-controls input[type="range"] { width: 100%; accent-color: var(--primary); cursor: pointer; }
+    .ifl-controls .val { font-weight: 600; color: var(--primary); }
+    .ifl-presets { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .ifl-presets button { padding: 0.3rem 0.8rem; border: 1px solid var(--border); border-radius: 16px; background: var(--bg-card); color: var(--text-muted); font-family: inherit; font-size: 0.75rem; cursor: pointer; transition: 0.15s; }
+    .ifl-presets button:hover { border-color: var(--primary); color: var(--text); }
+    .ifl-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .ifl-actions button { padding: 0.5rem 1.2rem; border: none; border-radius: 8px; font-family: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .ifl-btn-dl { background: linear-gradient(135deg, var(--primary), #7c3aed); color: white; }
+    .ifl-btn-dl:hover { transform: translateY(-1px); box-shadow: 0 4px 15px var(--glow-purple); }
+    .ifl-btn-reset { background: var(--bg-card); border: 1px solid var(--border) !important; color: var(--text-muted); }
+    .ifl-btn-reset:hover { border-color: var(--danger); color: var(--danger); }
+    .ifl-drop-zone.dragover { border-color: var(--primary); background: rgba(167,139,250,0.08); }
+    .ifl-empty { color: var(--text-muted); padding: 3rem 1rem; text-align: center; }
+    @media (max-width: 500px) { .ifl-preview { grid-template-columns: 1fr; } .ifl-controls { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/image-filter.html">图片滤镜</a><a href="../tools/markdown-editor.html">Markdown</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>图片滤镜工具 / Image Filter</h1>
+      <p>为图片添加滤镜特效，实时预览并下载处理结果。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="ifl-layout">
+        <div class="ifl-upload" id="dropZone">
+          <div class="icon">🖼️</div>
+          <p>点击上传图片或拖放图片到此处</p>
+          <input type="file" id="fileInput" accept="image/*" style="display:none;">
+        </div>
+
+        <div class="ifl-presets">
+          <button onclick="applyPreset('none')">原始</button>
+          <button onclick="applyPreset('grayscale')">灰度</button>
+          <button onclick="applyPreset('sepia')">棕褐色</button>
+          <button onclick="applyPreset('invert')">反色</button>
+          <button onclick="applyPreset('vintage')">复古</button>
+          <button onclick="applyPreset('cool')">冷色调</button>
+          <button onclick="applyPreset('warm')">暖色调</button>
+          <button onclick="applyPreset('saturated')">高饱和</button>
+          <button onclick="applyPreset('blur')">模糊</button>
+        </div>
+
+        <div class="ifl-controls" id="filterControls">
+          <label>模糊 <input type="range" id="fBlur" min="0" max="10" step="0.5" value="0" oninput="applyFilter()"> <span class="val" id="vBlur">0</span></label>
+          <label>亮度 <input type="range" id="fBrightness" min="0" max="200" step="1" value="100" oninput="applyFilter()"> <span class="val" id="vBrightness">100</span></label>
+          <label>对比度 <input type="range" id="fContrast" min="0" max="200" step="1" value="100" oninput="applyFilter()"> <span class="val" id="vContrast">100</span></label>
+          <label>饱和度 <input type="range" id="fSaturate" min="0" max="300" step="1" value="100" oninput="applyFilter()"> <span class="val" id="vSaturate">100</span></label>
+          <label>色相旋转 <input type="range" id="fHue" min="0" max="360" step="1" value="0" oninput="applyFilter()"> <span class="val" id="vHue">0°</span></label>
+          <label>棕褐色 <input type="range" id="fSepia" min="0" max="100" step="1" value="0" oninput="applyFilter()"> <span class="val" id="vSepia">0%</span></label>
+          <label>反色 <input type="range" id="fInvert" min="0" max="100" step="1" value="0" oninput="applyFilter()"> <span class="val" id="vInvert">0%</span></label>
+          <label>灰度 <input type="range" id="fGrayscale" min="0" max="100" step="1" value="0" oninput="applyFilter()"> <span class="val" id="vGrayscale">0%</span></label>
+        </div>
+
+        <div class="ifl-preview">
+          <div class="ifl-panel">
+            <img id="originalImage" src="" alt="原始图片">
+            <div class="label">原始图片</div>
+          </div>
+          <div class="ifl-panel">
+            <img id="filteredImage" src="" alt="效果图片">
+            <div class="label">滤镜效果</div>
+          </div>
+        </div>
+
+        <div class="ifl-actions">
+          <button class="ifl-btn-dl" id="btnDownload" onclick="downloadImage()" disabled>⬇ 下载处理后的图片</button>
+          <button class="ifl-btn-reset" onclick="resetFilters()">↺ 重置滤镜</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线图片滤镜特效工具</h2>
+      <p>免费的在线图片滤镜工具，支持上传 PNG、JPG、WebP 等常见格式，提供模糊、亮度、对比度、饱和度、色相旋转、棕褐色、反色、灰度等多种滤镜调节选项。支持一键恢复原始设置、下载处理后的图片。内置多种预设滤镜效果（灰度、复古、冷色调、暖色调等）。所有处理在浏览器本地完成，图片不会上传到服务器，保障您的隐私安全。适合社交媒体图片美化、产品图快速调色、个人照片滤镜处理等场景。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/image-filter.html">图片滤镜</a> | <a href="../tools/markdown-editor.html">Markdown</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let currentFile = null;
+
+    document.getElementById('dropZone').addEventListener('click', () => document.getElementById('fileInput').click());
+    document.getElementById('fileInput').addEventListener('change', e => { if (e.target.files.length) loadImage(e.target.files[0]); });
+
+    const dz = document.getElementById('dropZone');
+    dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
+    dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+    dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('dragover'); if (e.dataTransfer.files.length) loadImage(e.dataTransfer.files[0]); });
+
+    function loadImage(file) {
+      if (!file.type.startsWith('image/')) return showToast('请上传图片文件');
+      currentFile = file;
+      const reader = new FileReader();
+      reader.onload = e => {
+        document.getElementById('originalImage').src = e.target.result;
+        document.getElementById('filteredImage').src = e.target.result;
+        document.getElementById('btnDownload').disabled = false;
+        document.getElementById('dropZone').querySelector('p').textContent = file.name;
+        resetFilters();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function applyFilter() {
+      const img = document.getElementById('originalImage');
+      if (!img.src) return;
+
+      const blur = document.getElementById('fBlur').value;
+      const brightness = document.getElementById('fBrightness').value;
+      const contrast = document.getElementById('fContrast').value;
+      const saturate = document.getElementById('fSaturate').value;
+      const hue = document.getElementById('fHue').value;
+      const sepia = document.getElementById('fSepia').value;
+      const invert = document.getElementById('fInvert').value;
+      const grayscale = document.getElementById('fGrayscale').value;
+
+      document.getElementById('vBlur').textContent = blur;
+      document.getElementById('vBrightness').textContent = brightness;
+      document.getElementById('vContrast').textContent = contrast;
+      document.getElementById('vSaturate').textContent = saturate;
+      document.getElementById('vHue').textContent = hue + '°';
+      document.getElementById('vSepia').textContent = sepia + '%';
+      document.getElementById('vInvert').textContent = invert + '%';
+      document.getElementById('vGrayscale').textContent = grayscale + '%';
+
+      const filter = `blur(${blur}px) brightness(${brightness}%) contrast(${contrast}%) saturate(${saturate}%) hue-rotate(${hue}deg) sepia(${sepia}%) invert(${invert}%) grayscale(${grayscale}%)`;
+      document.getElementById('filteredImage').style.filter = filter;
+    }
+
+    function applyPreset(name) {
+      const defaults = { blur: 0, brightness: 100, contrast: 100, saturate: 100, hue: 0, sepia: 0, invert: 0, grayscale: 0 };
+      const presets = {
+        grayscale: { grayscale: 100 },
+        sepia: { sepia: 80 },
+        invert: { invert: 100 },
+        vintage: { sepia: 50, contrast: 110, brightness: 90, saturate: 80 },
+        cool: { saturate: 90, hue: 200, brightness: 105 },
+        warm: { saturate: 120, hue: 30, brightness: 105 },
+        saturated: { saturate: 200, contrast: 110 },
+        blur: { blur: 3 },
+      };
+      const vals = name === 'none' ? defaults : { ...defaults, ...presets[name] };
+      Object.keys(defaults).forEach(k => {
+        document.getElementById('f' + k.charAt(0).toUpperCase() + k.slice(1)).value = vals[k];
+      });
+      applyFilter();
+    }
+
+    function resetFilters() {
+      applyPreset('none');
+    }
+
+    function downloadImage() {
+      const img = document.getElementById('filteredImage');
+      if (!img.src) return;
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.filter = img.style.filter;
+      ctx.drawImage(img, 0, 0);
+      const a = document.createElement('a');
+      a.href = canvas.toDataURL('image/png');
+      a.download = 'filtered-image.png';
+      a.click();
+      showToast('✅ 已下载');
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+  </script>
+</body>
+</html>

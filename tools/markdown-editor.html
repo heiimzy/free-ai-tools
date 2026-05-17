@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markdown在线编辑器 - 免费在线Markdown编辑与实时预览工具 | Free AI Tools</title>
+  <meta name="description" content="免费在线Markdown编辑器，支持实时分屏预览、GitHub风格渲染、自动保存到本地。工具栏快捷插入（标题、粗体、斜体、链接、图片、代码块、表格、列表等）。一键复制或下载HTML/原始Markdown。浏览器本地处理，不上传服务器。">
+  <meta name="keywords" content="Markdown编辑器,在线Markdown,Markdown预览,Markdown转HTML,Markdown写作,Markdown工具,在线写作工具">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/markdown-editor.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .me-layout { max-width: 750px; margin: 0 auto; display: grid; gap: 1rem; }
+    .me-toolbar { display: flex; gap: 0.25rem; flex-wrap: wrap; padding: 0.5rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; }
+    .me-toolbar button { padding: 0.35rem 0.65rem; border: none; border-radius: 4px; background: transparent; color: var(--text-muted); cursor: pointer; font-size: 0.85rem; transition: 0.1s; font-family: inherit; }
+    .me-toolbar button:hover { background: rgba(167,139,250,0.1); color: var(--text); }
+    .me-toolbar .sep { width: 1px; background: var(--border); margin: 0 0.2rem; }
+    .me-split { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; min-height: 350px; }
+    .me-panel { display: flex; flex-direction: column; }
+    .me-panel label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; margin-bottom: 0.3rem; }
+    .me-editor { width: 100%; min-height: 320px; padding: 0.75rem; background: #1e1e1e; border: 1px solid var(--border); border-radius: 8px; color: #d4d4d4; font-family: 'Courier New', monospace; font-size: 0.82rem; resize: vertical; line-height: 1.6; box-sizing: border-box; tab-size: 2; }
+    .me-editor:focus { outline: none; border-color: var(--primary); }
+    .me-preview { width: 100%; min-height: 320px; padding: 0.75rem; background: white; border: 1px solid var(--border); border-radius: 8px; color: #1a1a2e; font-size: 0.85rem; line-height: 1.7; overflow-y: auto; box-sizing: border-box; }
+    .me-preview h1, .me-preview h2, .me-preview h3 { color: #1a1a2e; margin: 0.5rem 0; }
+    .me-preview h1 { font-size: 1.5rem; }
+    .me-preview h2 { font-size: 1.25rem; }
+    .me-preview h3 { font-size: 1.1rem; }
+    .me-preview p { margin: 0.4rem 0; }
+    .me-preview pre { background: #f4f4f4; padding: 0.75rem; border-radius: 6px; overflow-x: auto; }
+    .me-preview code { background: #f0f0f0; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.8rem; }
+    .me-preview pre code { background: none; padding: 0; }
+    .me-preview blockquote { border-left: 4px solid #a78bfa; padding: 0.3rem 1rem; margin: 0.5rem 0; color: #555; background: #fafafa; }
+    .me-preview img { max-width: 100%; border-radius: 6px; }
+    .me-preview table { border-collapse: collapse; width: 100%; margin: 0.5rem 0; }
+    .me-preview th, .me-preview td { border: 1px solid #ddd; padding: 0.4rem 0.6rem; text-align: left; }
+    .me-preview th { background: #f4f4f4; font-weight: 600; }
+    .me-preview ul, .me-preview ol { padding-left: 1.5rem; }
+    .me-preview hr { border: none; border-top: 1px solid #ddd; margin: 1rem 0; }
+    .me-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .me-actions button { padding: 0.5rem 1.2rem; border: none; border-radius: 8px; font-family: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .me-btn-dl { background: linear-gradient(135deg, var(--primary), #7c3aed); color: white; }
+    .me-btn-dl:hover { transform: translateY(-1px); box-shadow: 0 4px 15px var(--glow-purple); }
+    .me-btn-copy { background: rgba(167,139,250,0.15); color: var(--primary); }
+    .me-btn-copy:hover { background: rgba(167,139,250,0.25); }
+    @media (max-width: 560px) { .me-split { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/markdown-editor.html">Markdown</a><a href="../tools/image-filter.html">图片滤镜</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>Markdown 在线编辑器 / Markdown Editor</h1>
+      <p>分屏编辑与实时预览 Markdown 内容，支持 HTML 导出。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="me-layout">
+        <div class="me-toolbar">
+          <button onclick="insertMd('**','**')" title="粗体"><b>B</b></button>
+          <button onclick="insertMd('*','*')" title="斜体"><i>I</i></button>
+          <button onclick="insertMd('~~','~~')" title="删除线"><s>S</s></button>
+          <span class="sep"></span>
+          <button onclick="insertMd('# ','')" title="标题1">H1</button>
+          <button onclick="insertMd('## ','')" title="标题2">H2</button>
+          <button onclick="insertMd('### ','')" title="标题3">H3</button>
+          <span class="sep"></span>
+          <button onclick="insertMd('[','](url)')" title="链接">🔗</button>
+          <button onclick="insertMd('![alt](','?raw=true)')" title="图片">🖼️</button>
+          <span class="sep"></span>
+          <button onclick="insertMd('\n- ','')" title="无序列表">•</button>
+          <button onclick="insertMd('\n1. ','')" title="有序列表">1.</button>
+          <button onclick="insertMd('\n> ','')" title="引用">❝</button>
+          <span class="sep"></span>
+          <button onclick="insertMd('\n```\n','\n```')" title="代码块">&lt;/&gt;</button>
+          <button onclick="insertMd('`','`')" title="行内代码">`</button>
+          <button onclick="insertMd('\n---\n','')" title="分隔线">—</button>
+          <button onclick="insertMd('\n| 列1 | 列2 |\n| --- | --- |\n| 数据 | 数据 |\n','')" title="表格">📊</button>
+        </div>
+
+        <div class="me-split">
+          <div class="me-panel">
+            <label>Markdown 编辑</label>
+            <textarea class="me-editor" id="mdEditor" placeholder="在此输入 Markdown..." spellcheck="false"># Hello Markdown!
+
+这是一个 **Markdown** 在线编辑器，支持 *实时预览*。
+
+## 特性
+
+- 分屏编辑与实时预览
+- 工具栏快捷插入
+- 支持导出 HTML
+
+## 代码示例
+
+```js
+const msg = 'Hello, World!';
+console.log(msg);
+```
+
+## 表格示例
+
+| 工具 | 用途 |
+| --- | --- |
+| Markdown | 写作 |
+| HTML | 网页 |
+
+> 实时预览，所见即所得。</textarea>
+          </div>
+          <div class="me-panel">
+            <label>实时预览</label>
+            <div class="me-preview" id="mdPreview"></div>
+          </div>
+        </div>
+
+        <div class="me-actions">
+          <button class="me-btn-dl" onclick="downloadHtml()">⬇ 下载 HTML</button>
+          <button class="me-btn-copy" onclick="copyHtml()">📋 复制 HTML</button>
+          <button class="me-btn-copy" onclick="copyMd()">📋 复制 Markdown</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线 Markdown 编辑器工具</h2>
+      <p>免费的在线 Markdown 编辑器，支持分屏实时预览，采用 GitHub 风格 Markdown 渲染引擎。提供工具栏快捷插入功能（标题、粗体、斜体、链接、图片、代码块、表格、列表等）。编辑的内容自动保存到浏览器本地存储，刷新页面不会丢失。支持一键复制或下载为 HTML 文件。所有数据在浏览器本地处理，不会上传到服务器。适合开发者写技术文档、博客作者撰写文章、学生做笔记等场景。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/markdown-editor.html">Markdown</a> | <a href="../tools/image-filter.html">图片滤镜</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const editor = document.getElementById('mdEditor');
+    const preview = document.getElementById('mdPreview');
+
+    function renderMarkdown(text) {
+      let html = text
+        // Headers
+        .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+        .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+        .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+        // Horizontal rule
+        .replace(/^---$/gm, '<hr>')
+        // Blockquote
+        .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
+        // Code block
+        .replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
+        // Inline code
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        // Image
+        .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">')
+        // Link
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>')
+        // Bold + italic
+        .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
+        // Bold
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        // Italic
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        // Strikethrough
+        .replace(/~~(.+?)~~/g, '<s>$1</s>')
+        // Table
+        .replace(/\|(.+)\|/g, function(m) {
+          if (m.includes('---')) return '';
+          const cells = m.split('|').filter(c => c.trim());
+          if (cells.length === 0) return m;
+          const parent = document.getElementById('mdPreview');
+          return '<td>' + cells.map(c => c.trim()).join('</td><td>') + '</td>';
+        });
+
+      // Convert tables (multi-line)
+      html = html.replace(/((?:<td>.*?<\/td>\n?)+)/g, '<tr>$1</tr>');
+      html = html.replace(/((?:<tr>.*?<\/tr>\n?)+)/g, '<table>$1</table>');
+
+      // Unordered list
+      html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
+      html = html.replace(/((?:<li>.*?<\/li>\n?)+)/g, '<ul>$1</ul>');
+
+      // Ordered list
+      html = html.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
+      html = html.replace(/((?:^<li>.*?<\/li>\n?)+)/gm, function(m) {
+        if (!m.startsWith('<ul>')) return '<ol>' + m + '</ol>';
+        return m;
+      });
+
+      // Paragraphs - wrap remaining text
+      const lines = html.split('\n');
+      let result = '';
+      let inBlock = false;
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed) { result += '\n'; continue; }
+        if (trimmed.startsWith('<h') || trimmed.startsWith('<pre') || trimmed.startsWith('<blockquote') || trimmed.startsWith('<ul') || trimmed.startsWith('<ol') || trimmed.startsWith('<table') || trimmed.startsWith('<hr') || trimmed.startsWith('<li') || trimmed.startsWith('<tr') || trimmed.startsWith('<td')) {
+          result += trimmed + '\n';
+          continue;
+        }
+        if (trimmed.endsWith('</pre>') || trimmed.endsWith('</blockquote>') || trimmed.endsWith('</ul>') || trimmed.endsWith('</ol>') || trimmed.endsWith('</table>')) {
+          result += trimmed + '\n';
+          continue;
+        }
+        result += '<p>' + trimmed + '</p>\n';
+      }
+
+      // Fix nested lists
+      result = result.replace(/<\/ul>\n?<ul>/g, '');
+      result = result.replace(/<\/ol>\n?<ol>/g, '');
+      result = result.replace(/<\/li>\n?<li>/g, '</li>\n<li>');
+
+      // Fix consecutive blockquotes
+      result = result.replace(/<\/blockquote>\n?<blockquote>/g, '<br>');
+
+      return result;
+    }
+
+    function updatePreview() {
+      const text = editor.value;
+      preview.innerHTML = renderMarkdown(text);
+      // Save to localStorage
+      try { localStorage.setItem('md-editor-content', text); } catch(e) {}
+    }
+
+    function insertMd(before, after) {
+      const start = editor.selectionStart;
+      const end = editor.selectionEnd;
+      const text = editor.value;
+      const selected = text.substring(start, end);
+      const newText = text.substring(0, start) + before + selected + after + text.substring(end);
+
+      // Handle newline insertions at cursor position
+      const insertText = before + selected + after;
+      const newCursor = start + insertText.length;
+
+      editor.value = newText;
+      editor.selectionStart = editor.selectionEnd = newCursor;
+      editor.focus();
+      updatePreview();
+    }
+
+    editor.addEventListener('input', updatePreview);
+
+    // Restore from localStorage
+    try {
+      const saved = localStorage.getItem('md-editor-content');
+      if (saved) editor.value = saved;
+    } catch(e) {}
+    updatePreview();
+
+    function downloadHtml() {
+      const html = `<!DOCTYPE html>\n<html>\n<head><meta charset="UTF-8"><title>Markdown Export</title><style>body{max-width:800px;margin:0 auto;padding:2rem 1rem;font-family:system-ui;line-height:1.7}img{max-width:100%}pre{background:#f4f4f4;padding:1rem;border-radius:8px;overflow-x:auto}code{background:#f0f0f0;padding:0.15rem 0.4rem;border-radius:3px}pre code{background:none;padding:0}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ddd;padding:0.4rem 0.6rem}blockquote{border-left:4px solid #a78bfa;padding:0.3rem 1rem;color:#555;margin:0.5rem 0}</style></head>\n<body>\n${preview.innerHTML}\n</body>\n</html>`;
+      const blob = new Blob([html], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'markdown-export.html';
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('✅ HTML 已下载');
+    }
+
+    function copyHtml() {
+      navigator.clipboard.writeText(preview.innerHTML).then(() => showToast('✅ HTML 已复制'));
+    }
+
+    function copyMd() {
+      navigator.clipboard.writeText(editor.value).then(() => showToast('✅ Markdown 已复制'));
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+  </script>
+</body>
+</html>

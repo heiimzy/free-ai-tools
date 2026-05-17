@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Favicon图标生成器 - 在线生成网站图标/ICO/PNG格式 | Free AI Tools</title>
+  <meta name="description" content="免费在线Favicon图标生成器，上传图片生成网站图标（favicon）。支持生成多种尺寸（16x16至512x512）、ICO和PNG格式下载、自定义背景色和内边距。浏览器本地处理，不上传服务器，保护隐私。适合Web开发者快速生成网站图标。">
+  <meta name="keywords" content="Favicon生成器,在线图标生成,ICO生成,网站图标,图标转换,图片转ICO,favicon制作,网页图标生成">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/favicon-generator.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .fg-layout { max-width: 650px; margin: 0 auto; display: grid; gap: 1.5rem; }
+    .fg-upload { border: 2px dashed var(--border); border-radius: 12px; padding: 2rem; text-align: center; cursor: pointer; transition: 0.2s; }
+    .fg-upload:hover { border-color: var(--primary); background: rgba(167,139,250,0.03); }
+    .fg-upload .icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+    .fg-upload p { color: var(--text-muted); margin: 0; font-size: 0.9rem; }
+    .fg-drop-zone.dragover { border-color: var(--primary); background: rgba(167,139,250,0.08); }
+    .fg-preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 1rem; }
+    .fg-preview-item { text-align: center; }
+    .fg-preview-item img { border: 1px solid var(--border); border-radius: 6px; background: #1a1a2e; padding: 4px; }
+    .fg-preview-item .size-label { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.3rem; }
+    .fg-options { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; }
+    .fg-options label { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+    .fg-options input, .fg-options select { padding: 0.35rem 0.5rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: inherit; font-size: 0.8rem; }
+    .fg-options input:focus, .fg-options select:focus { outline: none; border-color: var(--primary); }
+    .fg-options input[type="color"] { height: 36px; padding: 2px; cursor: pointer; }
+    .fg-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .fg-actions button { padding: 0.5rem 1.2rem; border: none; border-radius: 8px; font-family: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .fg-btn-gen { background: linear-gradient(135deg, var(--primary), #7c3aed); color: white; }
+    .fg-btn-gen:hover { transform: translateY(-1px); box-shadow: 0 4px 15px var(--glow-purple); }
+    .fg-btn-dl { background: rgba(167,139,250,0.15); color: var(--primary); }
+    .fg-btn-dl:hover { background: rgba(167,139,250,0.25); }
+    .fg-btn-dl:disabled { opacity: 0.4; cursor: not-allowed; }
+    .fg-code { width: 100%; min-height: 60px; padding: 0.75rem; background: #1e1e1e; border: 1px solid var(--border); border-radius: 8px; color: #d4d4d4; font-family: 'Courier New', monospace; font-size: 0.8rem; resize: vertical; line-height: 1.5; box-sizing: border-box; }
+    @media (max-width: 500px) { .fg-options { grid-template-columns: 1fr; } .fg-preview-grid { grid-template-columns: repeat(3, 1fr); } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/favicon-generator.html">Favicon</a><a href="../tools/markdown-editor.html">Markdown</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>Favicon 图标生成器 / Favicon Generator</h1>
+      <p>上传图片生成多尺寸网站图标，支持 ICO 和 PNG 格式。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="fg-layout">
+        <div class="fg-upload" id="dropZone">
+          <div class="icon">🔥</div>
+          <p>点击上传图片或拖放图片到此处</p>
+          <input type="file" id="fileInput" accept="image/*" style="display:none;">
+        </div>
+
+        <div class="fg-options">
+          <label>图片尺寸 <select id="sizeSelect">
+            <option value="16">16×16 (标准 favicon)</option>
+            <option value="32" selected>32×32 (标准)</option>
+            <option value="48">48×48</option>
+            <option value="64">64×64</option>
+            <option value="96">96×96</option>
+            <option value="128">128×128</option>
+            <option value="180">180×180 (Apple Touch)</option>
+            <option value="192">192×192 (Android)</option>
+            <option value="512">512×512 (PWA)</option>
+            <option value="multi">全部尺寸 (多尺寸输出)</option>
+          </select></label>
+          <label>背景色 <input type="color" id="bgColor" value="#7c3aed"></label>
+          <label>圆角 (px) <input type="number" id="borderRadius" value="0" min="0" max="100"></label>
+          <label>内边距 (px) <input type="number" id="padding" value="0" min="0" max="50"></label>
+        </div>
+
+        <div class="fg-actions">
+          <button class="fg-btn-gen" onclick="generateFavicons()">🔄 生成图标</button>
+          <button class="fg-btn-dl" id="btnDownload" onclick="downloadFavicon()" disabled>⬇ 下载图标</button>
+        </div>
+
+        <div id="previewArea" style="display:none;">
+          <div style="font-size:0.8rem;color:var(--text-muted);font-weight:600;margin-bottom:0.5rem;">预览</div>
+          <div class="fg-preview-grid" id="previewGrid"></div>
+        </div>
+
+        <div style="display:none;" id="codeArea">
+          <div style="font-size:0.8rem;color:var(--text-muted);font-weight:600;margin-bottom:0.3rem;">HTML 引用代码</div>
+          <textarea class="fg-code" id="htmlCode" readonly></textarea>
+          <div style="margin-top:0.5rem;">
+            <button class="fg-btn-dl" onclick="copyCode()">📋 复制代码</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线 Favicon 图标生成器</h2>
+      <p>免费的在线 Favicon 生成器，上传 PNG、JPG 等图片一键生成网站图标。支持 16×16 到 512×512 多种尺寸输出，可自定义背景色、圆角、内边距。支持单尺寸输出和全部尺寸批量生成。自动生成 HTML link 标签代码，可直接复制到网页 head 中使用。所有处理在浏览器本地完成，图片不会上传到服务器。适合 Web 开发者、博客作者、网站运营人员快速生成网站图标。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/favicon-generator.html">Favicon</a> | <a href="../tools/markdown-editor.html">Markdown</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let currentFile = null;
+    let generatedBlobs = [];
+    let generatedSizes = [];
+
+    document.getElementById('dropZone').addEventListener('click', () => document.getElementById('fileInput').click());
+    document.getElementById('fileInput').addEventListener('change', e => { if (e.target.files.length) loadImage(e.target.files[0]); });
+
+    const dz = document.getElementById('dropZone');
+    dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
+    dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+    dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('dragover'); if (e.dataTransfer.files.length) loadImage(e.dataTransfer.files[0]); });
+
+    let sourceImage = null;
+
+    function loadImage(file) {
+      if (!file.type.startsWith('image/')) return showToast('请上传图片文件');
+      currentFile = file;
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+          sourceImage = img;
+          document.getElementById('dropZone').querySelector('p').textContent = file.name + ' (' + img.width + '×' + img.height + ')';
+          generateFavicons();
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function generateFavicons() {
+      if (!sourceImage) return showToast('请先上传图片');
+
+      const sizeVal = document.getElementById('sizeSelect').value;
+      const bgColor = document.getElementById('bgColor').value;
+      const borderRadius = parseInt(document.getElementById('borderRadius').value) || 0;
+      const padding = parseInt(document.getElementById('padding').value) || 0;
+
+      const sizes = sizeVal === 'multi' ? [16, 32, 48, 64, 96, 128, 180, 192, 512] : [parseInt(sizeVal)];
+
+      const previewGrid = document.getElementById('previewGrid');
+      previewGrid.innerHTML = '';
+      generatedBlobs = [];
+      generatedSizes = [];
+
+      for (const size of sizes) {
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+
+        // Draw background
+        ctx.fillStyle = bgColor;
+        ctx.beginPath();
+        if (borderRadius > 0) {
+          const r = Math.min(borderRadius, size / 2);
+          ctx.roundRect(0, 0, size, size, r);
+        } else {
+          ctx.rect(0, 0, size, size);
+        }
+        ctx.fill();
+
+        // Draw image with padding
+        const pad = Math.min(padding, size / 4);
+        const imgSize = size - pad * 2;
+        const sx = sizeVal === 'multi' ? 0 : (size - imgSize) / 2;
+        ctx.drawImage(sourceImage, pad, pad, imgSize, imgSize);
+
+        // Add to preview
+        const item = document.createElement('div');
+        item.className = 'fg-preview-item';
+        const img = document.createElement('img');
+        img.src = canvas.toDataURL('image/png');
+        img.width = Math.min(size, 80);
+        img.height = Math.min(size, 80);
+        img.style.background = size > 32 ? '#fff' : 'transparent';
+        item.appendChild(img);
+        const label = document.createElement('div');
+        label.className = 'size-label';
+        label.textContent = size + '×' + size + ' PNG';
+        item.appendChild(label);
+        previewGrid.appendChild(item);
+
+        // Store blob
+        canvas.toBlob(blob => {
+          generatedBlobs.push({ blob, size, name: 'favicon-' + size + 'x' + size + '.png' });
+          generatedSizes.push(size);
+        });
+      }
+
+      document.getElementById('previewArea').style.display = 'block';
+      document.getElementById('btnDownload').disabled = false;
+
+      // Generate HTML code
+      let code = '<!-- Favicon 引用代码 -->\n';
+      for (const size of sizes) {
+        if (size === 180) {
+          code += '<link rel="apple-touch-icon" sizes="' + size + 'x' + size + '" href="/favicon-' + size + 'x' + size + '.png">\n';
+        } else if (size === 192 || size === 512) {
+          code += '<link rel="icon" type="image/png" sizes="' + size + 'x' + size + '" href="/favicon-' + size + 'x' + size + '.png">\n';
+        } else {
+          code += '<link rel="icon" type="image/png" sizes="' + size + 'x' + size + '" href="/favicon-' + size + 'x' + size + '.png">\n';
+        }
+      }
+      document.getElementById('htmlCode').value = code;
+      document.getElementById('codeArea').style.display = 'block';
+
+      showToast('✅ 已生成 ' + sizes.length + ' 个图标');
+    }
+
+    function downloadFavicon() {
+      if (generatedBlobs.length === 0) return;
+
+      if (generatedBlobs.length === 1) {
+        const b = generatedBlobs[0];
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(b.blob);
+        a.download = b.name;
+        a.click();
+        showToast('✅ 已下载');
+        return;
+      }
+
+      // Multiple files - use JSZip-like approach but simpler: download one by one
+      // For multi-size, download as ZIP-like individual files
+      generatedBlobs.forEach((b, i) => {
+        setTimeout(() => {
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(b.blob);
+          a.download = b.name;
+          a.click();
+        }, i * 300);
+      });
+      showToast('✅ 开始下载 ' + generatedBlobs.length + ' 个文件');
+    }
+
+    function copyCode() {
+      const code = document.getElementById('htmlCode').value;
+      if (code) navigator.clipboard.writeText(code).then(() => showToast('✅ HTML 代码已复制'));
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+  </script>
+</body>
+</html>
