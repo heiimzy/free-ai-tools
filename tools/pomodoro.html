@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>番茄钟计时器 - 免费在线番茄工作法计时器 | Free AI Tools</title>
+  <meta name="description" content="免费在线番茄钟计时器，基于番茄工作法。支持自定义专注/休息时间、长休息间隔、自动循环、桌面通知。提高工作效率，保持专注力。浏览器本地运行，无需注册下载。">
+  <meta name="keywords" content="番茄钟,番茄工作法,专注计时器,番茄时钟,Pomodoro Timer,时间管理,效率工具,专注力训练">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/pomodoro.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .pm-layout { max-width: 500px; margin: 0 auto; display: grid; gap: 1.5rem; text-align: center; }
+    .pm-display { position: relative; width: 280px; height: 280px; margin: 0 auto; }
+    .pm-canvas { position: absolute; top: 0; left: 0; }
+    .pm-time { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 3.5rem; font-weight: 800; color: var(--text); font-family: 'Courier New', monospace; letter-spacing: 2px; }
+    .pm-label { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem; }
+    .pm-controls { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
+    .pm-controls button { padding: 0.55rem 1.5rem; border-radius: 8px; border: none; font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .pm-btn-start { background: linear-gradient(135deg, var(--primary), #7c3aed); color: white; }
+    .pm-btn-start:hover { transform: translateY(-1px); box-shadow: 0 4px 15px var(--glow-purple); }
+    .pm-btn-start.running { background: linear-gradient(135deg, #ef4444, #dc2626); }
+    .pm-btn-reset { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); }
+    .pm-btn-reset:hover { border-color: var(--primary); color: var(--primary); }
+    .pm-settings { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; text-align: left; }
+    .pm-settings label { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+    .pm-settings input { padding: 0.4rem 0.5rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: inherit; font-size: 0.85rem; width: 100%; box-sizing: border-box; }
+    .pm-settings input:focus { outline: none; border-color: var(--primary); }
+    .pm-stats { display: flex; gap: 1rem; justify-content: center; }
+    .pm-stats .stat { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem 1rem; text-align: center; min-width: 80px; }
+    .pm-stats .stat .num { font-size: 1.3rem; font-weight: 800; color: var(--primary); }
+    .pm-stats .stat p { font-size: 0.7rem; margin: 0; color: var(--text-muted); }
+    @media (max-width: 400px) { .pm-settings { grid-template-columns: 1fr; } .pm-time { font-size: 2.8rem; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/pomodoro.html">番茄钟</a><a href="../tools/morse-code.html">摩斯密码</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>番茄钟计时器 / Pomodoro Timer</h1>
+      <p>基于番茄工作法的专注计时器，提高工作效率，保持专注力。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="pm-layout">
+        <div class="pm-display">
+          <canvas class="pm-canvas" id="pmCanvas" width="280" height="280"></canvas>
+          <div class="pm-time" id="pmTimeDisplay">25:00</div>
+          <div class="pm-label" id="pmLabel">专注时间</div>
+        </div>
+
+        <div class="pm-controls">
+          <button class="pm-btn-start" id="pmStartBtn" onclick="toggleTimer()">▶ 开始</button>
+          <button class="pm-btn-reset" onclick="resetTimer()">↺ 重置</button>
+        </div>
+
+        <div class="pm-settings">
+          <label>专注 (分) <input type="number" id="pmFocus" value="25" min="1" max="120" onchange="applySettings()"></label>
+          <label>短休息 (分) <input type="number" id="pmShortBreak" value="5" min="1" max="30" onchange="applySettings()"></label>
+          <label>长休息 (分) <input type="number" id="pmLongBreak" value="15" min="1" max="60" onchange="applySettings()"></label>
+        </div>
+
+        <div class="pm-stats">
+          <div class="stat"><div class="num" id="pmCompleted">0</div><p>已完成</p></div>
+          <div class="stat"><div class="num" id="pmSessionCount">0</div><p>当前轮次</p></div>
+          <div class="stat"><div class="num" id="pmTotalMinutes">0</div><p>总分钟</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线番茄钟计时器</h2>
+      <p>免费的在线番茄钟计时器，基于经典的番茄工作法（Pomodoro Technique）。默认设置25分钟专注工作、5分钟短休息、每4个番茄钟后15分钟长休息。支持自定义专注时长（1-120分钟）、短休息时长（1-30分钟）、长休息时长（1-60分钟）。圆形进度可视化显示剩余时间，完成番茄钟后有声音提示和桌面通知。自动记录完成数量和总专注时长。适合学生备考复习、远程工作者保持效率、程序员深度编码、创意工作者管理精力。浏览器本地运行，无需注册下载。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/pomodoro.html">番茄钟</a> | <a href="../tools/morse-code.html">摩斯密码</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let state = {
+      focus: 25, shortBreak: 5, longBreak: 15,
+      phase: 'focus', // focus, shortBreak, longBreak
+      timeLeft: 25 * 60, totalTime: 25 * 60,
+      running: false, completed: 0, sessionCount: 0,
+      totalMinutes: 0, timerId: null
+    };
+
+    const LONG_BREAK_INTERVAL = 4;
+
+    function drawRing(progress) {
+      const c = document.getElementById('pmCanvas');
+      const ctx = c.getContext('2d');
+      const cx = 140, cy = 140, r = 120, w = 10;
+      ctx.clearRect(0, 0, 280, 280);
+
+      // Background ring
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(167,139,250,0.15)';
+      ctx.lineWidth = w;
+      ctx.stroke();
+
+      // Progress ring
+      const startAngle = -Math.PI / 2;
+      const endAngle = startAngle + Math.PI * 2 * progress;
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, startAngle, endAngle);
+      const color = state.phase === 'focus' ? '#a78bfa' : '#34d399';
+      ctx.strokeStyle = color;
+      ctx.lineWidth = w;
+      ctx.lineCap = 'round';
+      ctx.stroke();
+    }
+
+    function formatTime(sec) {
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+    }
+
+    function updateDisplay() {
+      document.getElementById('pmTimeDisplay').textContent = formatTime(state.timeLeft);
+      const phaseLabels = { focus: '专注时间', shortBreak: '短休息', longBreak: '长休息' };
+      document.getElementById('pmLabel').textContent = phaseLabels[state.phase];
+      const progress = 1 - state.timeLeft / state.totalTime;
+      drawRing(progress);
+      document.getElementById('pmCompleted').textContent = state.completed;
+      document.getElementById('pmSessionCount').textContent = state.sessionCount;
+      document.getElementById('pmTotalMinutes').textContent = state.totalMinutes;
+      document.title = formatTime(state.timeLeft) + ' - ' + phaseLabels[state.phase] + ' | 番茄钟';
+    }
+
+    function tick() {
+      if (state.timeLeft <= 0) {
+        nextPhase();
+        return;
+      }
+      state.timeLeft--;
+      if (state.phase === 'focus') state.totalMinutes++;
+      updateDisplay();
+    }
+
+    function nextPhase() {
+      playBeep();
+      showNotification();
+
+      if (state.phase === 'focus') {
+        state.completed++;
+        state.sessionCount++;
+        if (state.sessionCount % LONG_BREAK_INTERVAL === 0) {
+          state.phase = 'longBreak';
+          state.totalTime = state.longBreak * 60;
+        } else {
+          state.phase = 'shortBreak';
+          state.totalTime = state.shortBreak * 60;
+        }
+      } else {
+        state.phase = 'focus';
+        state.totalTime = state.focus * 60;
+      }
+      state.timeLeft = state.totalTime;
+      updateDisplay();
+    }
+
+    function toggleTimer() {
+      const btn = document.getElementById('pmStartBtn');
+      if (state.running) {
+        clearInterval(state.timerId);
+        state.running = false;
+        btn.textContent = '▶ 继续';
+        btn.classList.remove('running');
+      } else {
+        state.timerId = setInterval(tick, 1000);
+        state.running = true;
+        btn.textContent = '⏸ 暂停';
+        btn.classList.add('running');
+      }
+    }
+
+    function resetTimer() {
+      if (state.running) {
+        clearInterval(state.timerId);
+        state.running = false;
+      }
+      const btn = document.getElementById('pmStartBtn');
+      btn.textContent = '▶ 开始';
+      btn.classList.remove('running');
+      state.phase = 'focus';
+      state.totalTime = state.focus * 60;
+      state.timeLeft = state.totalTime;
+      state.sessionCount = 0;
+      updateDisplay();
+    }
+
+    function applySettings() {
+      if (state.running) return showToast('⚠️ 请先暂停计时器再修改设置');
+      state.focus = parseInt(document.getElementById('pmFocus').value) || 25;
+      state.shortBreak = parseInt(document.getElementById('pmShortBreak').value) || 5;
+      state.longBreak = parseInt(document.getElementById('pmLongBreak').value) || 15;
+      state.totalTime = state.focus * 60;
+      state.timeLeft = state.totalTime;
+      state.phase = 'focus';
+      state.sessionCount = 0;
+      updateDisplay();
+    }
+
+    function playBeep() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = 880;
+        gain.gain.value = 0.3;
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.5);
+      } catch(e) {}
+    }
+
+    function showNotification() {
+      const phaseLabels = { focus: '专注结束！该休息了', shortBreak: '休息结束！开始专注', longBreak: '长休息结束！开始专注' };
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification('番茄钟', { body: phaseLabels[state.phase] });
+      } else if ('Notification' in window && Notification.permission !== 'denied') {
+        Notification.requestPermission();
+      }
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    // Request notification permission on load
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+
+    window.addEventListener('DOMContentLoaded', updateDisplay);
+  </script>
+</body>
+</html>

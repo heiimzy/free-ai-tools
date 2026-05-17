@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数据大小转换器 - 免费在线存储单位换算工具 | Free AI Tools</title>
+  <meta name="description" content="免费在线数据存储单位换算工具，支持Bit、Byte、KB、MB、GB、TB、PB、EB等20+单位互转。实时换算、精确计算、支持二进制和十进制两种标准。适合开发者、IT运维、数据工程师日常使用。浏览器本地处理。">
+  <meta name="keywords" content="数据大小转换,存储单位换算,Byte转换,KB MB GB换算,存储容量计算,Data Size Converter,文件大小转换,IT工具">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/data-size-converter.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .dc-layout { max-width: 600px; margin: 0 auto; display: grid; gap: 1.2rem; }
+    .dc-input-row { display: flex; gap: 0.5rem; align-items: center; }
+    .dc-input-row input { flex: 1; padding: 0.6rem 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: inherit; font-size: 1.1rem; box-sizing: border-box; }
+    .dc-input-row input:focus { outline: none; border-color: var(--primary); }
+    .dc-input-row select { padding: 0.6rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: inherit; font-size: 1rem; cursor: pointer; }
+    .dc-input-row select:focus { outline: none; border-color: var(--primary); }
+    .dc-swap-btn { background: rgba(244,114,182,0.1); color: var(--secondary); border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-size: 1.2rem; transition: 0.2s; }
+    .dc-swap-btn:hover { background: rgba(244,114,182,0.2); }
+    .dc-results { display: grid; gap: 0.3rem; }
+    .dc-result { display: flex; justify-content: space-between; padding: 0.5rem 0.75rem; border-radius: 6px; background: var(--bg-card); border: 1px solid var(--border); font-size: 0.85rem; cursor: pointer; transition: 0.15s; }
+    .dc-result:hover { border-color: var(--primary); }
+    .dc-result .val { color: var(--text); font-weight: 600; font-family: 'Courier New', monospace; }
+    .dc-result .unit { color: var(--text-muted); }
+    .dc-result.highlight { border-color: var(--primary); background: rgba(167,139,250,0.08); }
+    .dc-info { text-align: center; font-size: 0.75rem; color: var(--text-muted); padding: 0.5rem; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border); }
+    .dc-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; }
+    .dc-actions button { padding: 0.5rem 1.2rem; border-radius: 8px; border: none; font-family: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .dc-btn-convert { background: linear-gradient(135deg, var(--primary), #7c3aed); color: white; }
+    .dc-btn-convert:hover { transform: translateY(-1px); box-shadow: 0 4px 15px var(--glow-purple); }
+    .dc-btn-copy { background: rgba(167,139,250,0.15); color: var(--primary); }
+    .dc-btn-copy:hover { background: rgba(167,139,250,0.25); }
+    .dc-btn-clear { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); }
+    .dc-btn-clear:hover { border-color: var(--danger); color: var(--danger); }
+    .dc-standard { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 0.3rem; }
+    .dc-standard button { padding: 0.3rem 1rem; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); font-size: 0.75rem; cursor: pointer; font-family: inherit; transition: 0.15s; }
+    .dc-standard button.active { background: rgba(167,139,250,0.15); color: var(--primary); border-color: var(--primary); }
+    @media (max-width: 500px) { .dc-input-row { flex-direction: column; } .dc-input-row select { width: 100%; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/data-size-converter.html">数据大小</a><a href="../tools/pomodoro.html">番茄钟</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>数据大小转换器 / Data Size Converter</h1>
+      <p>Bit、Byte、KB、MB、GB、TB 等存储单位互转，支持二进制与十进制标准。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="dc-layout">
+        <div class="dc-standard">
+          <button class="active" id="stdDecimal" onclick="setStandard('decimal')">📐 十进制 (1000)</button>
+          <button id="stdBinary" onclick="setStandard('binary')">💻 二进制 (1024)</button>
+        </div>
+
+        <div>
+          <label style="font-size:0.8rem;color:var(--text-muted);font-weight:600;">输入数值</label>
+          <div class="dc-input-row">
+            <input type="number" id="inputValue" value="1" min="0" step="any" oninput="convert()">
+            <select id="inputUnit" onchange="convert()">
+              <option value="bit">Bit (b)</option>
+              <option value="byte">Byte (B)</option>
+              <option value="kb">Kilobyte (KB)</option>
+              <option value="mb" selected>Megabyte (MB)</option>
+              <option value="gb">Gigabyte (GB)</option>
+              <option value="tb">Terabyte (TB)</option>
+              <option value="pb">Petabyte (PB)</option>
+              <option value="eb">Exabyte (EB)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="dc-actions">
+          <button class="dc-btn-convert" onclick="convert()">🔄 换算</button>
+          <button class="dc-btn-copy" onclick="copyResults()">📋 复制全部</button>
+          <button class="dc-btn-clear" onclick="clearAll()">🗑️ 清空</button>
+        </div>
+
+        <div>
+          <label style="font-size:0.8rem;color:var(--text-muted);font-weight:600;">换算结果</label>
+          <div class="dc-results" id="resultsContainer"></div>
+        </div>
+
+        <div class="dc-info" id="infoText">💡 计算机使用二进制 (1024)，硬盘厂商使用十进制 (1000)</div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线数据存储单位换算工具</h2>
+      <p>免费的在线数据大小转换工具，支持Bit、Byte、Kilobyte (KB)、Megabyte (MB)、Gigabyte (GB)、Terabyte (TB)、Petabyte (PB)、Exabyte (EB) 等存储单位之间的互转。支持两种换算标准：二进制标准（1 KB = 1024 Bytes，符合计算机实际存储计算方式）和十进制标准（1 KB = 1000 Bytes，符合硬盘厂商标注方式）。输入任意数值选择原始单位，自动换算为所有其他单位的对应值。点击任意结果行即可复制该值。适合开发者评估存储需求、IT运维管理服务器磁盘空间、普通用户换算文件大小。所有计算在浏览器本地完成。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/data-size-converter.html">数据大小</a> | <a href="../tools/pomodoro.html">番茄钟</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const UNITS = ['bit', 'byte', 'kb', 'mb', 'gb', 'tb', 'pb', 'eb'];
+    const UNIT_LABELS = {
+      bit: 'Bit (b)', byte: 'Byte (B)', kb: 'Kilobyte (KB)', mb: 'Megabyte (MB)',
+      gb: 'Gigabyte (GB)', tb: 'Terabyte (TB)', pb: 'Petabyte (PB)', eb: 'Exabyte (EB)'
+    };
+    const UNIT_SHORT = {
+      bit: 'b', byte: 'B', kb: 'KB', mb: 'MB', gb: 'GB', tb: 'TB', pb: 'PB', eb: 'EB'
+    };
+
+    let standard = 'decimal'; // decimal (1000) or binary (1024)
+
+    function setStandard(s) {
+      standard = s;
+      document.querySelectorAll('.dc-standard button').forEach(b => b.classList.remove('active'));
+      document.getElementById(s === 'decimal' ? 'stdDecimal' : 'stdBinary').classList.add('active');
+      convert();
+    }
+
+    function toBytes(value, unit) {
+      const base = standard === 'binary' ? 1024 : 1000;
+      const idx = UNITS.indexOf(unit);
+      if (idx <= 1) return unit === 'bit' ? value / 8 : value; // bit or byte
+      return value * Math.pow(base, idx - 1);
+    }
+
+    function fromBytes(bytes, unit) {
+      const base = standard === 'binary' ? 1024 : 1000;
+      const idx = UNITS.indexOf(unit);
+      if (idx <= 1) return unit === 'bit' ? bytes * 8 : bytes;
+      return bytes / Math.pow(base, idx - 1);
+    }
+
+    function formatNum(n) {
+      if (Math.abs(n) < 0.0001 && n !== 0) return n.toExponential(4);
+      if (Math.abs(n) >= 1e12) return n.toExponential(4);
+      const s = n.toFixed(10);
+      // Trim trailing zeros
+      const trimmed = s.replace(/\.?0+$/, '');
+      return trimmed;
+    }
+
+    function convert() {
+      const value = parseFloat(document.getElementById('inputValue').value);
+      const unit = document.getElementById('inputUnit').value;
+
+      if (isNaN(value) || value < 0) {
+        document.getElementById('resultsContainer').innerHTML = '<div style="color:var(--text-muted);padding:1rem;text-align:center;">请输入有效数值</div>';
+        return;
+      }
+
+      const bytes = toBytes(value, unit);
+      const container = document.getElementById('resultsContainer');
+      container.innerHTML = '';
+
+      const selIdx = UNITS.indexOf(unit);
+      UNITS.forEach((u, i) => {
+        const result = fromBytes(bytes, u);
+        const isInput = (i === selIdx);
+        const div = document.createElement('div');
+        div.className = 'dc-result' + (isInput ? ' highlight' : '');
+        div.innerHTML = '<span class="unit">' + UNIT_LABELS[u] + '</span><span class="val">' + formatNum(result) + '</span>';
+        div.title = '点击复制';
+        div.addEventListener('click', function() {
+          const val = formatNum(result);
+          navigator.clipboard.writeText(val).then(() => showToast('✅ 已复制: ' + val + ' ' + UNIT_SHORT[u]));
+        });
+        container.appendChild(div);
+      });
+    }
+
+    function copyResults() {
+      const lines = [];
+      document.querySelectorAll('.dc-result').forEach(el => {
+        const unit = el.querySelector('.unit').textContent;
+        const val = el.querySelector('.val').textContent;
+        lines.push(val + ' ' + unit);
+      });
+      if (!lines.length) return showToast('⚠️ 没有结果可复制');
+      navigator.clipboard.writeText(lines.join('\n')).then(() => showToast('✅ 已复制全部 (' + lines.length + ' 行)'));
+    }
+
+    function clearAll() {
+      document.getElementById('inputValue').value = '1';
+      convert();
+      showToast('🗑️ 已重置');
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    window.addEventListener('DOMContentLoaded', convert);
+  </script>
+</body>
+</html>

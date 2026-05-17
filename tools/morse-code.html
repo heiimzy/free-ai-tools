@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>摩斯密码翻译器 - 免费在线文本与摩斯电码互转 | Free AI Tools</title>
+  <meta name="description" content="免费在线摩斯密码翻译器，支持文本与摩斯电码双向互转。实时转换、播放摩斯音频、支持国际摩斯密码标准。适合密码爱好者、无线电爱好者、间谍游戏玩家、STEM教育学习。浏览器本地处理，无需上传。">
+  <meta name="keywords" content="摩斯密码,摩斯电码翻译,莫尔斯电码,Morse Code,摩斯密码翻译器,摩斯编码,密码翻译,电码转换">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/morse-code.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .mc-layout { max-width: 700px; margin: 0 auto; display: grid; gap: 1rem; }
+    .mc-mode { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 0.5rem; }
+    .mc-mode button { padding: 0.35rem 1.2rem; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); font-size: 0.8rem; cursor: pointer; font-family: inherit; transition: 0.15s; }
+    .mc-mode button.active { background: rgba(167,139,250,0.15); color: var(--primary); border-color: var(--primary); }
+    .mc-panels { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .mc-textarea { width: 100%; min-height: 180px; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: 'Courier New', monospace; font-size: 0.85rem; resize: vertical; box-sizing: border-box; line-height: 1.6; }
+    .mc-textarea:focus { outline: none; border-color: var(--primary); }
+    .mc-textarea::placeholder { color: var(--text-muted); opacity: 0.4; }
+    .mc-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; }
+    .mc-actions button { padding: 0.5rem 1.2rem; border-radius: 8px; border: none; font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .mc-btn-convert { background: linear-gradient(135deg, var(--primary), #7c3aed); color: white; }
+    .mc-btn-convert:hover { transform: translateY(-1px); box-shadow: 0 4px 15px var(--glow-purple); }
+    .mc-btn-copy { background: rgba(167,139,250,0.15); color: var(--primary); }
+    .mc-btn-copy:hover { background: rgba(167,139,250,0.25); }
+    .mc-btn-clear { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); }
+    .mc-btn-clear:hover { border-color: var(--danger); color: var(--danger); }
+    .mc-btn-play { background: rgba(52,211,153,0.12); color: #34d399; }
+    .mc-btn-play:hover { background: rgba(52,211,153,0.25); }
+    .mc-btn-swap { background: rgba(244,114,182,0.1); color: var(--secondary); }
+    .mc-btn-swap:hover { background: rgba(244,114,182,0.2); }
+    .mc-chart { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem; font-size: 0.75rem; }
+    .mc-chart table { width: 100%; border-collapse: collapse; }
+    .mc-chart th, .mc-chart td { padding: 0.25rem 0.5rem; text-align: center; border-bottom: 1px solid var(--border); color: var(--text-muted); }
+    .mc-chart th { color: var(--primary); font-weight: 600; }
+    .mc-chart .code { font-family: 'Courier New', monospace; color: var(--text); letter-spacing: 0.1em; }
+    .mc-info { text-align: center; font-size: 0.75rem; color: var(--text-muted); padding: 0.5rem; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border); }
+    @media (max-width: 600px) { .mc-panels { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/morse-code.html">摩斯密码</a><a href="../tools/pomodoro.html">番茄钟</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>摩斯密码翻译器 / Morse Code Translator</h1>
+      <p>文本与摩斯电码双向互转，支持音频播放，学习国际摩斯密码标准。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="mc-layout">
+        <div class="mc-mode">
+          <button class="active" id="modeText" onclick="setMode('text')">📝 文本 → 摩斯</button>
+          <button id="modeMorse" onclick="setMode('morse')">📡 摩斯 → 文本</button>
+        </div>
+
+        <div class="mc-panels">
+          <div>
+            <label style="font-size:0.8rem;color:var(--text-muted);font-weight:600;" id="inputLabel">输入文本</label>
+            <textarea class="mc-textarea" id="inputText" placeholder="输入文字..." oninput="autoConvert()">SOS</textarea>
+          </div>
+          <div>
+            <label style="font-size:0.8rem;color:var(--text-muted);font-weight:600;" id="outputLabel">摩斯密码输出</label>
+            <textarea class="mc-textarea" id="outputText" readonly placeholder="摩斯密码..."></textarea>
+          </div>
+        </div>
+
+        <div class="mc-actions">
+          <button class="mc-btn-convert" onclick="convert()">🔄 转换</button>
+          <button class="mc-btn-play" onclick="playMorse()">🔊 播放</button>
+          <button class="mc-btn-swap" onclick="swapMode()">🔀 互换</button>
+          <button class="mc-btn-copy" onclick="copyOutput()">📋 复制</button>
+          <button class="mc-btn-clear" onclick="clearAll()">🗑️ 清空</button>
+        </div>
+
+        <div class="mc-info" id="infoText">字母以空格分隔，单词以 / 分隔。/ = 单词分隔</div>
+
+        <div class="mc-chart">
+          <table>
+            <tr><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th><th>H</th><th>I</th><th>J</th><th>K</th><th>L</th><th>M</th></tr>
+            <tr>
+              <td class="code">.-</td><td class="code">-...</td><td class="code">-.-.</td><td class="code">-..</td><td class="code">.</td>
+              <td class="code">..-.</td><td class="code">--.</td><td class="code">....</td><td class="code">..</td><td class="code">.---</td>
+              <td class="code">-.-</td><td class="code">.-..</td><td class="code">--</td>
+            </tr>
+            <tr><th>N</th><th>O</th><th>P</th><th>Q</th><th>R</th><th>S</th><th>T</th><th>U</th><th>V</th><th>W</th><th>X</th><th>Y</th><th>Z</th></tr>
+            <tr>
+              <td class="code">-.</td><td class="code">---</td><td class="code">.--.</td><td class="code">--.-</td><td class="code">.-.</td>
+              <td class="code">...</td><td class="code">-</td><td class="code">..-</td><td class="code">...-</td><td class="code">.--</td>
+              <td class="code">-..-</td><td class="code">-.--</td><td class="code">--..</td>
+            </tr>
+            <tr><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>.</th><th>,</th><th>?</th></tr>
+            <tr>
+              <td class="code">-----</td><td class="code">.----</td><td class="code">..---</td><td class="code">...--</td><td class="code">....-</td>
+              <td class="code">.....</td><td class="code">-....</td><td class="code">--...</td><td class="code">---..</td><td class="code">----.</td>
+              <td class="code">.-.-.-</td><td class="code">--..--</td><td class="code">..--..</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线摩斯密码翻译器</h2>
+      <p>免费的在线摩斯密码翻译工具，支持文本与摩斯电码双向互转。基于国际摩斯密码标准，支持A-Z字母、0-9数字和常用标点符号。文本转摩斯：输入英文自动转换为对应的摩斯电码，字母间以空格分隔，单词间以 / 分隔。摩斯转文本：输入摩斯电码（点 . 和划 -），自动翻译为英文字母。支持音频播放功能，可听取摩斯密码的滴答声。适合无线电爱好者学习摩斯电码、密码学入门者练习编码解码、STEM教育课堂互动、解谜游戏玩家破解密码。所有转换在浏览器本地完成，内容不会上传到服务器。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/morse-code.html">摩斯密码</a> | <a href="../tools/pomodoro.html">番茄钟</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const MORSE_MAP = {
+      'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.',
+      'G': '--.', 'H': '....', 'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..',
+      'M': '--', 'N': '-.', 'O': '---', 'P': '.--.', 'Q': '--.-', 'R': '.-.',
+      'S': '...', 'T': '-', 'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-',
+      'Y': '-.--', 'Z': '--..',
+      '0': '-----', '1': '.----', '2': '..---', '3': '...--', '4': '....-',
+      '5': '.....', '6': '-....', '7': '--...', '8': '---..', '9': '----.',
+      '.': '.-.-.-', ',': '--..--', '?': '..--..', "'": '.----.', '!': '-.-.--',
+      '/': '-..-.', '(': '-.--.', ')': '-.--.-', '&': '.-...', ':': '---...',
+      ';': '-.-.-.', '=': '-...-', '+': '.-.-.', '-': '-....-', '_': '..--.-',
+      '"': '.-..-.', '@': '.--.-.', ' ': '/'
+    };
+
+    const REVERSE_MAP = {};
+    for (const [k, v] of Object.entries(MORSE_MAP)) REVERSE_MAP[v] = k;
+
+    let mode = 'text';
+    let audioCtx = null;
+
+    function setMode(m) {
+      mode = m;
+      document.querySelectorAll('.mc-mode button').forEach(b => b.classList.remove('active'));
+      document.getElementById(m === 'text' ? 'modeText' : 'modeMorse').classList.add('active');
+      document.getElementById('inputLabel').textContent = m === 'text' ? '输入文本' : '输入摩斯密码';
+      document.getElementById('outputLabel').textContent = m === 'text' ? '摩斯密码输出' : '文本输出';
+      document.getElementById('inputText').placeholder = m === 'text' ? '输入文字...' : '输入摩斯（如 ... --- ...）';
+      document.getElementById('infoText').textContent = m === 'text' ? '字母以空格分隔，单词以 / 分隔' : '输入摩斯码，空格分隔字母，/ 分隔单词';
+      document.getElementById('inputText').value = '';
+      document.getElementById('outputText').value = '';
+    }
+
+    function textToMorse(str) {
+      return str.toUpperCase().split('').map(c => MORSE_MAP[c] || c).join(' ');
+    }
+
+    function morseToText(morse) {
+      return morse.trim().split(/\s+/).map(s => {
+        if (s === '/') return ' ';
+        return REVERSE_MAP[s] || s;
+      }).join('');
+    }
+
+    function convert() {
+      const input = document.getElementById('inputText').value;
+      if (!input.trim()) {
+        document.getElementById('outputText').value = '';
+        return;
+      }
+      const output = mode === 'text' ? textToMorse(input) : morseToText(input);
+      document.getElementById('outputText').value = output;
+    }
+
+    function autoConvert() {
+      clearTimeout(window._mcTimer);
+      window._mcTimer = setTimeout(convert, 300);
+    }
+
+    function playMorse() {
+      const morse = mode === 'text' ? textToMorse(document.getElementById('inputText').value) : document.getElementById('inputText').value;
+      if (!morse.trim()) return showToast('⚠️ 没有可播放的摩斯码');
+
+      try {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      } catch(e) {
+        return showToast('⚠️ 浏览器不支持音频播放');
+      }
+
+      const dot = 0.08; // seconds
+      const symbols = morse.split('');
+      let time = audioCtx.currentTime;
+
+      for (const s of symbols) {
+        if (s === '.') {
+          playTone(audioCtx, time, dot, 700);
+          time += dot + 0.02;
+        } else if (s === '-') {
+          playTone(audioCtx, time, dot * 3, 700);
+          time += dot * 3 + 0.02;
+        } else if (s === ' ') {
+          time += dot;
+        } else if (s === '/') {
+          time += dot * 3;
+        }
+      }
+      showToast('🔊 正在播放摩斯密码');
+    }
+
+    function playTone(ctx, startTime, duration, freq) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.value = 0.3;
+      gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(startTime);
+      osc.stop(startTime + duration);
+    }
+
+    function swapMode() {
+      const input = document.getElementById('inputText').value;
+      const output = document.getElementById('outputText').value;
+      if (input || output) {
+        document.getElementById('inputText').value = output || input;
+        setMode(mode === 'text' ? 'morse' : 'text');
+        setTimeout(convert, 100);
+      } else {
+        setMode(mode === 'text' ? 'morse' : 'text');
+      }
+    }
+
+    function copyOutput() {
+      const val = document.getElementById('outputText').value;
+      if (!val) return showToast('⚠️ 没有内容可复制');
+      navigator.clipboard.writeText(val).then(() => showToast('✅ 已复制'));
+    }
+
+    function clearAll() {
+      document.getElementById('inputText').value = '';
+      document.getElementById('outputText').value = '';
+      showToast('🗑️ 已清空');
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    window.addEventListener('DOMContentLoaded', convert);
+  </script>
+</body>
+</html>
