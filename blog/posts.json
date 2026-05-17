@@ -1,5 +1,31 @@
 [
   {
+    "id": "031",
+    "date": "2026-05-20",
+    "zh": {
+      "title": "2026年5月AI工具全景：Qoder 1.0、Gemma 4、Dreamina Seedance 2.0等重磅发布",
+      "summary": "2026年5月AI工具全景盘点：阿里云Qoder 1.0从AI IDE进化为智能体自主开发工作台、Google发布Gemma 4四款开源模型Apache 2.0许可、TikTok Dreamina Seedance 2.0 AI视频广告工具上线、火山引擎Doubao-Seed-2.0-lite发布、Coder Agents自托管编程工具、Snyk+Claude AI安全平台。含46款AI核心产品与技术趋势分析。",
+      "tags": [
+        "工具",
+        "AI编程",
+        "开源模型",
+        "Agent"
+      ],
+      "file": "posts/031-ai-tools-may-2026-guide.zh.html"
+    },
+    "en": {
+      "title": "AI Tools of May 2026: Coder Agents, Gemma 4, Snyk+Claude, Qoder 1.0 — The Agent Tooling Era Arrives",
+      "summary": "May 2026 AI tools roundup: Coder Agents launches self-hosted AI coding agents in beta, Google DeepMind releases Gemma 4 under Apache 2.0, Snyk embeds Claude for AI-powered AppSec, Alibaba Qoder 1.0 becomes an autonomous agent development workstation, TikTok Dreamina Seedance 2.0 brings AI video to advertisers, and Opsera partners with Cursor for DevOps agents. A deep dive into the tools redefining developer workflows.",
+      "tags": [
+        "tools",
+        "AI coding",
+        "open-source",
+        "agents"
+      ],
+      "file": "posts/031-ai-tools-may-2026-guide.en.html"
+    }
+  },
+  {
     "id": "030",
     "date": "2026-05-19",
     "zh": {
@@ -29,8 +55,8 @@
     "id": "029",
     "date": "2026-05-19",
     "zh": {
-      "title": "2026年5月AI提效最新趋势：从"模型竞赛"到"智能体工程化"的范式跃迁",
-      "summary": "2026年5月AI提效最新动态：百度Create大会发布"度mate"智能体手机App、Dify v1.14.0支持千级智能体并发、AI数字员工提升企业效率65%、低代码+AI Agent 200+行业模板。含企业落地实测数据和行动路线图。",
+      "title": "2026年5月AI提效最新趋势：从「模型竞赛」到「智能体工程化」的范式跃迁",
+      "summary": "2026年5月AI提效最新动态：百度Create大会发布「度mate」智能体手机App、Dify v1.14.0支持千级智能体并发、AI数字员工提升企业效率65%、低代码+AI Agent 200+行业模板。含企业落地实测数据和行动路线图。",
       "tags": [
         "提效",
         "效率",
