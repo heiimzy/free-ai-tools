@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AES加密解密 - 免费在线AES加解密工具 | Free AI Tools</title>
+  <meta name="description" content="免费在线AES加密解密工具，使用Web Crypto API在浏览器本地完成AES-256-GCM加解密。支持密码短语加密、Base64输出，无需上传密钥或数据，保护隐私安全。适合开发者和安全敏感用户。">
+  <meta name="keywords" content="AES加密,AES解密,在线加密解密,AES-256-GCM,对称加密,数据加密,安全工具,隐私保护">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .aes-layout { display: grid; gap: 1.5rem; max-width: 600px; margin: 0 auto; }
+    .aes-field { display: flex; flex-direction: column; gap: 0.4rem; }
+    .aes-field label { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
+    .aes-input { padding: 0.6rem 0.8rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: monospace; font-size: 0.85rem; box-sizing: border-box; }
+    .aes-input:focus { outline: none; border-color: var(--primary); }
+    .aes-textarea { width: 100%; min-height: 120px; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: monospace; font-size: 0.85rem; resize: vertical; box-sizing: border-box; line-height: 1.5; }
+    .aes-textarea:focus { outline: none; border-color: var(--primary); }
+    .aes-row { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .aes-btn { flex: 1; min-width: 120px; padding: 0.7rem; border: none; border-radius: 8px; font-family: inherit; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .aes-btn-encrypt { background: linear-gradient(135deg, var(--primary), #7c3aed); color: white; }
+    .aes-btn-encrypt:hover { transform: translateY(-2px); box-shadow: 0 4px 15px var(--glow-purple); }
+    .aes-btn-decrypt { background: linear-gradient(135deg, var(--secondary), #e11d48); color: white; }
+    .aes-btn-decrypt:hover { transform: translateY(-2px); box-shadow: 0 4px 15px var(--glow-pink); }
+    .aes-btn-clear { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); }
+    .aes-btn-clear:hover { border-color: var(--danger); color: var(--danger); }
+    .aes-error { color: #ff6b6b; font-size: 0.85rem; padding: 0.5rem; background: rgba(255,107,107,0.08); border-radius: 8px; display: none; }
+    .aes-info { font-size: 0.8rem; color: var(--text-muted); padding: 0.75rem; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border); line-height: 1.6; }
+    .aes-info strong { color: var(--primary); }
+  </style>
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/aes-encrypt.html">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/aes-encrypt.html">AES加解密</a><a href="../tools/hash-generator.html">哈希生成</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>AES 加密解密 / AES Encrypt & Decrypt</h1>
+      <p>使用 AES-256-GCM 在浏览器本地加密和解密文本数据。密钥和数据均不上传服务器。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="aes-layout">
+        <div class="aes-field">
+          <label>密码短语 (Passphrase)</label>
+          <input class="aes-input" type="text" id="passphrase" value="MySecretKey123!" placeholder="输入加密密码短语...">
+        </div>
+
+        <div class="aes-field">
+          <label>输入内容</label>
+          <textarea class="aes-textarea" id="inputText" placeholder="输入要加密的文本，或粘贴要解密的密文..."></textarea>
+        </div>
+
+        <div class="aes-row">
+          <button class="aes-btn aes-btn-encrypt" onclick="doEncrypt()">🔒 加密</button>
+          <button class="aes-btn aes-btn-decrypt" onclick="doDecrypt()">🔓 解密</button>
+          <button class="aes-btn aes-btn-clear" onclick="clearAll()">清除</button>
+        </div>
+
+        <div class="aes-error" id="errorMsg"></div>
+
+        <div class="aes-field">
+          <label>输出结果 <span style="font-weight:400;color:var(--text-muted);font-size:0.75rem;">（点击复制）</span></label>
+          <textarea class="aes-textarea" id="outputText" readonly placeholder="结果将显示在这里..." onclick="copyResult()" style="cursor:pointer;"></textarea>
+        </div>
+
+        <div class="aes-info">
+          <strong>🔒 隐私安全</strong>：所有加密解密操作在浏览器本地完成，使用 Web Crypto API 的 AES-256-GCM 算法。密钥和数据不会离开你的设备。<br>
+          <strong>📋 格式</strong>：加密结果以 Base64 格式输出（包含初始化向量），解密时需使用相同的密码短语。
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 - 免费在线工具集 | <a href="../index.html">首页</a></p>
+    </div>
+  </footer>
+
+  <script>
+    async function deriveKey(passphrase, salt) {
+      const enc = new TextEncoder();
+      const keyMaterial = await crypto.subtle.importKey('raw', enc.encode(passphrase), 'PBKDF2', false, ['deriveKey']);
+      return crypto.subtle.deriveKey({ name: 'PBKDF2', salt: salt, iterations: 600000, hash: 'SHA-256' },
+        keyMaterial, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('errorMsg');
+      el.textContent = msg;
+      el.style.display = 'block';
+      setTimeout(() => el.style.display = 'none', 5000);
+    }
+
+    async function doEncrypt() {
+      const pass = document.getElementById('passphrase').value.trim();
+      const text = document.getElementById('inputText').value;
+      if (!pass) return showError('请输入密码短语');
+      if (!text) return showError('请输入要加密的文本');
+      try {
+        const salt = crypto.getRandomValues(new Uint8Array(16));
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+        const key = await deriveKey(pass, salt);
+        const enc = new TextEncoder();
+        const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, enc.encode(text));
+        const combined = new Uint8Array(salt.length + iv.length + encrypted.byteLength);
+        combined.set(salt, 0); combined.set(iv, salt.length);
+        combined.set(new Uint8Array(encrypted), salt.length + iv.length);
+        document.getElementById('outputText').value = btoa(String.fromCharCode(...combined));
+      } catch(e) { showError('加密失败: ' + e.message); }
+    }
+
+    async function doDecrypt() {
+      const pass = document.getElementById('passphrase').value.trim();
+      const data = document.getElementById('inputText').value.trim();
+      if (!pass) return showError('请输入密码短语');
+      if (!data) return showError('请输入要解密的密文');
+      try {
+        const raw = Uint8Array.from(atob(data), c => c.charCodeAt(0));
+        const salt = raw.slice(0, 16); const iv = raw.slice(16, 28);
+        const encrypted = raw.slice(28);
+        const key = await deriveKey(pass, salt);
+        const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, encrypted);
+        document.getElementById('outputText').value = new TextDecoder().decode(decrypted);
+      } catch(e) { showError('解密失败: 密码短语错误或数据已损坏'); }
+    }
+
+    function clearAll() {
+      document.getElementById('passphrase').value = 'MySecretKey123!';
+      document.getElementById('inputText').value = '';
+      document.getElementById('outputText').value = '';
+      document.getElementById('errorMsg').style.display = 'none';
+    }
+
+    async function copyResult() {
+      const el = document.getElementById('outputText');
+      if (!el.value) return;
+      try {
+        await navigator.clipboard.writeText(el.value);
+        showToast('已复制到剪贴板');
+      } catch(e) { showToast('复制失败'); }
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      if (!t) {
+        const d = document.createElement('div');
+        d.id = 'toast'; d.className = 'toast show';
+        d.textContent = msg; document.body.appendChild(d);
+        setTimeout(() => d.remove(), 2000);
+      } else { t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2000); }
+    }
+  </script>
+</body>
+</html>
