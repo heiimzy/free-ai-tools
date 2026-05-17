@@ -1,5 +1,29 @@
 [
   {
+    "id": "023",
+    "date": "2026-05-18",
+    "zh": {
+      "title": "2026年5月AI工具实测精选：从30+工具中筛选出的最优工作流",
+      "summary": "2026年5月AI工具最新实测：文心5.1参数压缩70%成本降94%、蚂蚁百灵Ring-2.6登顶LMArena、亲测30+智能体只留10款、Cursor与Claude Code编程实战对比、数字人创作与AI学术工具深度评测。附场景化选型指南，帮你避免订阅疲劳。",
+      "tags": [
+        "工具",
+        "评测",
+        "选型"
+      ],
+      "file": "posts/023-ai-tools-may-picks.zh.html"
+    },
+    "en": {
+      "title": "Best AI Tools of May 2026: From GitHub Trending to Product Hunt Winners, What Actually Works",
+      "summary": "May 2026 AI tools review: everything-claude-code 173K stars, caveman 53K, Cursor vs Claude Code vs Copilot, Codex on mobile, Superset 2.0, ElevenAgents by ElevenLabs, and the lean stack strategy to fight subscription fatigue. Complete with real pricing.",
+      "tags": [
+        "tools",
+        "reviews",
+        "guide"
+      ],
+      "file": "posts/023-ai-tools-may-picks.en.html"
+    }
+  },
+  {
     "id": "022",
     "date": "2026-05-18",
     "zh": {
