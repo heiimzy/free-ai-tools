@@ -1,5 +1,31 @@
 [
   {
+    "id": "026",
+    "date": "2026-05-18",
+    "zh": {
+      "title": "2026年5月AI大模型战报：GPT-5.5、Claude Mythos、DeepSeek V4三强争霸",
+      "summary": "2026年5月AI大模型格局深度解析：OpenAI发布GPT-5.5 Instant，幻觉率下降52.5%；Anthropic推出Claude Mythos突破网络安全极限后主动召回；DeepSeek V4开源逼近闭源前沿。三大阵营的战略分化与行业影响全解读。",
+      "tags": [
+        "AI新闻",
+        "大模型",
+        "模型竞争",
+        "安全"
+      ],
+      "file": "posts/026-ai-model-war-may-2026.zh.html"
+    },
+    "en": {
+      "title": "May 2026 AI Model War: GPT-5.5 vs Claude Mythos vs DeepSeek V4",
+      "summary": "May 2026 AI model landscape deep dive: OpenAI's GPT-5.5 Instant cuts hallucinations by 52.5%; Anthropic's Claude Mythos breaks the UK AISI cyber range then gets pulled; DeepSeek V4 Preview narrows the gap with open-weight architecture. Strategic divergence and industry implications analyzed.",
+      "tags": [
+        "ai-news",
+        "models",
+        "competition",
+        "safety"
+      ],
+      "file": "posts/026-ai-model-war-may-2026.en.html"
+    }
+  },
+  {
     "id": "025",
     "date": "2026-05-18",
     "zh": {
