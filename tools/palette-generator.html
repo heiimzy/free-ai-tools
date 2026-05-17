@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>调色板生成器 - 配色方案自动生成 | Free AI Tools</title>
+  <meta name="description" content="免费在线调色板生成器，从任意颜色自动生成互补色、类似色、三角色、四角色和单色调色板。支持HEX/RGB/HSL格式复制，适合设计师和前端开发者配色参考。">
+  <meta name="keywords" content="调色板生成,配色方案,颜色搭配,互补色,类似色,配色工具,色板生成,颜色组合,色彩搭配">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/palette-generator.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .pl-base-row { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .pl-base-row input[type="color"] { width: 80px; height: 60px; border: 2px solid var(--border); border-radius: 10px; cursor: pointer; background: none; padding: 2px; }
+    .pl-base-row input[type="text"] { font-family: monospace; font-size: 1.1rem; padding: 0.5rem 0.8rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); width: 120px; }
+    .pl-section { margin-bottom: 1.5rem; }
+    .pl-section h3 { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 0.6rem; }
+    .pl-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .pl-swatch { flex: 1; min-width: 80px; height: 80px; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; border: 1px solid var(--border); transition: transform 0.15s; }
+    .pl-swatch:hover { transform: scale(1.05); }
+    .pl-swatch .pl-hex { font-size: 0.7rem; font-family: monospace; background: rgba(0,0,0,0.5); color: #fff; padding: 0.15rem 0.4rem; border-radius: 4px; }
+    .pl-swatch .pl-label { font-size: 0.65rem; color: rgba(255,255,255,0.7); margin-bottom: 0.2rem; }
+    .pl-swatch.dark-text .pl-hex { background: rgba(255,255,255,0.7); color: #000; }
+    .pl-toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); background: var(--primary); color: #fff; padding: 0.6rem 1.5rem; border-radius: 8px; font-size: 0.85rem; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 100; }
+    .pl-toast.show { opacity: 1; }
+    .pl-method { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .pl-method button { padding: 0.4rem 1rem; border-radius: 20px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-muted); cursor: pointer; font-size: 0.8rem; transition: 0.15s; }
+    .pl-method button.active { border-color: var(--primary); color: var(--primary); background: rgba(167,139,250,0.1); }
+    .pl-method button:hover { border-color: var(--primary); color: var(--primary); }
+    .pl-export { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+    .pl-export button { padding: 0.4rem 1rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); cursor: pointer; font-size: 0.8rem; transition: 0.15s; }
+    .pl-export button:hover { border-color: var(--primary); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/color-picker.html">颜色选择</a><a href="../tools/palette-generator.html">调色板</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>调色板生成器</h1>
+      <p>选择一个基础颜色，自动生成和谐配色方案。点击色块复制颜色代码。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="pl-base-row">
+        <input type="color" id="baseColor" value="#6366f1">
+        <input type="text" id="hexInput" value="#6366f1">
+        <button class="btn btn-primary" onclick="generatePalette()">生成配色</button>
+      </div>
+
+      <div class="pl-method">
+        <button class="active" data-method="complementary" onclick="switchMethod(this)">互补色</button>
+        <button data-method="analogous" onclick="switchMethod(this)">类似色</button>
+        <button data-method="triadic" onclick="switchMethod(this)">三角色</button>
+        <button data-method="tetradic" onclick="switchMethod(this)">四角色</button>
+        <button data-method="monochromatic" onclick="switchMethod(this)">单色</button>
+      </div>
+
+      <div id="paletteResults"></div>
+
+      <div class="pl-export">
+        <button onclick="exportCSS()">导出 CSS 变量</button>
+        <button onclick="exportJSON()">导出 JSON</button>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>配色方案生成器 — 设计师的调色利器</h2>
+      <p>本工具基于色彩理论自动生成和谐配色方案。支持五种配色模式：互补色提供强烈对比、类似色营造和谐统一、三角色创造丰富活力、四角色适合复杂设计、单色方案简洁专业。每个色块支持一键复制 HEX 值，设计师可直接用于 Figma、Sketch、Adobe XD 等设计工具。</p>
+    </div>
+  </main>
+
+  <div class="pl-toast" id="toast"></div>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/color-picker.html">颜色选择器</a> | <a href="../tools/gradient-generator.html">渐变生成</a></p>
+    </div>
+  </footer>
+
+  <script>
+    let currentMethod = 'complementary';
+    let currentColors = [];
+
+    document.getElementById('baseColor').addEventListener('input', function() {
+      document.getElementById('hexInput').value = this.value.toUpperCase();
+      generatePalette();
+    });
+    document.getElementById('hexInput').addEventListener('change', function() {
+      let v = this.value.trim();
+      if (/^#[0-9a-fA-F]{6}$/.test(v)) {
+        document.getElementById('baseColor').value = v;
+        generatePalette();
+      }
+    });
+
+    function hexToHSL(hex) {
+      let r = parseInt(hex.slice(1,3),16)/255, g = parseInt(hex.slice(3,5),16)/255, b = parseInt(hex.slice(5,7),16)/255;
+      let mx = Math.max(r,g,b), mn = Math.min(r,g,b);
+      let h, s, l = (mx+mn)/2;
+      if (mx === mn) { h = s = 0; }
+      else {
+        let d = mx - mn;
+        s = l > 0.5 ? d/(2-mx-mn) : d/(mx+mn);
+        if (mx === r) h = ((g-b)/d+(g<b?6:0))/6;
+        else if (mx === g) h = ((b-r)/d+2)/6;
+        else h = ((r-g)/d+4)/6;
+      }
+      return { h: h*360, s: s*100, l: l*100 };
+    }
+
+    function hslToHex(h, s, l) {
+      h /= 360; s /= 100; l /= 100;
+      let r,g,b;
+      if (s === 0) { r=g=b=l; }
+      else {
+        const hue2rgb = (p,q,t) => { if (t<0) t+=1; if (t>1) t-=1; if (t<1/6) return p+(q-p)*6*t; if (t<1/2) return q; if (t<2/3) return p+(q-p)*(2/3-t)*6; return p; };
+        let q = l < 0.5 ? l*(1+s) : l+s-l*s, p = 2*l-q;
+        r = hue2rgb(p,q,h+1/3); g = hue2rgb(p,q,h); b = hue2rgb(p,q,h-1/3);
+      }
+      const toHex = x => Math.round(x*255).toString(16).padStart(2,'0').toUpperCase();
+      return '#'+toHex(r)+toHex(g)+toHex(b);
+    }
+
+    function lighten(h, s, l, amt) { return hslToHex(h, s, Math.min(100, l+amt)); }
+    function darken(h, s, l, amt) { return hslToHex(h, s, Math.max(0, l-amt)); }
+
+    function generatePalette() {
+      const hex = document.getElementById('baseColor').value;
+      const { h, s, l } = hexToHSL(hex);
+      let colors = [];
+      const names = [];
+
+      switch (currentMethod) {
+        case 'complementary':
+          colors = [hex, hslToHex((h+180)%360, s, l)];
+          names = ['主色', '互补色'];
+          break;
+        case 'analogous':
+          colors = [hslToHex((h-30+360)%360, s, l), hex, hslToHex((h+30)%360, s, l), hslToHex((h+60)%360, s, l)];
+          names = ['类似色 1', '主色', '类似色 2', '类似色 3'];
+          break;
+        case 'triadic':
+          colors = [hex, hslToHex((h+120)%360, s, l), hslToHex((h+240)%360, s, l)];
+          names = ['主色', '三角色 1', '三角色 2'];
+          break;
+        case 'tetradic':
+          colors = [hex, hslToHex((h+90)%360, s, l), hslToHex((h+180)%360, s, l), hslToHex((h+270)%360, s, l)];
+          names = ['主色', '四角色 1', '四角色 2', '四角色 3'];
+          break;
+        case 'monochromatic':
+          let shades = [20, 40, 60, 80, 100];
+          for (let lv of shades) colors.push(hslToHex(h, s, lv));
+          names.push('浅色', '中浅', '中色', '中深', '深色');
+          break;
+      }
+
+      currentColors = colors;
+      renderPalette(colors, names);
+    }
+
+    function renderPalette(colors, names) {
+      const container = document.getElementById('paletteResults');
+      container.innerHTML = '';
+
+      for (let method of ['', '-tints', '-shades']) {
+        const section = document.createElement('div');
+        section.className = 'pl-section';
+
+        let title = '基础色板';
+        if (method === '-tints') title = '浅色变体（+20% 明度）';
+        if (method === '-shades') title = '深色变体（-20% 明度）';
+
+        const h3 = document.createElement('h3');
+        h3.textContent = title;
+        section.appendChild(h3);
+
+        const row = document.createElement('div');
+        row.className = 'pl-row';
+
+        colors.forEach((c, i) => {
+          let displayColor = c;
+          if (method === '-tints') {
+            const { h:h2, s:s2, l:l2 } = hexToHSL(c);
+            displayColor = lighten(h2, s2, l2, 20);
+          } else if (method === '-shades') {
+            const { h:h2, s:s2, l:l2 } = hexToHSL(c);
+            displayColor = darken(h2, s2, l2, 20);
+          }
+
+          const swatch = document.createElement('div');
+          swatch.className = 'pl-swatch';
+          swatch.style.background = displayColor;
+          swatch.title = names[i] || '';
+
+          const label = document.createElement('span');
+          label.className = 'pl-label';
+          label.textContent = names[i] || '';
+          swatch.appendChild(label);
+
+          const hexLabel = document.createElement('span');
+          hexLabel.className = 'pl-hex';
+          hexLabel.textContent = displayColor;
+          swatch.appendChild(hexLabel);
+
+          // Adjust text color for dark backgrounds
+          const { l: lightness } = hexToHSL(displayColor);
+          if (lightness > 65) swatch.classList.add('dark-text');
+
+          swatch.addEventListener('click', () => {
+            navigator.clipboard.writeText(displayColor).then(() => {
+              showToast('已复制: ' + displayColor);
+            });
+          });
+
+          row.appendChild(swatch);
+        });
+
+        section.appendChild(row);
+        container.appendChild(section);
+      }
+    }
+
+    function switchMethod(btn) {
+      document.querySelectorAll('.pl-method button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentMethod = btn.dataset.method;
+      generatePalette();
+    }
+
+    function exportCSS() {
+      const vars = currentColors.map((c, i) => `--palette-${i+1}: ${c};`).join('\n');
+      navigator.clipboard.writeText(`:root {\n${vars}\n}`).then(() => showToast('CSS 变量已复制'));
+    }
+
+    function exportJSON() {
+      const json = JSON.stringify(currentColors, null, 2);
+      navigator.clipboard.writeText(json).then(() => showToast('JSON 已复制'));
+    }
+
+    let toastTimer;
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+    }
+
+    // Initialize
+    generatePalette();
+  </script>
+</body>
+</html>
