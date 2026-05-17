@@ -1,5 +1,31 @@
 [
   {
+    "id": "024",
+    "date": "2026-05-18",
+    "zh": {
+      "title": "2026年AI变现全攻略：从\"烧钱\"到\"挣钱\"的范式革命",
+      "summary": "2026年AI变现深度指南：RaaS按效果付费模式崛起、Token经济日流水3亿、中国AI靠规模赚钱vs海外靠价值赚钱、智能体按效果付费落地案例、个人AI副业月入500-5000美元实操路径。附避坑指南与行动路线图。",
+      "tags": [
+        "变现",
+        "商业化",
+        "赚钱",
+        "副业"
+      ],
+      "file": "posts/024-ai-monetization-2026-guide.zh.html"
+    },
+    "en": {
+      "title": "How to Make Money with AI in 2026: From Side Hustles to Enterprise Monetization",
+      "summary": "Complete guide to AI monetization in 2026: RaaS paradigm shift, creator economy AI income strategies ($500-$8,000/month), selling AI agents as subscription products, AI automation consulting, and the China vs US monetization divergence. With realistic earning timelines.",
+      "tags": [
+        "monetization",
+        "business",
+        "side-hustle",
+        "guide"
+      ],
+      "file": "posts/024-ai-monetization-2026-guide.en.html"
+    }
+  },
+  {
     "id": "023",
     "date": "2026-05-18",
     "zh": {
