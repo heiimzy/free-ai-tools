@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JSON转TypeScript类型 - 在线JSON生成TypeScript接口定义 | Free AI Tools</title>
+  <meta name="description" content="免费在线JSON转TypeScript类型工具，将JSON对象快速生成TypeScript接口/类型定义。支持嵌套对象、数组、可选属性、自定义根类型名、一键复制代码。浏览器本地处理，不上传服务器，保护数据隐私。">
+  <meta name="keywords" content="JSON转TypeScript,JSON转TS,JSON生成接口定义,JSON to TypeScript,TypeScript类型生成,JSON转interface,前端开发工具">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/json-to-typescript.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .jt-layout { max-width: 700px; margin: 0 auto; display: grid; gap: 1rem; }
+    .jt-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .jt-panel { display: flex; flex-direction: column; }
+    .jt-panel label { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; margin-bottom: 0.3rem; display: flex; justify-content: space-between; }
+    .jt-editor { width: 100%; min-height: 260px; padding: 0.75rem; background: #1e1e1e; border: 1px solid var(--border); border-radius: 8px; color: #d4d4d4; font-family: 'Courier New', monospace; font-size: 0.8rem; resize: vertical; line-height: 1.6; box-sizing: border-box; tab-size: 2; }
+    .jt-editor:focus { outline: none; border-color: var(--primary); }
+    .jt-editor::placeholder { color: #555; }
+    .jt-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .jt-actions button { padding: 0.5rem 1.2rem; border: none; border-radius: 8px; font-family: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .jt-btn-convert { background: linear-gradient(135deg, var(--primary), #7c3aed); color: white; }
+    .jt-btn-convert:hover { transform: translateY(-1px); box-shadow: 0 4px 15px var(--glow-purple); }
+    .jt-btn-copy { background: rgba(167,139,250,0.15); color: var(--primary); }
+    .jt-btn-copy:hover { background: rgba(167,139,250,0.25); }
+    .jt-options { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; font-size: 0.8rem; }
+    .jt-options label { display: flex; align-items: center; gap: 0.3rem; color: var(--text-muted); cursor: pointer; }
+    .jt-options input[type="text"] { padding: 0.3rem 0.6rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: inherit; font-size: 0.8rem; width: 120px; }
+    .jt-options input[type="text"]:focus { outline: none; border-color: var(--primary); }
+    .jt-options input[type="checkbox"] { accent-color: var(--primary); }
+    .jt-error { color: #f87171; font-size: 0.8rem; padding: 0.5rem; background: rgba(248,113,113,0.08); border-radius: 6px; display: none; }
+    @media (max-width: 520px) { .jt-row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/json-to-typescript.html">JSON转TS</a><a href="../tools/yaml-converter.html">YAML转换</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>JSON 转 TypeScript 类型 / JSON to TypeScript</h1>
+      <p>将 JSON 数据快速生成 TypeScript 接口类型定义。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="jt-layout">
+        <div class="jt-options">
+          <label>根类型名: <input type="text" id="rootName" value="RootType"></label>
+          <label><input type="checkbox" id="optOptional" checked> 可选属性 (?)</label>
+          <label><input type="checkbox" id="optExport" checked> 添加 export</label>
+          <label><input type="checkbox" id="optReadonly"> 只读 (readonly)</label>
+        </div>
+
+        <div class="jt-row">
+          <div class="jt-panel">
+            <label><span>JSON 输入</span><span id="inputLines">0 行</span></label>
+            <textarea class="jt-editor" id="inputJson" placeholder='{"name":"Alice","age":30,"skills":["JS","TS"]}' spellcheck="false"></textarea>
+          </div>
+          <div class="jt-panel">
+            <label><span>TypeScript 输出</span><span id="outputLines">0 行</span></label>
+            <textarea class="jt-editor" id="outputTs" placeholder="生成的 TypeScript 类型..." readonly></textarea>
+          </div>
+        </div>
+
+        <div class="jt-error" id="errorMsg"></div>
+
+        <div class="jt-actions">
+          <button class="jt-btn-convert" onclick="convert()">🔄 转换</button>
+          <button class="jt-btn-copy" onclick="copyTs()" id="btnCopy">📋 复制代码</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线 JSON 转 TypeScript 类型工具</h2>
+      <p>免费的在线 JSON 转 TypeScript 工具，将任意 JSON 对象自动生成对应的 TypeScript 接口（interface）或类型别名（type）。支持深层嵌套对象、数组类型推断、可选属性标记、export 关键字生成。开发者常用于 API 响应数据结构定义、配置文件类型声明、第三方数据源类型适配。所有数据在浏览器本地处理，不会上传服务器。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/json-to-typescript.html">JSON转TS</a> | <a href="../tools/yaml-converter.html">YAML转换</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let lastResult = '';
+
+    document.getElementById('inputJson').addEventListener('input', function() {
+      updateLineCount('inputJson', 'inputLines');
+      autoConvert();
+    });
+
+    let debounceTimer;
+    function autoConvert() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(convert, 500);
+    }
+
+    function updateLineCount(id, labelId) {
+      const lines = document.getElementById(id).value.split('\n').length;
+      document.getElementById(labelId).textContent = lines + ' 行';
+    }
+
+    function escapeProp(name) {
+      if (/^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(name)) return name;
+      return `'${name}'`;
+    }
+
+    function jsonToType(obj, name, definitions, options) {
+      if (obj === null || obj === undefined) {
+        return 'any';
+      }
+      const type = typeof obj;
+
+      if (type === 'string') return 'string';
+      if (type === 'number') return 'number';
+      if (type === 'boolean') return 'boolean';
+      if (type === 'bigint') return 'bigint';
+
+      if (Array.isArray(obj)) {
+        if (obj.length === 0) return 'any[]';
+        const itemTypes = obj.map(item => jsonToType(item, name + 'Item', definitions, options));
+        const unique = [...new Set(itemTypes)];
+        if (unique.length === 1) return unique[0] + '[]';
+        return '(' + unique.join(' | ') + ')[]';
+      }
+
+      if (type === 'object') {
+        const keys = Object.keys(obj);
+        if (keys.length === 0) return 'Record<string, any>';
+
+        const interfaceName = name.replace(/[^a-zA-Z0-9_$]/g, '_');
+        if (definitions.has(interfaceName)) {
+          // Check if same definition already exists
+          const existing = definitions.get(interfaceName);
+          const currentKeys = Object.keys(obj).sort().join(',');
+          const existingKeys = Object.keys(existing).sort().join(',');
+          if (currentKeys === existingKeys) {
+            return interfaceName;
+          }
+          // Naming conflict — append number
+          let counter = 2;
+          while (definitions.has(interfaceName + counter)) {
+            counter++;
+          }
+          const newName = interfaceName + counter;
+          definitions.set(newName, obj);
+          return newName;
+        }
+
+        definitions.set(interfaceName, obj);
+        return interfaceName;
+      }
+
+      return 'any';
+    }
+
+    function generateDefinitions(obj, name, options) {
+      const definitions = new Map();
+
+      function process(obj, name) {
+        if (obj === null || obj === undefined) return;
+        const type = typeof obj;
+        if (type !== 'object' || Array.isArray(obj)) return;
+
+        const keys = Object.keys(obj);
+        if (keys.length === 0) return;
+
+        const interfaceName = name.replace(/[^a-zA-Z0-9_$]/g, '_');
+
+        // Process nested first
+        for (const key of keys) {
+          const val = obj[key];
+          if (val !== null && typeof val === 'object') {
+            const childName = key.charAt(0).toUpperCase() + key.slice(1).replace(/[^a-zA-Z0-9_$]/g, '');
+            process(val, childName);
+          }
+        }
+
+        if (!definitions.has(interfaceName)) {
+          definitions.set(interfaceName, obj);
+        }
+      }
+
+      process(obj, name);
+      return definitions;
+    }
+
+    function generateTypeScript(obj, rootName, definitions, options) {
+      const lines = [];
+      const processed = new Set();
+
+      function genFor(name, data) {
+        if (processed.has(name)) return;
+        processed.add(name);
+
+        const keys = Object.keys(data);
+        const exportKw = options.export ? 'export ' : '';
+
+        lines.push(exportKw + 'interface ' + name + ' {');
+
+        for (const key of keys) {
+          const val = data[key];
+          let tsType = '';
+
+          if (val === null || val === undefined) {
+            tsType = 'any';
+          } else if (typeof val === 'string') tsType = 'string';
+          else if (typeof val === 'number') tsType = 'number';
+          else if (typeof val === 'boolean') tsType = 'boolean';
+          else if (typeof val === 'bigint') tsType = 'bigint';
+          else if (Array.isArray(val)) {
+            if (val.length === 0) {
+              tsType = 'any[]';
+            } else {
+              const itemTypes = val.map(item => inferType(item, definitions, processed, options));
+              const unique = [...new Set(itemTypes)];
+              tsType = unique.length === 1 ? unique[0] + '[]' : '(' + unique.join(' | ') + ')[]';
+            }
+          } else if (typeof val === 'object') {
+            const childName = key.charAt(0).toUpperCase() + key.slice(1).replace(/[^a-zA-Z0-9_$]/g, '');
+            // Check if this object type already exists in definitions
+            let found = false;
+            for (const [defName, defData] of definitions) {
+              if (defName !== rootName && JSON.stringify(defData) === JSON.stringify(val)) {
+                tsType = defName;
+                genFor(defName, val);
+                found = true;
+                break;
+              }
+            }
+            if (!found) {
+              tsType = childName;
+              definitions.set(childName, val);
+              genFor(childName, val);
+            }
+          }
+
+          const opt = options.optional ? '?' : '';
+          const ro = options.readonly ? 'readonly ' : '';
+          const propName = escapeProp(key);
+          lines.push('  ' + ro + propName + opt + ': ' + tsType + ';');
+        }
+
+        lines.push('}');
+      }
+
+      // Generate root type
+      genFor(rootName, obj);
+
+      // Process any remaining definitions not yet generated
+      for (const [name, data] of definitions) {
+        genFor(name, data);
+      }
+
+      return lines.join('\n');
+    }
+
+    function inferType(val, definitions, processed, options) {
+      if (val === null || val === undefined) return 'any';
+      if (typeof val === 'string') return 'string';
+      if (typeof val === 'number') return 'number';
+      if (typeof val === 'boolean') return 'boolean';
+      if (typeof val === 'bigint') return 'bigint';
+      if (Array.isArray(val)) {
+        if (val.length === 0) return 'any[]';
+        const itemTypes = val.map(v => inferType(v, definitions, processed, options));
+        const unique = [...new Set(itemTypes)];
+        return unique.length === 1 ? unique[0] + '[]' : '(' + unique.join(' | ') + ')[]';
+      }
+      if (typeof val === 'object') {
+        const keys = Object.keys(val);
+        if (keys.length === 0) return 'Record<string, any>';
+        // Try to find existing definition
+        for (const [name, data] of definitions) {
+          if (JSON.stringify(data) === JSON.stringify(val)) {
+            return name;
+          }
+        }
+        // Create new definition
+        const name = 'NestedObject';
+        let counter = 2;
+        let finalName = name;
+        while (definitions.has(finalName)) {
+          finalName = name + counter;
+          counter++;
+        }
+        definitions.set(finalName, val);
+        return finalName;
+      }
+      return 'any';
+    }
+
+    function convert() {
+      const text = document.getElementById('inputJson').value.trim();
+      const errorEl = document.getElementById('errorMsg');
+      const outputEl = document.getElementById('outputTs');
+
+      if (!text) {
+        outputEl.value = '';
+        lastResult = '';
+        errorEl.style.display = 'none';
+        document.getElementById('outputLines').textContent = '0 行';
+        document.getElementById('btnCopy').disabled = true;
+        return;
+      }
+
+      let obj;
+      try {
+        // Try parsing as JSON first (standard)
+        obj = JSON.parse(text);
+      } catch (e) {
+        // Try single-quote JSON
+        try {
+          obj = JSON.parse(text.replace(/'/g, '"'));
+        } catch (e2) {
+          errorEl.textContent = '❌ 无效的 JSON：' + e.message;
+          errorEl.style.display = 'block';
+          outputEl.value = '';
+          lastResult = '';
+          document.getElementById('outputLines').textContent = '0 行';
+          document.getElementById('btnCopy').disabled = true;
+          return;
+        }
+      }
+
+      errorEl.style.display = 'none';
+
+      const rootName = document.getElementById('rootName').value.trim() || 'RootType';
+      const options = {
+        optional: document.getElementById('optOptional').checked,
+        export: document.getElementById('optExport').checked,
+        readonly: document.getElementById('optReadonly').checked,
+      };
+
+      const definitions = generateDefinitions(obj, rootName);
+      const result = generateTypeScript(obj, rootName, definitions, options);
+      outputEl.value = result;
+      lastResult = result;
+
+      const lines = result.split('\n').length;
+      document.getElementById('outputLines').textContent = lines + ' 行';
+      document.getElementById('btnCopy').disabled = !result;
+    }
+
+    function copyTs() {
+      if (lastResult) {
+        navigator.clipboard.writeText(lastResult).then(() => showToast('✅ TypeScript 类型已复制'));
+      }
+    }
+
+    // Initialize with example
+    document.getElementById('inputJson').value = JSON.stringify({
+      id: 1,
+      name: 'Alice',
+      email: 'alice@example.com',
+      role: 'admin',
+      age: 30,
+      tags: ['developer', 'designer'],
+      address: {
+        street: '123 Main St',
+        city: 'Beijing',
+        zip: '100000'
+      },
+      isActive: true
+    }, null, 2);
+
+    updateLineCount('inputJson', 'inputLines');
+    convert();
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Grid生成器 - 可视化在线CSS Grid布局生成工具 | Free AI Tools</title>
+  <meta name="description" content="免费在线CSS Grid生成器，可视化编辑Grid布局，支持列数/行数设置、间距调整、对齐方式选择、自定义grid-template-areas。实时预览Grid布局效果，一键复制CSS代码。适合前端开发者快速生成Grid布局代码。">
+  <meta name="keywords" content="CSS Grid生成器,CSS Grid布局,Grid可视化工具,CSS Grid在线工具,Grid布局生成,前端CSS工具,Grid template生成">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/css-grid.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .cg-layout { max-width: 700px; margin: 0 auto; display: grid; gap: 1rem; }
+    .cg-controls { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.75rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; }
+    .cg-controls label { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+    .cg-controls input[type="number"], .cg-controls select { padding: 0.4rem 0.5rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: inherit; font-size: 0.8rem; }
+    .cg-controls input[type="number"]:focus, .cg-controls select:focus { outline: none; border-color: var(--primary); }
+    .cg-preview { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; min-height: 300px; }
+    .cg-preview .grid-container { display: grid; width: 100%; min-height: 260px; background: rgba(167,139,250,0.05); border-radius: 6px; padding: 4px; box-sizing: border-box; }
+    .cg-preview .grid-item { background: linear-gradient(135deg, rgba(167,139,250,0.25), rgba(244,114,182,0.15)); border: 1px solid rgba(167,139,250,0.3); border-radius: 4px; padding: 0.5rem; font-size: 0.75rem; color: var(--text); display: flex; align-items: center; justify-content: center; font-weight: 600; min-height: 30px; }
+    .cg-preview .grid-item:nth-child(2n) { background: linear-gradient(135deg, rgba(244,114,182,0.2), rgba(167,139,250,0.15)); }
+    .cg-code { width: 100%; min-height: 120px; padding: 0.75rem; background: #1e1e1e; border: 1px solid var(--border); border-radius: 8px; color: #d4d4d4; font-family: 'Courier New', monospace; font-size: 0.8rem; resize: vertical; line-height: 1.5; box-sizing: border-box; }
+    .cg-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .cg-actions button { padding: 0.5rem 1.2rem; border: none; border-radius: 8px; font-family: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .cg-btn-copy { background: rgba(167,139,250,0.15); color: var(--primary); }
+    .cg-btn-copy:hover { background: rgba(167,139,250,0.25); }
+    .cg-label { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; margin-bottom: 0.3rem; display: flex; justify-content: space-between; }
+    .cg-colors label { display: flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; color: var(--text-muted); cursor: pointer; }
+    .cg-colors input[type="checkbox"] { accent-color: var(--primary); }
+    @media (max-width: 480px) { .cg-controls { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/css-grid.html">CSS Grid</a><a href="../tools/json-to-typescript.html">JSON转TS</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>CSS Grid 生成器 / CSS Grid Generator</h1>
+      <p>可视化编辑 CSS Grid 布局参数并即时预览，一键复制代码。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="cg-layout">
+        <div class="cg-controls">
+          <label>列数 <input type="number" id="cols" value="3" min="1" max="12" oninput="updateGrid()"></label>
+          <label>行数 <input type="number" id="rows" value="3" min="1" max="12" oninput="updateGrid()"></label>
+          <label>列间距 (gap) <input type="number" id="colGap" value="8" min="0" max="60" oninput="updateGrid()"></label>
+          <label>行间距 (gap) <input type="number" id="rowGap" value="8" min="0" max="60" oninput="updateGrid()"></label>
+          <label>列宽 <select id="colSize" onchange="updateGrid()">
+            <option value="1fr">1fr (均分)</option>
+            <option value="auto">auto (自适应)</option>
+            <option value="100px">100px</option>
+            <option value="150px">150px</option>
+            <option value="200px">200px</option>
+            <option value="minmax(100px, 1fr)">minmax(100px, 1fr)</option>
+          </select></label>
+          <label>行高 <select id="rowSize" onchange="updateGrid()">
+            <option value="auto">auto (自适应)</option>
+            <option value="100px">100px</option>
+            <option value="120px">120px</option>
+            <option value="150px">150px</option>
+            <option value="minmax(60px, auto)">minmax(60px, auto)</option>
+          </select></label>
+          <label>水平对齐 <select id="justify" onchange="updateGrid()">
+            <option value="stretch">stretch (拉伸)</option>
+            <option value="start">start (左对齐)</option>
+            <option value="center">center (居中)</option>
+            <option value="end">end (右对齐)</option>
+          </select></label>
+          <label>垂直对齐 <select id="align" onchange="updateGrid()">
+            <option value="stretch">stretch (拉伸)</option>
+            <option value="start">start (顶部)</option>
+            <option value="center">center (居中)</option>
+            <option value="end">end (底部)</option>
+          </select></label>
+        </div>
+
+        <div class="cg-preview" id="gridPreview">
+          <div class="grid-container" id="gridContainer"></div>
+        </div>
+
+        <div class="cg-label">
+          <span>CSS 代码</span>
+          <span><label><input type="checkbox" id="optCompact" onchange="updateGrid()"> 紧凑模式</label></span>
+        </div>
+        <textarea class="cg-code" id="cssCode" readonly></textarea>
+
+        <div class="cg-actions">
+          <button class="cg-btn-copy" onclick="copyCss()">📋 复制 CSS</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线 CSS Grid 布局生成器</h2>
+      <p>免费的在线 CSS Grid 生成器，通过可视化控件调整 Grid 布局参数，实时预览布局效果。支持设置列数/行数、间距、列宽/行高、水平和垂直对齐方式。自动生成对应的 CSS grid-template-columns、grid-template-rows、gap、justify-items、align-items 等属性代码。适合前端开发者快速原型设计、学习 CSS Grid 布局概念、生成可直接使用的布局代码。浏览器本地处理，无需上传服务器。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/css-grid.html">CSS Grid</a> | <a href="../tools/json-to-typescript.html">JSON转TS</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function updateGrid() {
+      const cols = parseInt(document.getElementById('cols').value) || 3;
+      const rows = parseInt(document.getElementById('rows').value) || 3;
+      const colGap = parseInt(document.getElementById('colGap').value) || 0;
+      const rowGap = parseInt(document.getElementById('rowGap').value) || 0;
+      const colSize = document.getElementById('colSize').value;
+      const rowSize = document.getElementById('rowSize').value;
+      const justify = document.getElementById('justify').value;
+      const align = document.getElementById('align').value;
+      const compact = document.getElementById('optCompact').checked;
+
+      const container = document.getElementById('gridContainer');
+      const total = cols * rows;
+
+      container.style.gridTemplateColumns = `repeat(${cols}, ${colSize})`;
+      container.style.gridTemplateRows = `repeat(${rows}, ${rowSize})`;
+      container.style.gap = `${rowGap}px ${colGap}px`;
+      container.style.justifyItems = justify;
+      container.style.alignItems = align;
+
+      // Generate items
+      let html = '';
+      for (let i = 1; i <= total; i++) {
+        html += `<div class="grid-item">${i}</div>`;
+      }
+      container.innerHTML = html;
+
+      // Generate CSS code
+      let css = `.grid-container {\n  display: grid;\n`;
+      css += `  grid-template-columns: repeat(${cols}, ${colSize});\n`;
+      css += `  grid-template-rows: repeat(${rows}, ${rowSize});\n`;
+      css += `  gap: ${rowGap}px ${colGap}px;\n`;
+      css += `  justify-items: ${justify};\n`;
+      css += `  align-items: ${align};\n}`;
+
+      if (compact) {
+        css = `.grid-container { display: grid; grid-template-columns: repeat(${cols}, ${colSize}); grid-template-rows: repeat(${rows}, ${rowSize}); gap: ${rowGap}px ${colGap}px; justify-items: ${justify}; align-items: ${align}; }`;
+      }
+
+      document.getElementById('cssCode').value = css;
+    }
+
+    function copyCss() {
+      const code = document.getElementById('cssCode').value;
+      if (code) {
+        navigator.clipboard.writeText(code).then(() => showToast('✅ CSS 已复制'));
+      }
+    }
+
+    // Initialize
+    updateGrid();
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+  </script>
+</body>
+</html>

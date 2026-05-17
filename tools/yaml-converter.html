@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YAML JSON互转 - 在线YAML与JSON格式互换工具 | Free AI Tools</title>
+  <meta name="description" content="免费在线YAML JSON互转工具，支持JSON转YAML和YAML转JSON双向转换。实时预览转换结果、一键复制输出、语法错误提示。浏览器本地处理，不上传服务器，保护数据隐私。适合开发者处理配置文件、API数据格式转换。">
+  <meta name="keywords" content="YAML转JSON,JSON转YAML,YAML JSON互转,YAML格式化,YAML在线工具,YAML解析器,配置文件转换,YAML to JSON">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/yaml-converter.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .yc-layout { max-width: 700px; margin: 0 auto; display: grid; gap: 1rem; }
+    .yc-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .yc-panel { display: flex; flex-direction: column; }
+    .yc-panel label { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; margin-bottom: 0.3rem; display: flex; justify-content: space-between; }
+    .yc-editor { width: 100%; min-height: 300px; padding: 0.75rem; background: #1e1e1e; border: 1px solid var(--border); border-radius: 8px; color: #d4d4d4; font-family: 'Courier New', monospace; font-size: 0.8rem; resize: vertical; line-height: 1.6; box-sizing: border-box; tab-size: 2; }
+    .yc-editor:focus { outline: none; border-color: var(--primary); }
+    .yc-editor::placeholder { color: #555; }
+    .yc-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+    .yc-actions button { padding: 0.5rem 1.2rem; border: none; border-radius: 8px; font-family: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .yc-btn-convert { background: linear-gradient(135deg, var(--primary), #7c3aed); color: white; }
+    .yc-btn-convert:hover { transform: translateY(-1px); box-shadow: 0 4px 15px var(--glow-purple); }
+    .yc-btn-copy { background: rgba(167,139,250,0.15); color: var(--primary); }
+    .yc-btn-copy:hover { background: rgba(167,139,250,0.25); }
+    .yc-btn-swap { background: var(--bg-card); border: 1px solid var(--border) !important; color: var(--text-muted); font-size: 0.8rem; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; font-family: inherit; }
+    .yc-btn-swap:hover { border-color: var(--primary); color: var(--text); }
+    .yc-mode { display: flex; gap: 0.5rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 0.3rem; }
+    .yc-mode button { padding: 0.4rem 1rem; border: none; border-radius: 6px; font-family: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; background: transparent; color: var(--text-muted); }
+    .yc-mode button.active { background: var(--primary); color: white; }
+    .yc-error { color: #f87171; font-size: 0.8rem; padding: 0.5rem; background: rgba(248,113,113,0.08); border-radius: 6px; display: none; }
+    .yc-format-options { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; font-size: 0.8rem; }
+    .yc-format-options label { display: flex; align-items: center; gap: 0.3rem; color: var(--text-muted); cursor: pointer; }
+    .yc-format-options input[type="checkbox"] { accent-color: var(--primary); }
+    .yc-format-options select { padding: 0.3rem 0.5rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: inherit; font-size: 0.8rem; }
+    @media (max-width: 520px) { .yc-row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/yaml-converter.html">YAML转换</a><a href="../tools/css-grid.html">CSS Grid</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>YAML JSON 互转 / YAML JSON Converter</h1>
+      <p>YAML 与 JSON 格式双向互转，适配配置文件和 API 数据处理。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="yc-layout">
+        <div class="yc-mode" id="modeSwitch">
+          <button class="active" data-mode="yaml2json" onclick="setMode('yaml2json')">YAML → JSON</button>
+          <button data-mode="json2yaml" onclick="setMode('json2yaml')">JSON → YAML</button>
+        </div>
+
+        <div class="yc-format-options">
+          <label><input type="checkbox" id="optIndent" checked> 缩进格式化</label>
+          <label>JSON 缩进空格: <select id="jsonIndent">
+            <option value="2">2</option>
+            <option value="4" selected>4</option>
+          </select></label>
+        </div>
+
+        <div class="yc-row">
+          <div class="yc-panel">
+            <label><span id="inputLabel">YAML 输入</span><span id="inputLines">0 行</span></label>
+            <textarea class="yc-editor" id="inputEditor" placeholder="在此粘贴 YAML..." spellcheck="false">server:
+  host: localhost
+  port: 8080
+database:
+  name: mydb
+  user: admin
+  password: secret
+features:
+  - logging
+  - auth
+  - caching</textarea>
+          </div>
+          <div class="yc-panel">
+            <label><span id="outputLabel">JSON 输出</span><span id="outputLines">0 行</span></label>
+            <textarea class="yc-editor" id="outputEditor" placeholder="转换结果..." readonly></textarea>
+          </div>
+        </div>
+
+        <div class="yc-error" id="errorMsg"></div>
+
+        <div class="yc-actions">
+          <button class="yc-btn-convert" onclick="convert()">🔄 转换</button>
+          <button class="yc-btn-copy" onclick="copyOutput()" id="btnCopy">📋 复制输出</button>
+          <button class="yc-btn-swap" onclick="swapInputOutput()">⇄ 交换</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线 YAML JSON 互转工具</h2>
+      <p>免费的在线 YAML 和 JSON 格式双向转换工具。支持 YAML 转 JSON 和 JSON 转 YAML 两种模式，自动检测语法错误并提示。可选的缩进格式化和自定义 JSON 缩进空格数。适用于开发者处理 Kubernetes 配置文件、Docker Compose、Ansible Playbook、OpenAPI 文档等 YAML/JSON 格式的数据转换。所有数据在浏览器本地处理，不会上传服务器，保障数据隐私安全。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/yaml-converter.html">YAML转换</a> | <a href="../tools/css-grid.html">CSS Grid</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let currentMode = 'yaml2json';
+
+    // Minimal YAML parser (handles common cases without external lib)
+    function parseYaml(text) {
+      const lines = text.split('\n');
+      const root = {};
+      const stack = [{ obj: root, indent: -1, key: null }];
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith('#')) continue;
+
+        const indent = line.length - trimmed.length;
+        const match = trimmed.match(/^(\-)\s+(.*)|^([^:]+):\s*(.*)|^([^:]+):$/);
+        if (!match) continue;
+
+        // Pop stack to correct level
+        while (stack.length > 1 && indent <= stack[stack.length - 1].indent) {
+          stack.pop();
+        }
+
+        const current = stack[stack.length - 1];
+        const isArrayItem = !!match[1];
+
+        if (isArrayItem) {
+          const value = match[2].trim();
+          // Ensure parent is array
+          if (!Array.isArray(current.obj)) {
+            // Convert object to array for this key
+            if (current.key !== null) {
+              const arr = [];
+              current.obj[current.key] = arr;
+              current.obj = arr;
+            }
+          }
+          const parsed = parseValue(value);
+          current.obj.push(parsed);
+          // Push a new context for nested children
+          if (typeof parsed === 'object' && parsed !== null) {
+            stack.push({ obj: parsed, indent, key: null });
+          } else {
+            // After scalar, need to handle nested properties
+            const placeholder = {};
+            const idx = current.obj.length - 1;
+            current.obj[idx] = placeholder;
+            stack.push({ obj: placeholder, indent, key: null });
+          }
+        } else {
+          const key = (match[3] || match[5]).trim();
+          const value = (match[4] || '').trim();
+
+          // Handle quoted keys
+          const cleanKey = key.replace(/^['"]|['"]$/g, '');
+
+          // Ensure current object is not an array
+          if (Array.isArray(current.obj)) {
+            // Create new object inside array
+            const newObj = {};
+            current.obj.push(newObj);
+            stack.push({ obj: newObj, indent, key: cleanKey });
+            const parsed = parseValue(value);
+            if (value !== '') {
+              newObj[cleanKey] = parsed;
+            } else {
+              newObj[cleanKey] = {};
+              stack.push({ obj: newObj[cleanKey], indent: indent + 1, key: null });
+            }
+            continue;
+          }
+
+          if (value === '') {
+            // Object value
+            if (current.obj[cleanKey] === undefined) {
+              current.obj[cleanKey] = {};
+            }
+            stack.push({ obj: current.obj[cleanKey], indent, key: null });
+          } else {
+            current.obj[cleanKey] = parseValue(value);
+          }
+        }
+      }
+
+      return root;
+    }
+
+    function parseValue(val) {
+      if (!val) return '';
+      if (val === 'null' || val === '~') return null;
+      if (val === 'true' || val === 'True') return true;
+      if (val === 'false' || val === 'False') return false;
+      if (val === 'yes' || val === 'Yes') return true;
+      if (val === 'no' || val === 'No') return false;
+
+      // Number
+      const num = Number(val);
+      if (!isNaN(num) && val !== '' && val.trim() !== '') return num;
+
+      // String (remove quotes)
+      if ((val.startsWith("'") && val.endsWith("'")) || (val.startsWith('"') && val.endsWith('"'))) {
+        return val.slice(1, -1);
+      }
+
+      return val;
+    }
+
+    function yamlToJsonObj(text) {
+      try {
+        return parseYaml(text);
+      } catch (e) {
+        throw new Error('YAML 解析错误: ' + e.message);
+      }
+    }
+
+    function jsonToYaml(obj, indent) {
+      if (obj === null || obj === undefined) return 'null';
+      if (typeof obj === 'string') {
+        // Check if needs quoting
+        if (/[:\[\]{}|>&!%@`#]|^\s|\s$/.test(obj) || obj === '' || obj === 'null' || obj === 'true' || obj === 'false') {
+          return JSON.stringify(obj);
+        }
+        return obj;
+      }
+      if (typeof obj === 'number') return String(obj);
+      if (typeof obj === 'boolean') return obj ? 'true' : 'false';
+      if (Array.isArray(obj)) {
+        if (obj.length === 0) return '[]';
+        const items = [];
+        for (const item of obj) {
+          if (typeof item === 'object' && item !== null) {
+            const sub = jsonToYaml(item, indent + 2);
+            const lines = sub.split('\n');
+            items.push('- ' + lines[0]);
+            for (let i = 1; i < lines.length; i++) {
+              items.push('  ' + lines[i]);
+            }
+          } else {
+            items.push('- ' + jsonToYaml(item, indent + 2));
+          }
+        }
+        return items.join('\n');
+      }
+      if (typeof obj === 'object') {
+        const keys = Object.keys(obj);
+        if (keys.length === 0) return '{}';
+        const items = [];
+        for (const key of keys) {
+          const val = obj[key];
+          const keyStr = /[:\s]/.test(key) ? JSON.stringify(key) : key;
+          if (typeof val === 'object' && val !== null && !(Array.isArray(val) && val.length === 0)) {
+            const sub = jsonToYaml(val, indent + 2);
+            const lines = sub.split('\n');
+            items.push(keyStr + ':');
+            for (const line of lines) {
+              items.push('  ' + line);
+            }
+          } else {
+            items.push(keyStr + ': ' + jsonToYaml(val, indent + 2));
+          }
+        }
+        return items.join('\n');
+      }
+      return String(obj);
+    }
+
+    function formatJson(obj, indent) {
+      return JSON.stringify(obj, null, indent);
+    }
+
+    function setMode(mode) {
+      currentMode = mode;
+      document.querySelectorAll('#modeSwitch button').forEach(b => {
+        b.classList.toggle('active', b.dataset.mode === mode);
+      });
+
+      if (mode === 'yaml2json') {
+        document.getElementById('inputLabel').textContent = 'YAML 输入';
+        document.getElementById('outputLabel').textContent = 'JSON 输出';
+      } else {
+        document.getElementById('inputLabel').textContent = 'JSON 输入';
+        document.getElementById('outputLabel').textContent = 'YAML 输出';
+      }
+
+      // Swap content
+      const input = document.getElementById('inputEditor');
+      const output = document.getElementById('outputEditor');
+      const temp = input.value;
+      input.value = output.value || '';
+      output.value = temp;
+
+      updateLineCounts();
+      convert();
+    }
+
+    function convert() {
+      const input = document.getElementById('inputEditor').value.trim();
+      const output = document.getElementById('outputEditor');
+      const errorEl = document.getElementById('errorMsg');
+      const btnCopy = document.getElementById('btnCopy');
+
+      if (!input) {
+        output.value = '';
+        errorEl.style.display = 'none';
+        btnCopy.disabled = true;
+        updateLineCounts();
+        return;
+      }
+
+      try {
+        let result = '';
+        if (currentMode === 'yaml2json') {
+          const obj = yamlToJsonObj(input);
+          const indent = parseInt(document.getElementById('jsonIndent').value) || 4;
+          if (document.getElementById('optIndent').checked) {
+            result = formatJson(obj, indent);
+          } else {
+            result = JSON.stringify(obj);
+          }
+        } else {
+          const obj = JSON.parse(input);
+          result = jsonToYaml(obj, 0);
+        }
+        output.value = result;
+        errorEl.style.display = 'none';
+        btnCopy.disabled = false;
+      } catch (e) {
+        errorEl.textContent = '❌ ' + e.message;
+        errorEl.style.display = 'block';
+        output.value = '';
+        btnCopy.disabled = true;
+      }
+
+      updateLineCounts();
+    }
+
+    function copyOutput() {
+      const text = document.getElementById('outputEditor').value;
+      if (text) {
+        navigator.clipboard.writeText(text).then(() => showToast('✅ 已复制'));
+      }
+    }
+
+    function swapInputOutput() {
+      const input = document.getElementById('inputEditor');
+      const output = document.getElementById('outputEditor');
+      if (output.value) {
+        const temp = input.value;
+        input.value = output.value;
+        output.value = temp;
+        convert();
+      }
+    }
+
+    function updateLineCounts() {
+      const input = document.getElementById('inputEditor');
+      const output = document.getElementById('outputEditor');
+      document.getElementById('inputLines').textContent = (input.value.split('\n').length) + ' 行';
+      document.getElementById('outputLines').textContent = (output.value.split('\n').length) + ' 行';
+    }
+
+    document.getElementById('inputEditor').addEventListener('input', function() {
+      updateLineCounts();
+      clearTimeout(window.convertTimer);
+      window.convertTimer = setTimeout(convert, 500);
+    });
+
+    // Initialize
+    updateLineCounts();
+    convert();
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+  </script>
+</body>
+</html>
