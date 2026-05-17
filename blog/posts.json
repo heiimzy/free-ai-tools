@@ -1,5 +1,31 @@
 [
   {
+    "id": "029",
+    "date": "2026-05-19",
+    "zh": {
+      "title": "2026年5月AI提效最新趋势：从"模型竞赛"到"智能体工程化"的范式跃迁",
+      "summary": "2026年5月AI提效最新动态：百度Create大会发布"度mate"智能体手机App、Dify v1.14.0支持千级智能体并发、AI数字员工提升企业效率65%、低代码+AI Agent 200+行业模板。含企业落地实测数据和行动路线图。",
+      "tags": [
+        "提效",
+        "效率",
+        "智能体",
+        "工作流"
+      ],
+      "file": "posts/029-ai-productivity-may-2026.zh.html"
+    },
+    "en": {
+      "title": "AI Productivity in May 2026: The Agent Engineering Era — From Assistance to Autonomous Execution",
+      "summary": "May 2026 AI productivity report: Freshworks launches Freddy AI Agent Studio with MCP Gateway; ServiceNow AI Control Tower redefines enterprise governance; HubSpot opens CRM APIs for agent autonomy; the 10 hottest agent work categories ranked; enterprise productivity data shows 65% efficiency gains. A complete guide to the agentic era.",
+      "tags": [
+        "productivity",
+        "agents",
+        "enterprise",
+        "automation"
+      ],
+      "file": "posts/029-ai-productivity-may-2026.en.html"
+    }
+  },
+  {
     "id": "028",
     "date": "2026-05-18",
     "zh": {
