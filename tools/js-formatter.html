@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS格式化/压缩工具 - 免费在线JavaScript美化与压缩 | Free AI Tools</title>
+  <meta name="description" content="免费在线JavaScript格式化与压缩工具，支持JS代码美化排版、一键压缩（Minify）、清除注释。实时显示字符数变化，一键复制结果。适合前端开发者日常编码、代码调试、生产环境部署优化。">
+  <meta name="keywords" content="JS格式化,JavaScript美化,JS压缩,JS Minifier,JavaScript格式化工具,前端工具,在线JS工具,代码美化">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/js-formatter.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .jsf-layout { display: grid; gap: 1rem; }
+    .jsf-input, .jsf-output { width: 100%; min-height: 250px; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: 'Courier New', monospace; font-size: 0.82rem; resize: vertical; box-sizing: border-box; line-height: 1.5; }
+    .jsf-input:focus { outline: none; border-color: var(--primary); }
+    .jsf-input::placeholder { color: var(--text-muted); opacity: 0.5; }
+    .jsf-output { background: #1a1a2e; }
+    .jsf-stats { color: var(--text-muted); font-size: 0.8rem; margin-top: 0.3rem; min-height: 1.2em; }
+    .jsf-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .jsf-actions button { padding: 0.5rem 1rem; border-radius: 8px; border: none; font-family: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .jsf-btn-fmt { background: linear-gradient(135deg, var(--primary), #7c3aed); color: white; }
+    .jsf-btn-fmt:hover { transform: translateY(-1px); box-shadow: 0 4px 15px var(--glow-purple); }
+    .jsf-btn-min { background: rgba(244,114,182,0.15); color: var(--secondary); }
+    .jsf-btn-min:hover { background: rgba(244,114,182,0.25); }
+    .jsf-btn-copy { background: rgba(167,139,250,0.15); color: var(--primary); }
+    .jsf-btn-copy:hover { background: rgba(167,139,250,0.25); }
+    .jsf-btn-clear { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); }
+    .jsf-btn-clear:hover { border-color: var(--danger); color: var(--danger); }
+    .jsf-label { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+    .jsf-tabs { display: flex; gap: 0.25rem; margin-bottom: 0.4rem; }
+    .jsf-tabs button { padding: 0.3rem 0.75rem; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); font-size: 0.75rem; cursor: pointer; font-family: inherit; transition: 0.15s; }
+    .jsf-tabs button.active { background: var(--primary); color: white; border-color: var(--primary); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/js-formatter.html">JS工具</a><a href="../tools/css-formatter.html">CSS工具</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>JavaScript 格式化 / 压缩工具</h1>
+      <p>JS 代码美化排版、一键压缩（Minify）、清除注释，实时统计字符变化。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="jsf-layout">
+        <div>
+          <div class="jsf-label">输入 JavaScript</div>
+          <textarea class="jsf-input" id="inputCode" placeholder="粘贴 JavaScript 代码..." oninput="autoFormat()" spellcheck="false">function hello(name){var msg='Hello, '+name+'!';for(var i=0;i<3;i++){console.log(msg);}return msg;}
+
+const users=[{id:1,name:'Alice',role:'admin'},{id:2,name:'Bob',role:'user'}];
+const result=users.filter(u=>u.role==='admin').map(u=>({label:u.name,value:u.id}));
+console.log(result);</textarea>
+          <div class="jsf-stats" id="inputStats"></div>
+        </div>
+
+        <div class="jsf-actions">
+          <button class="jsf-btn-fmt" onclick="formatJS()">✨ 美化格式</button>
+          <button class="jsf-btn-min" onclick="minifyJS()">🔧 压缩 (Minify)</button>
+          <button class="jsf-btn-copy" onclick="copyOutput()">📋 复制结果</button>
+          <button class="jsf-btn-clear" onclick="clearAll()">🗑️ 清空</button>
+        </div>
+
+        <div>
+          <div class="jsf-label">输出 <span id="outputStats" class="jsf-stats" style="display:inline;"></span></div>
+          <textarea class="jsf-output" id="outputCode" readonly placeholder="输出结果..." spellcheck="false"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线 JavaScript 格式化与压缩工具</h2>
+      <p>免费的在线 JavaScript 代码格式化工具，支持两种核心功能：美化格式（Beautify）——将压缩或混乱的JS代码按标准缩进和换行重新排版，提高可读性，方便调试和维护；压缩（Minify）——移除所有不必要的空格、换行和注释，大幅减小代码体积，适合生产环境部署。实时显示处理前后的字符数和变化比例。所有处理在浏览器本地完成，代码不会上传到服务器。适合前端开发者、全栈工程师在日常编码、代码审查、性能优化场景中使用。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/js-formatter.html">JS工具</a> | <a href="../tools/css-formatter.html">CSS工具</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    function updateStats() {
+      const input = document.getElementById('inputCode').value;
+      document.getElementById('inputStats').textContent = input.length + ' 字符';
+    }
+
+    function updateOutputStats(code) {
+      const inputLen = document.getElementById('inputCode').value.length;
+      const outputLen = code.length;
+      const pct = inputLen > 0 ? ((outputLen / inputLen) * 100).toFixed(1) : 0;
+      document.getElementById('outputStats').textContent = outputLen + ' 字符 (' + pct + '%)';
+    }
+
+    function formatJS() {
+      const code = document.getElementById('inputCode').value;
+      if (!code.trim()) return showToast('⚠️ 请先输入 JavaScript 代码');
+      try {
+        const formatted = jsBeautify(code);
+        document.getElementById('outputCode').value = formatted;
+        updateOutputStats(formatted);
+        showToast('✅ 格式化完成');
+      } catch (e) {
+        showToast('⚠️ 格式化出错: ' + e.message);
+      }
+    }
+
+    function minifyJS() {
+      const code = document.getElementById('inputCode').value;
+      if (!code.trim()) return showToast('⚠️ 请先输入 JavaScript 代码');
+      try {
+        const minified = jsMinify(code);
+        document.getElementById('outputCode').value = minified;
+        updateOutputStats(minified);
+        showToast('✅ 压缩完成 (节省 ' + (code.length - minified.length) + ' 字符)');
+      } catch (e) {
+        showToast('⚠️ 压缩出错: ' + e.message);
+      }
+    }
+
+    function autoFormat() {
+      updateStats();
+      clearTimeout(window._jsfTimer);
+      window._jsfTimer = setTimeout(() => {
+        if (document.getElementById('inputCode').value.trim()) formatJS();
+      }, 800);
+    }
+
+    function copyOutput() {
+      const out = document.getElementById('outputCode').value;
+      if (!out) return showToast('⚠️ 没有内容可复制');
+      navigator.clipboard.writeText(out).then(() => showToast('✅ 已复制'));
+    }
+
+    function clearAll() {
+      document.getElementById('inputCode').value = '';
+      document.getElementById('outputCode').value = '';
+      document.getElementById('outputStats').textContent = '';
+      updateStats();
+      showToast('🗑️ 已清空');
+    }
+
+    // --- JS Beautifier ---
+    function jsBeautify(code) {
+      let out = '';
+      let indent = 0;
+      const indentStr = '  ';
+      let inString = false;
+      let stringChar = '';
+      let inRegex = false;
+      let inTemplate = false;
+
+      // Tokenize approach: process char by char for basic beautification
+      let i = 0;
+      let tokens = [];
+      let currentToken = '';
+
+      function flushToken() {
+        if (currentToken) {
+          tokens.push(currentToken);
+          currentToken = '';
+        }
+      }
+
+      while (i < code.length) {
+        const ch = code[i];
+        const next = code[i + 1] || '';
+
+        if (inString) {
+          currentToken += ch;
+          if (ch === '\\' && next) {
+            currentToken += next;
+            i += 2;
+            continue;
+          }
+          if (ch === stringChar) {
+            inString = false;
+            stringChar = '';
+          }
+          i++;
+          continue;
+        }
+
+        if (ch === '/' && next === '/' && !inTemplate) {
+          flushToken();
+          let j = i;
+          while (j < code.length && code[j] !== '\n') j++;
+          tokens.push(code.substring(i, j));
+          i = j;
+          continue;
+        }
+
+        if (ch === '/' && next === '*' && !inTemplate) {
+          flushToken();
+          let j = i + 2;
+          while (j < code.length - 1 && !(code[j] === '*' && code[j + 1] === '/')) j++;
+          tokens.push(code.substring(i, j + 2));
+          i = j + 2;
+          continue;
+        }
+
+        if (ch === "'" || ch === '"' || ch === '`') {
+          flushToken();
+          inString = true;
+          stringChar = ch;
+          if (ch === '`') inTemplate = true;
+          currentToken += ch;
+          i++;
+          continue;
+        }
+
+        if (ch === '\n') {
+          flushToken();
+          tokens.push('\n');
+          i++;
+          continue;
+        }
+
+        // Handle template literal end
+        if (ch === '`' && inTemplate) {
+          inTemplate = false;
+        }
+
+        // Operators and punctuation
+        if ('{}();,=<>+-*/%!&|^~?:.'.includes(ch)) {
+          flushToken();
+          tokens.push(ch);
+          i++;
+          continue;
+        }
+
+        if (/\s/.test(ch)) {
+          flushToken();
+          i++;
+          continue;
+        }
+
+        currentToken += ch;
+        i++;
+      }
+      flushToken();
+
+      // Build formatted output
+      let newline = true;
+      let lastToken = '';
+
+      for (let t = 0; t < tokens.length; t++) {
+        const token = tokens[t];
+
+        if (token === '\n') {
+          out += '\n' + indentStr.repeat(indent);
+          newline = true;
+          continue;
+        }
+
+        if (token === '{') {
+          if (!newline && lastToken !== '(') out += ' ';
+          out += ' {';
+          indent++;
+          out += '\n' + indentStr.repeat(indent);
+          newline = true;
+        } else if (token === '}') {
+          indent = Math.max(0, indent - 1);
+          out += '\n' + indentStr.repeat(indent) + '}';
+          newline = false;
+        } else if (token === '(') {
+          if (/\w/.test(lastToken) || lastToken === ')' || lastToken === ']') {
+            out += '(';
+          } else {
+            out += ' (';
+          }
+          newline = false;
+        } else if (token === ')') {
+          out += ')';
+          newline = false;
+        } else if (token === ';') {
+          out += ';\n' + indentStr.repeat(indent);
+          newline = true;
+        } else if (token === ',') {
+          out += ', ';
+          newline = false;
+        } else if (token === ':') {
+          out += ': ';
+          newline = false;
+        } else if (token === '=>') {
+          out += ' => ';
+          newline = false;
+        } else if (token === '=' || token === '+' || token === '-' || token === '*' || token === '/' || token === '%' || token === '&' || token === '|' || token === '^' || token === '<' || token === '>' || token === '?' || token === '~') {
+          // Check for compound operators
+          if (t + 1 < tokens.length && '=><&|'.includes(token) && tokens[t + 1] === '=') {
+            out += ' ' + token + '= ';
+            t++;
+          } else if (token === '|' && t + 1 < tokens.length && tokens[t + 1] === '|') {
+            out += ' || ';
+            t++;
+          } else if (token === '&' && t + 1 < tokens.length && tokens[t + 1] === '&') {
+            out += ' && ';
+            t++;
+          } else if (token === '+' && t + 1 < tokens.length && tokens[t + 1] === '+') {
+            out += '++';
+            t++;
+          } else if (token === '-' && t + 1 < tokens.length && tokens[t + 1] === '-') {
+            out += '--';
+            t++;
+          } else if (token === '?') {
+            out += ' ? ';
+          } else {
+            out += ' ' + token + ' ';
+          }
+          newline = false;
+        } else if (token === '.') {
+          out += '.';
+          newline = false;
+        } else if (token === '[') {
+          out += '[';
+          newline = false;
+        } else if (token === ']') {
+          out += ']';
+          newline = false;
+        } else {
+          // Word/number/string
+          if (!newline && lastToken && lastToken !== '(' && lastToken !== '[' && lastToken !== ',' && lastToken !== ';' && lastToken !== '{' && lastToken !== '}' && lastToken !== '.' && lastToken !== ':' && !/^\s$/.test(lastToken)) {
+            out += ' ';
+          }
+          out += token;
+          newline = false;
+        }
+
+        lastToken = token;
+      }
+
+      // Cleanup excessive blank lines
+      return out.replace(/\n{3,}/g, '\n\n').trim();
+    }
+
+    // --- JS Minifier ---
+    function jsMinify(code) {
+      let out = '';
+      let inString = false;
+      let stringChar = '';
+      let i = 0;
+
+      while (i < code.length) {
+        const ch = code[i];
+        const next = code[i + 1] || '';
+
+        // String literals
+        if ((ch === '"' || ch === "'" || ch === '`') && !inString) {
+          inString = true;
+          stringChar = ch;
+          out += ch;
+          i++;
+          continue;
+        }
+        if (inString) {
+          out += ch;
+          if (ch === '\\' && next) {
+            out += next;
+            i += 2;
+            continue;
+          }
+          if (ch === stringChar) {
+            inString = false;
+          }
+          i++;
+          continue;
+        }
+
+        // Single-line comments
+        if (ch === '/' && next === '/') {
+          while (i < code.length && code[i] !== '\n') i++;
+          i++;
+          continue;
+        }
+
+        // Multi-line comments
+        if (ch === '/' && next === '*') {
+          i += 2;
+          while (i < code.length - 1 && !(code[i] === '*' && code[i + 1] === '/')) i++;
+          i += 2;
+          continue;
+        }
+
+        // Regex literals (simplified detection)
+        if (ch === '/' && !inString) {
+          // Check if it might be a regex (preceded by operator, return, etc.)
+          const prev = out.trim().slice(-1);
+          if (prev === '' || '=(,[!&|?{};:'.includes(prev) || /\b(return|case|typeof|instanceof|void|delete|new|in|of)\s*$/.test(out)) {
+            out += ch;
+            i++;
+            let regexDepth = 1;
+            while (i < code.length && regexDepth > 0) {
+              const rc = code[i];
+              if (rc === '\\' && code[i + 1]) {
+                out += rc + code[i + 1];
+                i += 2;
+                continue;
+              }
+              if (rc === '/') regexDepth--;
+              out += rc;
+              i++;
+            }
+            continue;
+          }
+        }
+
+        // Skip whitespace, except keep minimal space when needed
+        if (/\s/.test(ch)) {
+          i++;
+          // Keep a space if it separates tokens that would merge
+          const peekIdx = i;
+          let peek = '';
+          for (let p = peekIdx; p < code.length; p++) {
+            if (!/\s/.test(code[p])) { peek = code[p]; break; }
+          }
+          const lastChar = out.slice(-1);
+          if (lastChar && peek && /\w/.test(lastChar) && /\w/.test(peek)) {
+            out += ' ';
+          } else if (lastChar && peek && lastChar === '}' && /[a-z_$]/i.test(peek)) {
+            out += ' ';
+          }
+          continue;
+        }
+
+        out += ch;
+        i++;
+      }
+
+      return out;
+    }
+
+    // Auto-format on load
+    window.addEventListener('DOMContentLoaded', () => {
+      updateStats();
+      setTimeout(formatJS, 300);
+    });
+  </script>
+</body>
+</html>

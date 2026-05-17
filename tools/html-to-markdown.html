@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML转Markdown - 免费在线HTML到Markdown转换器 | Free AI Tools</title>
+  <meta name="description" content="免费在线HTML转Markdown工具，将HTML代码快速转换为Markdown格式。支持标题、列表、表格、链接、图片、代码块等HTML标签的解析转换。一键复制输出，适合内容迁移、博客搬家、文档格式转换等场景。">
+  <meta name="keywords" content="HTML转Markdown,HTML到Markdown,HTML转换器,在线转换,网页转Markdown,HTML2MD,内容迁移工具">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/html-to-markdown.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .h2m-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .h2m-panel { display: flex; flex-direction: column; }
+    .h2m-panel label { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; margin-bottom: 0.4rem; display: flex; justify-content: space-between; align-items: center; }
+    .h2m-textarea { flex: 1; min-height: 350px; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: 'Courier New', monospace; font-size: 0.85rem; resize: vertical; line-height: 1.6; }
+    .h2m-textarea:focus { outline: none; border-color: var(--primary); }
+    .h2m-output { flex: 1; min-height: 350px; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: 'Courier New', monospace; font-size: 0.85rem; resize: vertical; line-height: 1.6; }
+    .h2m-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .h2m-actions button { padding: 0.5rem 1rem; border-radius: 8px; border: none; font-family: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .h2m-btn-convert { background: linear-gradient(135deg, var(--primary), #7c3aed); color: white; }
+    .h2m-btn-convert:hover { transform: translateY(-1px); box-shadow: 0 4px 15px var(--glow-purple); }
+    .h2m-btn-copy { background: rgba(167,139,250,0.15); color: var(--primary); }
+    .h2m-btn-copy:hover { background: rgba(167,139,250,0.25); }
+    .h2m-btn-clear { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); }
+    .h2m-btn-clear:hover { border-color: var(--danger); color: var(--danger); }
+    .h2m-sample { background: rgba(167,139,250,0.05); border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.75rem; color: var(--text-muted); cursor: pointer; display: inline-flex; align-items: center; gap: 0.3rem; }
+    .h2m-sample:hover { border-color: var(--primary); }
+    @media (max-width: 768px) { .h2m-layout { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/html-to-markdown.html">HTML转Markdown</a><a href="../tools/md-to-html.html">Markdown转HTML</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>HTML 转 Markdown 转换器 / HTML to Markdown</h1>
+      <p>将 HTML 代码快速转换为 Markdown 格式，支持常用标签解析。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="h2m-layout">
+        <div class="h2m-panel">
+          <label>输入 HTML</label>
+          <textarea class="h2m-textarea" id="inputHtml" placeholder="粘贴 HTML 代码..." oninput="autoConvert()"><h1>Hello World</h1>
+<p>This is a <strong>paragraph</strong> with <a href="https://example.com">a link</a>.</p>
+<ul>
+  <li>Item one</li>
+  <li>Item two</li>
+  <li>Item three</li>
+</ul></textarea>
+          <div style="margin-top:0.4rem;display:flex;gap:0.5rem;align-items:center;">
+            <span class="h2m-sample" onclick="loadSample()">📄 加载示例</span>
+          </div>
+        </div>
+        <div class="h2m-panel">
+          <label>Markdown 输出</label>
+          <textarea class="h2m-output" id="outputMd" readonly placeholder="转换后的 Markdown..." style="min-height:300px;"></textarea>
+          <div class="h2m-actions" style="margin-top:0.4rem;">
+            <button class="h2m-btn-convert" onclick="convert()">🔄 转换</button>
+            <button class="h2m-btn-copy" onclick="copyOutput()">📋 复制</button>
+            <button class="h2m-btn-clear" onclick="clearAll()">🗑️ 清空</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线 HTML 转 Markdown 工具</h2>
+      <p>免费的 HTML 到 Markdown 在线转换器，帮助你将 HTML 网页内容快速转换为 Markdown 格式。支持标题（h1-h6）、段落、链接、图片、粗体/斜体、有序/无序列表、代码块（含语言标注）、表格、水平线、块引用等常见 HTML 标签的解析。浏览器端本地处理，内容不会上传到服务器。适合博客搬家、CMS内容迁移、文档格式转换、邮件转Markdown等场景。转换后的 Markdown 兼容主流编辑器（Typora、VS Code、Obsidian 等）。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/html-to-markdown.html">HTML转Markdown</a> | <a href="../tools/md-to-html.html">Markdown转HTML</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    function htmlToMarkdown(html) {
+      let md = html;
+
+      // Remove comments
+      md = md.replace(/<!--[\s\S]*?-->/g, '');
+
+      // Replace <br> with newline
+      md = md.replace(/<br\s*\/?>/gi, '\n');
+
+      // Headers
+      md = md.replace(/<h1[^>]*>(.*?)<\/h1>/gi, '# $1\n\n');
+      md = md.replace(/<h2[^>]*>(.*?)<\/h2>/gi, '## $1\n\n');
+      md = md.replace(/<h3[^>]*>(.*?)<\/h3>/gi, '### $1\n\n');
+      md = md.replace(/<h4[^>]*>(.*?)<\/h4>/gi, '#### $1\n\n');
+      md = md.replace(/<h5[^>]*>(.*?)<\/h5>/gi, '##### $1\n\n');
+      md = md.replace(/<h6[^>]*>(.*?)<\/h6>/gi, '###### $1\n\n');
+
+      // Horizontal rules
+      md = md.replace(/<hr\s*\/?>/gi, '\n---\n\n');
+
+      // Blockquotes
+      md = md.replace(/<blockquote[^>]*>([\s\S]*?)<\/blockquote>/gi, (m, c) => {
+        return c.trim().split('\n').map(l => '> ' + l.trim()).join('\n') + '\n\n';
+      });
+
+      // Images (before links to avoid conflict)
+      md = md.replace(/<img[^>]*src=["']([^"']*)["'][^>]*alt=["']([^"']*)["'][^>]*>/gi, '![$2]($1)');
+      md = md.replace(/<img[^>]*src=["']([^"']*)["'][^>]*>/gi, '![]( $1 )');
+
+      // Links
+      md = md.replace(/<a[^>]*href=["']([^"']*)["'][^>]*>(.*?)<\/a>/gi, '[$2]($1)');
+
+      // Bold + Italic nesting: <strong><em> or <em><strong>
+      md = md.replace(/<strong>\s*<em>(.*?)<\/em>\s*<\/strong>/gi, ' ***$1*** ');
+      md = md.replace(/<em>\s*<strong>(.*?)<\/strong>\s*<\/em>/gi, ' ***$1*** ');
+
+      // Strong / Bold
+      md = md.replace(/<strong[^>]*>(.*?)<\/strong>/gi, ' **$1** ');
+      md = md.replace(/<b[^>]*>(.*?)<\/b>/gi, ' **$1** ');
+
+      // Emphasis / Italic
+      md = md.replace(/<em[^>]*>(.*?)<\/em>/gi, ' *$1* ');
+      md = md.replace(/<i[^>]*>(.*?)<\/i>/gi, ' *$1* ');
+
+      // Code blocks (with language)
+      md = md.replace(/<pre><code[^>]*class=["'][^"]*language-(\w+)[^"']*["'][^>]*>([\s\S]*?)<\/code><\/pre>/gi, '```$1\n$2\n```\n\n');
+      // Code blocks (no language)
+      md = md.replace(/<pre><code>([\s\S]*?)<\/code><\/pre>/gi, '```\n$1\n```\n\n');
+      md = md.replace(/<pre>([\s\S]*?)<\/pre>/gi, '```\n$1\n```\n\n');
+
+      // Inline code
+      md = md.replace(/<code[^>]*>(.*?)<\/code>/gi, '`$1`');
+
+      // Unordered lists
+      md = md.replace(/<ul[^>]*>([\s\S]*?)<\/ul>/gi, (m, content) => {
+        return content.replace(/<li[^>]*>([\s\S]*?)<\/li>/gi, (_, item) => {
+          return '- ' + item.trim().replace(/\n/g, '\n  ') + '\n';
+        }) + '\n';
+      });
+
+      // Ordered lists
+      md = md.replace(/<ol[^>]*>([\s\S]*?)<\/ol>/gi, (m, content) => {
+        let idx = 1;
+        return content.replace(/<li[^>]*>([\s\S]*?)<\/li>/gi, (_, item) => {
+          return (idx++) + '. ' + item.trim().replace(/\n/g, '\n   ') + '\n';
+        }) + '\n';
+      });
+
+      // Tables
+      md = md.replace(/<table[^>]*>([\s\S]*?)<\/table>/gi, (m, tableContent) => {
+        const rows = [];
+        let headerRow = null;
+        let rowHtml = tableContent.match(/<tr[^>]*>([\s\S]*?)<\/tr>/gi);
+        if (!rowHtml) return '';
+        rowHtml.forEach((row, ri) => {
+          const isHeader = /<th/i.test(row);
+          const cells = row.match(/<t[dh][^>]*>([\s\S]*?)<\/t[dh]>/gi);
+          if (!cells) return;
+          const rowData = cells.map(c => c.replace(/<\/?t[dh][^>]*>/gi, '').trim());
+          if (ri === 0) headerRow = rowData;
+          rows.push(rowData);
+        });
+        if (!rows.length) return '';
+        const numCols = Math.max(...rows.map(r => r.length));
+        // Header separator
+        let sep = '|';
+        for (let i = 0; i < numCols; i++) sep += ' --- |';
+        let mdTable = rows.map(r => {
+          let row = '|';
+          for (let i = 0; i < numCols; i++) row += ' ' + (r[i] || '') + ' |';
+          return row;
+        }).join('\n');
+        return '\n' + mdTable.replace('\n', '\n' + sep + '\n') + '\n\n';
+      });
+
+      // Paragraphs
+      md = md.replace(/<p[^>]*>(.*?)<\/p>/gi, '$1\n\n');
+
+      // Strip remaining HTML tags
+      md = md.replace(/<[^>]*>/g, '');
+
+      // Decode HTML entities
+      md = md.replace(/&amp;/g, '&');
+      md = md.replace(/&lt;/g, '<');
+      md = md.replace(/&gt;/g, '>');
+      md = md.replace(/&quot;/g, '"');
+      md = md.replace(/&#39;/g, "'");
+      md = md.replace(/&nbsp;/g, ' ');
+
+      // Cleanup: trim lines, remove excessive blank lines
+      md = md.replace(/\n{4,}/g, '\n\n\n');
+      md = md.replace(/ +\n/g, '\n');
+      md = md.replace(/\n{3,}/g, '\n\n');
+
+      return md.trim();
+    }
+
+    function convert() {
+      const html = document.getElementById('inputHtml').value;
+      if (!html.trim()) return showToast('⚠️ 请输入 HTML 代码');
+      document.getElementById('outputMd').value = htmlToMarkdown(html);
+      showToast('✅ 转换完成');
+    }
+
+    function autoConvert() {
+      clearTimeout(window._h2mTimer);
+      window._h2mTimer = setTimeout(convert, 500);
+    }
+
+    function copyOutput() {
+      const md = document.getElementById('outputMd').value;
+      if (!md) return showToast('⚠️ 没有内容可复制');
+      navigator.clipboard.writeText(md).then(() => showToast('✅ 已复制到剪贴板'));
+    }
+
+    function clearAll() {
+      document.getElementById('inputHtml').value = '';
+      document.getElementById('outputMd').value = '';
+      showToast('🗑️ 已清空');
+    }
+
+    function loadSample() {
+      document.getElementById('inputHtml').value = `<!DOCTYPE html>
+<html>
+<body>
+  <h1>Welcome to My Blog</h1>
+  <p>This is a <strong>blog post</strong> about <em>web development</em>.</p>
+
+  <h2>Features</h2>
+  <ul>
+    <li>Fast and lightweight</li>
+    <li>Easy to customize</li>
+    <li>Open source</li>
+  </ul>
+
+  <h2>Getting Started</h2>
+  <ol>
+    <li>Install the package</li>
+    <li>Configure your settings</li>
+    <li>Start building</li>
+  </ol>
+
+  <blockquote>
+    The best way to predict the future is to create it.
+  </blockquote>
+
+  <p>Learn more at <a href="https://example.com">our website</a>.</p>
+
+  <h3>Code Example</h3>
+  <pre><code class="language-javascript">
+    function hello() {
+      console.log("Hello, World!");
+    }
+  </code></pre>
+
+  <table>
+    <tr><th>Name</th><th>Version</th></tr>
+    <tr><td>Alpha</td><td>1.0</td></tr>
+    <tr><td>Beta</td><td>2.0</td></tr>
+  </table>
+</body>
+</html>`;
+      convert();
+    }
+
+    // Auto-convert on page load
+    window.addEventListener('DOMContentLoaded', convert);
+  </script>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>图片转WebP - 免费在线图片转WebP格式转换器 | Free AI Tools</title>
+  <meta name="description" content="免费在线图片转WebP格式转换器，支持JPG、PNG、BMP、GIF等图片转换为WebP格式。可自定义压缩质量，批量处理多张图片，浏览器本地处理不上传服务器，保护隐私。适合网站优化、页面加速、图片体积压缩。">
+  <meta name="keywords" content="图片转WebP,WebP转换器,在线转换WebP,PNG转WebP,JPG转WebP,图片格式转换,网站加速,图片压缩">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/image-to-webp.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .iw-layout { max-width: 650px; margin: 0 auto; display: grid; gap: 1.5rem; }
+    .iw-upload { border: 2px dashed var(--border); border-radius: 12px; padding: 2.5rem 2rem; text-align: center; cursor: pointer; transition: 0.2s; }
+    .iw-upload:hover { border-color: var(--primary); background: rgba(167,139,250,0.03); }
+    .iw-upload .icon { font-size: 3rem; margin-bottom: 0.5rem; }
+    .iw-upload p { color: var(--text-muted); margin: 0.3rem 0; font-size: 0.9rem; }
+    .iw-upload .sub { font-size: 0.75rem; color: var(--text-muted); opacity: 0.6; }
+    .iw-drop-zone.dragover { border-color: var(--primary); background: rgba(167,139,250,0.08); }
+    .iw-options { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; }
+    .iw-options label { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+    .iw-options input, .iw-options select { padding: 0.35rem 0.5rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: inherit; font-size: 0.8rem; }
+    .iw-options input:focus, .iw-options select:focus { outline: none; border-color: var(--primary); }
+    .iw-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .iw-actions button { padding: 0.5rem 1.2rem; border: none; border-radius: 8px; font-family: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .iw-btn-convert { background: linear-gradient(135deg, var(--primary), #7c3aed); color: white; }
+    .iw-btn-convert:hover { transform: translateY(-1px); box-shadow: 0 4px 15px var(--glow-purple); }
+    .iw-btn-dl { background: rgba(167,139,250,0.15); color: var(--primary); }
+    .iw-btn-dl:hover { background: rgba(167,139,250,0.25); }
+    .iw-btn-dl:disabled { opacity: 0.4; cursor: not-allowed; }
+    .iw-list { display: grid; gap: 1rem; }
+    .iw-item { display: flex; align-items: center; gap: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 0.75rem; }
+    .iw-item img { width: 64px; height: 64px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); }
+    .iw-item .info { flex: 1; min-width: 0; }
+    .iw-item .info .name { font-size: 0.85rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .iw-item .info .size { font-size: 0.75rem; color: var(--text-muted); }
+    .iw-item .info .savings { font-size: 0.75rem; color: #4ade80; }
+    .iw-item .dl-btn { padding: 0.35rem 0.8rem; border-radius: 6px; border: 1px solid var(--primary); background: transparent; color: var(--primary); cursor: pointer; font-size: 0.75rem; font-family: inherit; transition: 0.15s; white-space: nowrap; }
+    .iw-item .dl-btn:hover { background: rgba(167,139,250,0.15); }
+    @media (max-width: 500px) { .iw-options { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/image-to-webp.html">转WebP</a><a href="../tools/image-compressor.html">图片压缩</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>图片转 WebP / Image to WebP Converter</h1>
+      <p>将 JPG、PNG、BMP、GIF 等图片转换为 WebP 格式，自定义质量，浏览器本地处理。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="iw-layout">
+        <div class="iw-upload" id="dropZone">
+          <div class="icon">🖼️</div>
+          <p>点击上传图片或拖放图片到此处</p>
+          <div class="sub">支持 JPG / PNG / BMP / GIF / WebP</div>
+          <input type="file" id="fileInput" accept="image/*" multiple style="display:none;">
+        </div>
+
+        <div class="iw-options">
+          <label>图片质量 <input type="range" id="qualitySlider" min="10" max="100" value="80" oninput="document.getElementById('qualityLabel').textContent=this.value+'%'"><span id="qualityLabel">80%</span></label>
+          <label>输出文件名前缀 <input type="text" id="namePrefix" value="webp_" placeholder="webp_"></label>
+        </div>
+
+        <div class="iw-actions">
+          <button class="iw-btn-convert" onclick="convertImages()">🔄 转换为 WebP</button>
+          <button class="iw-btn-dl" id="downloadAllBtn" onclick="downloadAll()" disabled>⬇ 下载全部 (ZIP)</button>
+        </div>
+
+        <div id="imageList" class="iw-list"></div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线图片转 WebP 格式工具</h2>
+      <p>免费的在线图片转 WebP 格式转换器。WebP 是 Google 推出的现代图片格式，相比 JPEG 和 PNG，在同质量下体积平均减少 25-35%，是网站性能优化和页面加速的首选格式。本工具支持批量转换多张图片，可自定义压缩质量（0-100），转换后显示压缩前后的文件大小对比和节省比例。所有处理在浏览器本地完成，图片不会上传到服务器，充分保护你的隐私。适合 Web 开发者、网站站长、博客作者进行图片格式优化，提升网页加载速度。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/image-to-webp.html">转WebP</a> | <a href="../tools/image-compressor.html">图片压缩</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let uploadedFiles = [];
+    let convertedResults = [];
+
+    document.getElementById('dropZone').addEventListener('click', () => document.getElementById('fileInput').click());
+    document.getElementById('fileInput').addEventListener('change', e => { if (e.target.files.length) handleFiles(e.target.files); });
+
+    const dz = document.getElementById('dropZone');
+    dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
+    dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+    dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('dragover'); if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files); });
+
+    function handleFiles(files) {
+      for (const f of files) {
+        if (!f.type.startsWith('image/')) continue;
+        uploadedFiles.push(f);
+      }
+      if (uploadedFiles.length) {
+        document.getElementById('dropZone').querySelector('p').textContent = uploadedFiles.length + ' 个图片已上传';
+        convertImages();
+      }
+    }
+
+    function convertImages() {
+      if (!uploadedFiles.length) return showToast('⚠️ 请先上传图片');
+      const quality = parseInt(document.getElementById('qualitySlider').value) / 100;
+      const prefix = document.getElementById('namePrefix').value || 'webp_';
+      const list = document.getElementById('imageList');
+      list.innerHTML = '';
+      convertedResults = [];
+      let completed = 0;
+
+      uploadedFiles.forEach((file, idx) => {
+        const reader = new FileReader();
+        reader.onload = e => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+
+            canvas.toBlob(blob => {
+              const originalSize = file.size;
+              const newSize = blob.size;
+              const savings = originalSize > 0 ? ((1 - newSize / originalSize) * 100).toFixed(1) : 0;
+              const ext = file.name.lastIndexOf('.') > -1 ? file.name.slice(file.name.lastIndexOf('.')) : '';
+              const baseName = file.name.replace(ext, '');
+              const webpName = prefix + baseName + '.webp';
+
+              convertedResults.push({ blob, name: webpName });
+
+              const div = document.createElement('div');
+              div.className = 'iw-item';
+              div.innerHTML = `
+                <img src="${img.src}" alt="${file.name}">
+                <div class="info">
+                  <div class="name" title="${file.name}">${file.name}</div>
+                  <div class="size">原 ${formatSize(originalSize)} → WebP ${formatSize(newSize)}</div>
+                  ${savings > 0 ? '<div class="savings">节省 ' + savings + '%</div>' : '<div class="savings" style="color:var(--text-muted)">大小无变化</div>'}
+                </div>
+                <button class="dl-btn" onclick="downloadSingle(${convertedResults.length - 1})">⬇ 下载</button>
+              `;
+              list.appendChild(div);
+
+              completed++;
+              if (completed === uploadedFiles.length) {
+                document.getElementById('downloadAllBtn').disabled = false;
+                showToast('✅ 已转换 ' + completed + ' 张图片');
+              }
+            }, 'image/webp', quality);
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function downloadSingle(idx) {
+      const r = convertedResults[idx];
+      if (!r) return;
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(r.blob);
+      a.download = r.name;
+      a.click();
+      showToast('✅ 已下载 ' + r.name);
+    }
+
+    function downloadAll() {
+      if (!convertedResults.length) return;
+      if (convertedResults.length === 1) {
+        downloadSingle(0);
+        return;
+      }
+      convertedResults.forEach((r, i) => {
+        setTimeout(() => {
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(r.blob);
+          a.download = r.name;
+          a.click();
+        }, i * 300);
+      });
+      showToast('✅ 开始下载 ' + convertedResults.length + ' 个文件');
+    }
+
+    function formatSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / 1048576).toFixed(1) + ' MB';
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+  </script>
+</body>
+</html>
