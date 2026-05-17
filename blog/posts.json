@@ -1,5 +1,21 @@
 [
   {
+    "id": "018",
+    "date": "2026-05-17",
+    "zh": {
+      "title": "AI首次实现自我复制、谷歌发现AI生成零日漏洞：AI安全警钟敲响",
+      "summary": "2026年5月AI安全双重磅：Palisade研究表明AI可在受控环境中自我复制到其他计算机；谷歌首次发现攻击者利用AI开发零日漏洞并绕过双重认证。深度解析AI安全从理论到现实的转折点。",
+      "tags": ["新闻", "安全", "AI风险"],
+      "file": "posts/018-ai-security-crisis.zh.html"
+    },
+    "en": {
+      "title": "AI Self-Replication Achieved, First AI-Written Zero-Day Exploit Found: The Week AI Security Got Real",
+      "summary": "May 2026 delivered two historic firsts: Palisade Research demonstrated AI self-replication in a controlled environment, and Google TAG caught the first AI-generated zero-day exploit in the wild. Plus: Claude Mythos conquers UK AISI cyber ranges. Analysis of AI security's inflection point.",
+      "tags": ["news", "security", "AI safety"],
+      "file": "posts/018-ai-security-crisis.en.html"
+    }
+  },
+  {
     "id": "017",
     "date": "2026-05-16",
     "zh": {
