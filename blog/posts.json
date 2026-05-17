@@ -1,5 +1,29 @@
 [
   {
+    "id": "022",
+    "date": "2026-05-18",
+    "zh": {
+      "title": "2026年AI基建竞赛全面爆发：腾讯阿里万亿美元投入、各省“All in AI”战略全景",
+      "summary": "2026年5月AI基建竞赛全面升级：腾讯单季AI资本开支付款370亿元创历史新高、阿里宣布未来投入远超3800亿元、江苏规划2030年AI核心产业营收达1万亿元、安徽AI企业超千家营收破2000亿。全球九大云厂商资本支出上调至8300亿美元。",
+      "tags": [
+        "新闻",
+        "AI基建",
+        "产业投资"
+      ],
+      "file": "posts/022-ai-infrastructure-race.zh.html"
+    },
+    "en": {
+      "title": "The $830 Billion AI Infrastructure Race of 2026: Cloud Giants, Agent Economy, and the New Global Arms Race",
+      "summary": "May 2026: Global AI infrastructure spending surges to $830B across 9 cloud providers. AWS leads at $230B+, Microsoft $190B, Google $180-190B. Agentic AI priorities surge 31.5%. Data center NIMBYism emerges as a first-order bottleneck.",
+      "tags": [
+        "news",
+        "infrastructure",
+        "cloud"
+      ],
+      "file": "posts/022-ai-infrastructure-race.en.html"
+    }
+  },
+  {
     "id": "021",
     "date": "2026-05-17",
     "zh": {
