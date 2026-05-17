@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>代码转HTML语法高亮 - 免费在线代码高亮生成工具 | Free AI Tools</title>
+  <meta name="description" content="免费在线代码语法高亮工具，将代码转换为带语法高亮的HTML片段。支持JavaScript、Python、HTML、CSS、Java、C++等20+种编程语言。多种配色主题可选，一键复制HTML代码，适合博客文章和技术文档使用。">
+  <meta name="keywords" content="代码语法高亮,代码转HTML,代码美化,语法高亮生成器,代码格式化,代码片段,prism.js,技术博客工具">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/code-to-html.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .ch-layout { max-width: 600px; margin: 0 auto; display: grid; gap: 1.5rem; }
+    .ch-row { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+    .ch-row select { padding: 0.5rem 0.75rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: inherit; font-size: 0.85rem; cursor: pointer; }
+    .ch-row select:focus { outline: none; border-color: var(--primary); }
+    .ch-label { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; margin-bottom: 0.4rem; display: block; }
+    .ch-textarea { width: 100%; min-height: 180px; padding: 0.75rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'Courier New', monospace; font-size: 0.8rem; resize: vertical; line-height: 1.5; box-sizing: border-box; tab-size: 2; }
+    .ch-textarea:focus { outline: none; border-color: var(--primary); }
+    .ch-output { background: #1e1e1e; border-radius: 8px; padding: 0; overflow: hidden; border: 1px solid var(--border); position: relative; }
+    .ch-output .ch-toolbar { display: flex; gap: 0; background: #2d2d2d; padding: 0.4rem 0.75rem; border-bottom: 1px solid #444; font-size: 0.7rem; color: var(--text-muted); }
+    .ch-output .ch-toolbar .dot { width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; }
+    .ch-output .ch-toolbar .dot.red { background: #ff5f56; }
+    .ch-output .ch-toolbar .dot.yellow { background: #ffbd2e; }
+    .ch-output .ch-toolbar .dot.green { background: #27c93f; }
+    .ch-output .ch-content { padding: 0.75rem; overflow-x: auto; font-size: 0.8rem; line-height: 1.6; font-family: 'Courier New', monospace; }
+    .ch-output .ch-content pre { margin: 0; white-space: pre; }
+    .ch-output .ch-content code { font-family: 'Courier New', monospace; }
+    .ch-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); }
+    .ch-tabs button { padding: 0.5rem 1rem; border: none; background: transparent; color: var(--text-muted); cursor: pointer; font-size: 0.8rem; font-family: inherit; border-bottom: 2px solid transparent; transition: 0.15s; }
+    .ch-tabs button.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .ch-actions { display: flex; gap: 0.5rem; }
+    .ch-actions button { flex: 1; padding: 0.6rem; border: none; border-radius: 8px; font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .ch-btn-convert { background: linear-gradient(135deg, var(--primary), #7c3aed); color: white; }
+    .ch-btn-convert:hover { transform: translateY(-1px); box-shadow: 0 4px 15px var(--glow-purple); }
+    .ch-btn-copy { background: rgba(167,139,250,0.15); color: var(--primary); }
+    .ch-btn-copy:hover { background: rgba(167,139,250,0.25); }
+    .ch-btn-clear { background: var(--bg-card); border: 1px solid var(--border) !important; color: var(--text-muted); }
+    .ch-btn-clear:hover { border-color: var(--danger); color: var(--danger); }
+    .ch-themes { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+    .ch-themes button { width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: 0.15s; }
+    .ch-themes button.active { border-color: var(--primary); transform: scale(1.15); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/code-to-html.html">代码高亮</a><a href="../tools/md-to-html.html">Markdown转换</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>代码转 HTML 语法高亮 / Code to HTML</h1>
+      <p>将代码转换为带语法高亮的 HTML 片段，支持多种语言和主题。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="ch-layout">
+        <div class="ch-row">
+          <select id="langSelect">
+            <option value="javascript">JavaScript</option>
+            <option value="python">Python</option>
+            <option value="html">HTML</option>
+            <option value="css">CSS</option>
+            <option value="java">Java</option>
+            <option value="cpp">C++</option>
+            <option value="c">C</option>
+            <option value="csharp">C#</option>
+            <option value="go">Go</option>
+            <option value="rust">Rust</option>
+            <option value="php">PHP</option>
+            <option value="ruby">Ruby</option>
+            <option value="swift">Swift</option>
+            <option value="kotlin">Kotlin</option>
+            <option value="typescript">TypeScript</option>
+            <option value="sql">SQL</option>
+            <option value="bash">Bash</option>
+            <option value="json">JSON</option>
+            <option value="xml">XML</option>
+            <option value="yaml">YAML</option>
+          </select>
+          <span style="font-size:0.75rem;color:var(--text-muted);">主题:</span>
+          <div class="ch-themes" id="themeSelector">
+            <button style="background:#282c34" data-theme="dark" class="active" title="Dark"></button>
+            <button style="background:#f5f5f5;border-color:#ddd;" data-theme="light" title="Light"></button>
+            <button style="background:#2b2b2b" data-theme="monokai" title="Monokai"></button>
+            <button style="background:#1e1e1e" data-theme="vsdark" title="VS Dark"></button>
+            <button style="background:#fafafa;border-color:#ddd;" data-theme="vslight" title="VS Light"></button>
+            <button style="background:#1d1f21" data-theme="nightowl" title="Night Owl"></button>
+          </div>
+        </div>
+
+        <div>
+          <span class="ch-label">输入代码</span>
+          <textarea class="ch-textarea" id="inputCode" placeholder="在此粘贴代码..." spellcheck="false">function hello() {
+  const msg = "Hello, World!";
+  console.log(msg);
+  return msg.length;
+}</textarea>
+        </div>
+
+        <div class="ch-actions">
+          <button class="ch-btn-convert" onclick="convertCode()">🔄 转换</button>
+          <button class="ch-btn-copy" onclick="copyHtml()">📋 复制 HTML</button>
+          <button class="ch-btn-clear" onclick="clearAll()">清空</button>
+        </div>
+
+        <div>
+          <span class="ch-label">HTML 输出</span>
+          <div class="ch-tabs">
+            <button class="active" data-tab="preview" onclick="switchTab('preview')">预览</button>
+            <button data-tab="source" onclick="switchTab('source')">HTML 源码</button>
+          </div>
+          <div class="ch-output" id="previewTab">
+            <div class="ch-toolbar">
+              <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+              <span style="margin-left:0.5rem;font-size:0.75rem;">code</span>
+            </div>
+            <div class="ch-content" id="highlightedCode"><pre><code style="color:#aaa;">点击"转换"生成语法高亮</code></pre></div>
+          </div>
+          <textarea class="ch-textarea" id="sourceTab" style="display:none;min-height:100px;" readonly></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线代码语法高亮工具</h2>
+      <p>将代码转换为带语法高亮的 HTML 片段，支持 JavaScript、Python、HTML、CSS、Java、C++、Go、Rust、TypeScript 等 20 多种编程语言。内置暗色、浅色、Monokai、VS Code 等多种主题。生成的 HTML 代码可直接嵌入博客文章、技术文档或网站页面中。所有代码处理在浏览器本地完成，无需上传服务器。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/code-to-html.html">代码高亮</a> | <a href="../tools/md-to-html.html">Markdown转换</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // Simple syntax highlighting without external dependencies
+    const TOKENIZERS = {
+      javascript: { comment: /\/\/.*|\/\*[\s\S]*?\*\//g, string: /'[^']*'|"[^"]*"|`[^`]*`/g, number: /\b\d+\.?\d*\b/g, keyword: /\b(async|await|break|case|catch|class|const|continue|debugger|default|delete|do|else|export|extends|finally|for|function|if|import|in|instanceof|let|new|of|return|static|super|switch|this|throw|try|typeof|var|void|while|with|yield)\b/g, builtin: /\b(console|Math|JSON|Array|Object|String|Number|Boolean|Date|RegExp|Map|Set|Promise|fetch|setTimeout|setInterval)\b/g },
+      python: { comment: /#.*/g, string: /'[^']*'|"[^"]*"|'''[\s\S]*?'''|"""[\s\S]*?"""/g, number: /\b\d+\.?\d*\b/g, keyword: /\b(and|as|assert|async|await|break|class|continue|def|del|elif|else|except|finally|for|from|global|if|import|in|is|lambda|nonlocal|not|or|pass|raise|return|try|while|with|yield|True|False|None)\b/g, builtin: /\b(print|len|range|type|int|str|float|list|dict|set|tuple|open|input|super|map|filter|zip|enumerate|isinstance|hasattr|getattr)\b/g },
+      html: { comment: /<!--[\s\S]*?-->/g, string: /"[^"]*"|'[^']*'/g, tag: /&lt;\/?[a-zA-Z][\w-]*(?:\s+[a-zA-Z][\w-]*(?:\s*=\s*(?:"[^"]*"|'[^']*'|[\w-]+))?)*\s*\/?&gt;/g },
+      css: { comment: /\/\*[\s\S]*?\*\//g, string: /'[^']*'|"[^"]*"/g, number: /\b\d+\.?\d*(px|em|rem|%|vh|vw|s|ms)?\b/g, keyword: /\b(@import|@media|@keyframes|@font-face|!important|inherit|initial|unset|auto|none|solid|dashed|dotted|hidden|visible|absolute|relative|fixed|sticky|flex|grid|block|inline|inline-block)\b/g, property: /[a-z-]+(?=\s*:)/g, hexcolor: /#[0-9a-fA-F]{3,8}\b/g },
+      java: { comment: /\/\/.*|\/\*[\s\S]*?\*\//g, string: /'[^']*'|"[^"]*"/g, number: /\b\d+\.?\d*[fLdD]?\b/g, keyword: /\b(abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|do|double|else|enum|extends|final|finally|float|for|goto|if|implements|import|instanceof|int|interface|long|native|new|package|private|protected|public|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|void|volatile|while|true|false|null)\b/g },
+      cpp: { comment: /\/\/.*|\/\*[\s\S]*?\*\//g, string: /'[^']*'|"[^"]*"/g, number: /\b\d+\.?\d*[fLlLuU]?\b/g, keyword: /\b(auto|bool|break|case|catch|char|class|const|constexpr|continue|default|delete|do|double|else|enum|explicit|export|extern|false|float|for|friend|goto|if|inline|int|long|mutable|namespace|new|noexcept|nullptr|operator|override|private|protected|public|register|return|short|signed|sizeof|static|static_cast|struct|switch|template|this|throw|true|try|typedef|typeid|typename|union|unsigned|using|virtual|void|volatile|while)\b/g },
+      go: { comment: /\/\/.*|\/\*[\s\S]*?\*\//g, string: /'[^']*'|"[^"]*"|`[^`]*`/g, number: /\b\d+\.?\d*\b/g, keyword: /\b(break|case|chan|const|continue|default|defer|else|fallthrough|for|func|go|goto|if|import|interface|map|package|range|return|select|struct|switch|type|var|true|false|nil)\b/g, builtin: /\b(append|cap|close|complex|copy|delete|imag|len|make|new|panic|print|println|real|recover)\b/g },
+      rust: { comment: /\/\/.*|\/\*[\s\S]*?\*\//g, string: /'[^']*'|"[^"]*"/g, number: /\b\d+\.?\d*[fFiIuU]?\d*\b/g, keyword: /\b(as|break|const|continue|crate|else|enum|extern|false|fn|for|if|impl|in|let|loop|match|mod|move|mut|pub|ref|return|self|static|struct|super|trait|true|type|unsafe|use|where|while|async|await|dyn|abstract|become|box|do|final|macro|override|priv|try|typeof|unsized|virtual|yield)\b/g }
+    };
+
+    // Set up common tokenizers for remaining languages
+    const commonLangs = ['c', 'csharp', 'php', 'ruby', 'swift', 'kotlin', 'typescript', 'sql', 'bash', 'json', 'xml', 'yaml'];
+    commonLangs.forEach(lang => {
+      if (!TOKENIZERS[lang]) {
+        TOKENIZERS[lang] = TOKENIZERS.javascript; // fallback
+      }
+    });
+    // Override specific ones
+    TOKENIZERS.typescript = TOKENIZERS.javascript;
+    TOKENIZERS.json = { string: /'[^']*'|"[^"]*"/g, number: /\b\d+\.?\d*\b/g, keyword: /\b(true|false|null)\b/g };
+    TOKENIZERS.sql = { comment: /--.*|\/\*[\s\S]*?\*\//g, string: /'[^']*'/g, number: /\b\d+\.?\d*\b/g, keyword: /\b(SELECT|FROM|WHERE|INSERT|INTO|VALUES|UPDATE|SET|DELETE|CREATE|TABLE|ALTER|DROP|INDEX|JOIN|LEFT|RIGHT|INNER|OUTER|ON|AND|OR|NOT|IN|LIKE|BETWEEN|IS|NULL|AS|ORDER|BY|GROUP|HAVING|LIMIT|OFFSET|UNION|ALL|DISTINCT|COUNT|SUM|AVG|MIN|MAX|EXISTS|CASE|WHEN|THEN|ELSE|END|BEGIN|COMMIT|ROLLBACK|GRANT|REVOKE|PRIMARY|KEY|FOREIGN|REFERENCES|CASCADE|INT|VARCHAR|BOOLEAN|FLOAT|DATE)\b/gi };
+    TOKENIZERS.bash = { comment: /#.*/g, string: /'[^']*'|"[^"]*"/g, number: /\b\d+\b/g, keyword: /\b(if|then|else|elif|fi|for|while|do|done|case|esac|function|return|exit|export|source|echo|read|set|unset|declare|local|select|until|in|continue|break|true|false)\b/g };
+    TOKENIZERS.yaml = { comment: /#.*/g, string: /'[^']*'|"[^"]*"/g, number: /\b\d+\.?\d*\b/g, keyword: /\b(true|false|yes|no|on|off|null|~)\b/g };
+    TOKENIZERS.xml = TOKENIZERS.html;
+    // Override HTML properly
+    TOKENIZERS.html = { comment: /<!--[\s\S]*?-->/g, string: /"[^"]*"|'[^']*'/g, tag: /&lt;\/?[a-zA-Z][\w-]*(?:\s+[a-zA-Z][\w-]*(?:\s*=\s*(?:"[^"]*"|'[^']*'|[\w-]+))?)*\s*\/?&gt;/g };
+
+    const THEMES = {
+      dark: { bg: '#282c34', toolbar: '#21252b', text: '#abb2bf', comment: '#5c6370', string: '#98c379', number: '#d19a66', keyword: '#c678dd', builtin: '#e5c07b', tag: '#e06c75', property: '#61afef', hexcolor: '#56b6c2', punctuation: '#abb2bf' },
+      light: { bg: '#f5f5f5', toolbar: '#e8e8e8', text: '#383a42', comment: '#a0a1a7', string: '#50a14f', number: '#986801', keyword: '#a626a4', builtin: '#c18401', tag: '#e45649', property: '#0184bc', hexcolor: '#099072', punctuation: '#383a42' },
+      monokai: { bg: '#2b2b2b', toolbar: '#1e1e1e', text: '#f8f8f2', comment: '#75715e', string: '#e6db74', number: '#ae81ff', keyword: '#f92672', builtin: '#a6e22e', tag: '#f92672', property: '#a6e22e', hexcolor: '#ae81ff', punctuation: '#f8f8f2' },
+      vsdark: { bg: '#1e1e1e', toolbar: '#252526', text: '#d4d4d4', comment: '#6a9955', string: '#ce9178', number: '#b5cea8', keyword: '#569cd6', builtin: '#dcdcaa', tag: '#569cd6', property: '#9cdcfe', hexcolor: '#4ec9b0', punctuation: '#d4d4d4' },
+      vslight: { bg: '#fafafa', toolbar: '#e8e8e8', text: '#000000', comment: '#008000', string: '#a31515', number: '#098658', keyword: '#0000ff', builtin: '#795e26', tag: '#800000', property: '#e06c75', hexcolor: '#098658', punctuation: '#000000' },
+      nightowl: { bg: '#1d1f21', toolbar: '#181a1f', text: '#c792ea', comment: '#637777', string: '#c3e88d', number: '#f78c6c', keyword: '#c792ea', builtin: '#82aaff', tag: '#ef5350', property: '#82aaff', hexcolor: '#f07178', punctuation: '#89ddff' }
+    };
+
+    let currentTheme = 'dark';
+
+    function escapeHtml(s) {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function highlightCode(code, lang) {
+      const escaped = escapeHtml(code);
+      const tokenizer = TOKENIZERS[lang] || TOKENIZERS.javascript;
+      if (!tokenizer) return escaped;
+
+      const tokens = [];
+      const remaining = [{ text: escaped, type: 'text' }];
+
+      const patterns = Object.entries(tokenizer);
+      patterns.forEach(([type, regex]) => {
+        for (let i = remaining.length - 1; i >= 0; i--) {
+          const seg = remaining[i];
+          if (seg.type !== 'text') continue;
+          let match;
+          regex.lastIndex = 0;
+          const parts = [];
+          let lastIdx = 0;
+          while ((match = regex.exec(seg.text)) !== null) {
+            if (match.index > lastIdx) {
+              parts.push({ text: seg.text.substring(lastIdx, match.index), type: 'text' });
+            }
+            parts.push({ text: match[0], type: type });
+            lastIdx = regex.lastIndex;
+          }
+          if (lastIdx < seg.text.length) {
+            parts.push({ text: seg.text.substring(lastIdx), type: 'text' });
+          }
+          if (parts.length > 0) {
+            remaining.splice(i, 1, ...parts);
+          }
+        }
+      });
+
+      const theme = THEMES[currentTheme];
+      return remaining.map(seg => {
+        if (seg.type === 'text') return seg.text;
+        const color = theme[seg.type] || theme.text;
+        return `<span style="color:${color}">${seg.text}</span>`;
+      }).join('');
+    }
+
+    function convertCode() {
+      const code = document.getElementById('inputCode').value;
+      const lang = document.getElementById('langSelect').value;
+      if (!code.trim()) { showToast('请输入代码'); return; }
+
+      const highlighted = highlightCode(code, lang);
+      const theme = THEMES[currentTheme];
+
+      const htmlOutput = `<div style="background:${theme.bg};border-radius:8px;overflow:hidden;border:1px solid #444;">
+  <div style="display:flex;gap:0;background:${theme.toolbar};padding:0.4rem 0.75rem;border-bottom:1px solid #444;">
+    <span style="width:10px;height:10px;border-radius:50%;background:#ff5f56;margin-right:5px;display:inline-block;"></span>
+    <span style="width:10px;height:10px;border-radius:50%;background:#ffbd2e;margin-right:5px;display:inline-block;"></span>
+    <span style="width:10px;height:10px;border-radius:50%;background:#27c93f;margin-right:5px;display:inline-block;"></span>
+    <span style="margin-left:0.5rem;font-size:0.75rem;color:#888;">${lang}</span>
+  </div>
+  <div style="padding:0.75rem;overflow-x:auto;font-size:0.8rem;line-height:1.6;font-family:'Courier New',monospace;">
+    <pre style="margin:0;white-space:pre;color:${theme.text}"><code>${highlighted}</code></pre>
+  </div>
+</div>`;
+
+      document.getElementById('sourceTab').value = htmlOutput;
+      document.getElementById('highlightedCode').innerHTML = `<pre style="margin:0;white-space:pre;color:${theme.text}"><code>${highlighted}</code></pre>`;
+      document.getElementById('previewTab').style.background = theme.bg;
+      document.querySelector('.ch-output .ch-toolbar').style.background = theme.toolbar;
+
+      // Auto-switch to preview tab
+      switchTab('preview');
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll('.ch-tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+      document.getElementById('previewTab').style.display = tab === 'preview' ? 'block' : 'none';
+      document.getElementById('sourceTab').style.display = tab === 'source' ? 'block' : 'none';
+    }
+
+    function copyHtml() {
+      const html = document.getElementById('sourceTab').value;
+      if (html) {
+        navigator.clipboard.writeText(html).then(() => showToast('✅ HTML 已复制'));
+      } else {
+        showToast('请先点击"转换"');
+      }
+    }
+
+    function clearAll() {
+      document.getElementById('inputCode').value = '';
+      document.getElementById('highlightedCode').innerHTML = '<pre><code style="color:#aaa;">清空了，粘贴代码后点击"转换"</code></pre>';
+      document.getElementById('sourceTab').value = '';
+      document.getElementById('previewTab').style.background = THEMES.dark.bg;
+      document.querySelector('.ch-output .ch-toolbar').style.background = THEMES.dark.toolbar;
+    }
+
+    // Theme selection
+    document.querySelectorAll('#themeSelector button').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('#themeSelector button').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        currentTheme = this.dataset.theme;
+        const code = document.getElementById('inputCode').value;
+        if (code.trim()) convertCode();
+      });
+    });
+
+    // Initialize
+    convertCode();
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+  </script>
+</body>
+</html>

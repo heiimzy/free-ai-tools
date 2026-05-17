@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SVG优化/压缩工具 - 免费在线SVG代码清理与优化 | Free AI Tools</title>
+  <meta name="description" content="免费在线SVG优化工具，清除冗余属性、合并数值、压缩SVG代码体积。支持实时预览、复制优化结果、下载优化后的SVG文件。浏览器本地处理，不上传服务器，保护隐私。">
+  <meta name="keywords" content="SVG优化,SVG压缩,SVG清理,SVG代码优化,SVG美化,免费SVG工具,矢量图优化">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/svg-optimizer.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .so-layout { max-width: 600px; margin: 0 auto; display: grid; gap: 1.5rem; }
+    .so-label { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; margin-bottom: 0.4rem; display: flex; justify-content: space-between; }
+    .so-textarea { width: 100%; min-height: 180px; padding: 0.75rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'Courier New', monospace; font-size: 0.8rem; resize: vertical; line-height: 1.5; box-sizing: border-box; }
+    .so-textarea:focus { outline: none; border-color: var(--primary); }
+    .so-preview-box { background: repeating-conic-gradient(rgba(255,255,255,0.04) 0% 25%, transparent 0% 50%) 0 0 / 20px 20px; border: 1px solid var(--border); border-radius: 12px; padding: 1rem; text-align: center; min-height: 120px; display: flex; align-items: center; justify-content: center; }
+    .so-preview-box svg { max-width: 100%; max-height: 200px; }
+    .so-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+    .so-stat { background: var(--bg-input); border-radius: 8px; padding: 0.6rem; text-align: center; }
+    .so-stat .num { font-size: 1.1rem; font-weight: 700; color: var(--primary); }
+    .so-stat .lbl { font-size: 0.65rem; color: var(--text-muted); margin-top: 0.1rem; }
+    .so-stat .saved { color: var(--success); }
+    .so-actions { display: flex; gap: 0.5rem; }
+    .so-actions button { flex: 1; padding: 0.6rem; border: none; border-radius: 8px; font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .so-btn-opt { background: linear-gradient(135deg, var(--primary), #7c3aed); color: white; }
+    .so-btn-opt:hover { transform: translateY(-1px); box-shadow: 0 4px 15px var(--glow-purple); }
+    .so-btn-copy { background: rgba(167,139,250,0.15); color: var(--primary); }
+    .so-btn-copy:hover { background: rgba(167,139,250,0.25); }
+    .so-btn-dl { background: var(--bg-card); border: 1px solid var(--border) !important; color: var(--text-muted); }
+    .so-btn-dl:hover { border-color: var(--primary); color: var(--text); }
+    .so-options { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .so-options label { display: flex; align-items: center; gap: 0.3rem; font-size: 0.8rem; color: var(--text-muted); cursor: pointer; background: var(--bg-input); padding: 0.3rem 0.7rem; border-radius: 6px; border: 1px solid var(--border); }
+    .so-options label input { accent-color: var(--primary); }
+    @media (max-width: 480px) { .so-stats { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/svg-optimizer.html">SVG优化</a><a href="../tools/image-compressor.html">图片压缩</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>SVG 优化工具 / SVG Optimizer</h1>
+      <p>清理冗余属性、压缩 SVG 代码体积，支持实时预览。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="so-layout">
+        <div>
+          <div class="so-label"><span>输入 SVG 代码</span><span id="inputSize">0 字符</span></div>
+          <textarea class="so-textarea" id="inputSvg" placeholder="在此粘贴 SVG 代码..." oninput="onInputChange()"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="50" cy="50" r="40" fill="#a78bfa"/>
+  <rect x="30" y="30" width="40" height="40" fill="rgba(255,255,255,0.3)" rx="5"/>
+</svg></textarea>
+        </div>
+
+        <div class="so-options">
+          <label><input type="checkbox" id="optRemoveComments" checked onchange="optimize()"> 移除注释</label>
+          <label><input type="checkbox" id="optRemoveMetadata" checked onchange="optimize()"> 移除元数据</label>
+          <label><input type="checkbox" id="optCollapse" checked onchange="optimize()"> 合并空格</label>
+          <label><input type="checkbox" id="optRemoveUnusedNS" checked onchange="optimize()"> 清除无用命名空间</label>
+        </div>
+
+        <div class="so-actions">
+          <button class="so-btn-opt" onclick="optimize()">⚡ 优化</button>
+          <button class="so-btn-copy" onclick="copyResult()">📋 复制</button>
+          <button class="so-btn-dl" onclick="downloadResult()">⬇ 下载</button>
+        </div>
+
+        <div class="so-stats">
+          <div class="so-stat"><div class="num" id="origSize">0</div><div class="lbl">原始</div></div>
+          <div class="so-stat"><div class="num" id="optSize">0</div><div class="lbl">优化后</div></div>
+          <div class="so-stat"><div class="num saved" id="savedSize">0</div><div class="lbl">节省</div></div>
+        </div>
+
+        <div>
+          <div class="so-label"><span>优化结果</span><span id="outputSize">0 字符</span></div>
+          <textarea class="so-textarea" id="outputSvg" readonly style="min-height:120px;cursor:pointer;" onclick="copyResult()"></textarea>
+        </div>
+
+        <div>
+          <div class="so-label">预览</div>
+          <div class="so-preview-box" id="previewBox"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线 SVG 代码优化工具</h2>
+      <p>免费的 SVG 代码优化工具，自动清理冗余属性和无意义的元数据、移除注释、合并多余空格、清除无用命名空间，从而压缩 SVG 文件体积。支持实时预览优化后的效果，一键复制优化代码或下载为 .svg 文件。所有处理在浏览器本地完成，不上传到任何服务器。适合前端开发者、网页设计师优化页面加载速度。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/svg-optimizer.html">SVG优化</a> | <a href="../tools/image-compressor.html">图片压缩</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function onInputChange() {
+      const svg = document.getElementById('inputSvg').value;
+      document.getElementById('inputSize').textContent = svg.length + ' 字符';
+      if (svg.trim()) optimize();
+    }
+
+    function optimize() {
+      let svg = document.getElementById('inputSvg').value;
+      if (!svg.trim()) { showToast('请先输入 SVG 代码'); return; }
+
+      const removeComments = document.getElementById('optRemoveComments').checked;
+      const removeMetadata = document.getElementById('optRemoveMetadata').checked;
+      const collapse = document.getElementById('optCollapse').checked;
+      const removeUnusedNS = document.getElementById('removeUnusedNS').checked;
+
+      let optimized = svg;
+
+      // Remove comments
+      if (removeComments) {
+        optimized = optimized.replace(/<!--[\s\S]*?-->/g, '');
+      }
+
+      // Remove metadata elements
+      if (removeMetadata) {
+        optimized = optimized.replace(/<metadata[\s\S]*?<\/metadata>/gi, '');
+        optimized = optimized.replace(/<title[\s\S]*?<\/title>/gi, '');
+        optimized = optimized.replace(/<desc[\s\S]*?<\/desc>/gi, '');
+      }
+
+      // Remove unused namespace declarations
+      if (removeUnusedNS) {
+        optimized = optimized.replace(/\s+xmlns:[\w-]+="[^"]*"(?!\s*[^>]*\b\w+:)/g, '');
+        // Remove default xmlns if not needed
+        optimized = optimized.replace(/ xmlns="http:\/\/www\.w3\.org\/2000\/svg"/, '');
+      }
+
+      // Collapse whitespace
+      if (collapse) {
+        optimized = optimized.replace(/>\s+</g, '><');
+        optimized = optimized.replace(/\s{2,}/g, ' ');
+        optimized = optimized.replace(/>\s+/g, '>');
+        optimized = optimized.replace(/\s+</g, '<');
+      }
+
+      // Trim leading/trailing whitespace
+      optimized = optimized.trim();
+
+      // Restore xmlns if needed (SVG needs it for rendering)
+      if (!optimized.includes('xmlns=') && optimized.startsWith('<svg')) {
+        optimized = optimized.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
+      }
+
+      document.getElementById('outputSvg').value = optimized;
+      document.getElementById('outputSize').textContent = optimized.length + ' 字符';
+      document.getElementById('origSize').textContent = svg.length;
+      document.getElementById('optSize').textContent = optimized.length;
+      const saved = svg.length - optimized.length;
+      const pct = svg.length > 0 ? Math.round((saved / svg.length) * 100) : 0;
+      document.getElementById('savedSize').textContent = saved > 0 ? `-${pct}%` : '0%';
+
+      // Render preview
+      renderPreview(optimized);
+    }
+
+    function renderPreview(svg) {
+      const box = document.getElementById('previewBox');
+      try {
+        box.innerHTML = svg;
+      } catch(e) {
+        box.innerHTML = '<span style="color:var(--danger)">预览渲染失败</span>';
+      }
+    }
+
+    function copyResult() {
+      const val = document.getElementById('outputSvg').value;
+      if (val) {
+        navigator.clipboard.writeText(val).then(() => showToast('✅ 已复制'));
+      }
+    }
+
+    function downloadResult() {
+      const val = document.getElementById('outputSvg').value;
+      if (!val) return;
+      const blob = new Blob([val], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'optimized.svg';
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('下载已开始');
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    // Initialize
+    onInputChange();
+  </script>
+</body>
+</html>
