@@ -1,5 +1,29 @@
 [
   {
+    "id": "021",
+    "date": "2026-05-17",
+    "zh": {
+      "title": "2026企业AI提效实测：8大真实案例ROI数据全解析",
+      "summary": "2026年5月最新企业AI提效真实案例：和硕AI质检减少76%人力、Conduent 6个月识别1800万美元节省、Rebel Cheese年省40万美元。Forrester研究显示AI客服ROI达331-391%。涵盖制造业、财务、客服、翻译四大场景的ROI数据与实施经验。",
+      "tags": [
+        "效率",
+        "企业AI",
+        "ROI"
+      ],
+      "file": "posts/021-ai-productivity-roi-cases.zh.html"
+    },
+    "en": {
+      "title": "Enterprise AI ROI in 2026: 8 Real Case Studies With Measurable Results",
+      "summary": "May 2026 enterprise AI productivity cases with real ROI: Conduent saves $18M in 6 months, Home Depot voice AI 4x faster, Georgia-Pacific saves $1M/machine, Forrester finds 331-391% ROI. Manufacturing, finance, customer service, and translation with measurable results.",
+      "tags": [
+        "productivity",
+        "enterprise",
+        "ROI"
+      ],
+      "file": "posts/021-ai-productivity-roi-cases.en.html"
+    }
+  },
+  {
     "id": "020",
     "date": "2026-05-17",
     "zh": {
