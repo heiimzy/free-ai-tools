@@ -1,5 +1,21 @@
 [
   {
+    "id": "046",
+    "date": "2026-05-18",
+    "zh": {
+      "title": "⚡ 5月18日快讯：SpaceX星舰V3周三首飞宣称完全可重复使用、智元WITA首个具身智能大模型备案、丁薛祥调研全国一体化算力网",
+      "summary": "⚡ 最新快讯：SpaceX星舰V3周三首飞宣称完全可重复使用；智元WITA成为全国首例完成大模型备案的具身智能交互模型；丁薛祥调研算力网建设强调加快构建全国一体化算力网；三星管理层与工会重启谈判力求避免罢工；金发科技AI特种工程塑料销量占比近3成。",
+      "tags": ["实时快讯", "SpaceX", "具身智能", "算力网", "三星"],
+      "file": "posts/046-spacex-starship-embodied-ai-compute-may-2026.zh.html"
+    },
+    "en": {
+      "title": "⚡ Flash Briefing May 18: SpaceX Starship V3 First Flight Wednesday — 'Fully Reusable', Zhiyuan WITA Gets China's First Embodied AI Model Filing, VP Ding Xuexiang Pushes National Compute Grid",
+      "summary": "⚡ Flash briefing: SpaceX Starship V3 first flight set for Wednesday, Musk claims 'full reusability'; Zhiyuan Robot's WITA becomes China's first government-filed embodied AI model; Vice Premier Ding Xuexiang calls for accelerated national integrated compute network; Samsung management and union restart talks to avoid strike; Kingfa AI specialty plastics hit 30% of sales.",
+      "tags": ["Flash", "SpaceX", "Embodied AI", "Compute Grid", "Samsung"],
+      "file": "posts/046-spacex-starship-embodied-ai-compute-may-2026.en.html"
+    }
+  },
+  {
     "id": "045",
     "date": "2026-05-18",
     "zh": {
