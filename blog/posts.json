@@ -1,5 +1,33 @@
 [
   {
+    "id": "039",
+    "date": "2026-05-18",
+    "zh": {
+      "title": "今日AI日报：开源模型大爆发（DeepSeek V4/Gemma 4/Kimi K2.6）、Claude调整第三方定价、Semble省98% Token",
+      "summary": "今日AI要闻：Gemma 4/DeepSeek V4/Kimi K2.6等开源模型密集发布，Interconnects深度分析开源模型生态差距争议；Claude调整第三方工具API定价，6月15日生效；Semble开源代码搜索工具为AI Agent节省98% Token消耗；Google Gemini Intelligence上线；'AI不会让你的流程更快'爆款文章获529分引发热议；Notion开发者平台上线Markdown API。",
+      "tags": [
+        "今日AI",
+        "开源模型",
+        "DeepSeek V4",
+        "Claude",
+        "Google Gemini"
+      ],
+      "file": "posts/039-ai-news-may-2026-live-roundup.zh.html"
+    },
+    "en": {
+      "title": "Today's AI News: Open Model Bonanza, Claude Rations Third-Party API, Semble 98% Fewer Tokens, and the Case for Slower Processes",
+      "summary": "Today's AI stories: DeepSeek V4, Gemma 4, Kimi K2.6, MiMo 2.5 Pro flood the market amid debate over benchmark methodology; Anthropic limits third-party Claude API usage via new credit system effective June 15; Semble cuts AI agent code search tokens by 98%; Google Gemini Intelligence lands on Android; 'AI won't make your processes faster' essay hits 529 HN points; Notion launches Markdown API; Thinking Machines unveils interaction models.",
+      "tags": [
+        "AI news",
+        "open source",
+        "DeepSeek V4",
+        "Claude",
+        "Google Gemini"
+      ],
+      "file": "posts/039-ai-news-may-2026-live-roundup.en.html"
+    }
+  },
+  {
     "id": "038",
     "date": "2026-05-18",
     "zh": {

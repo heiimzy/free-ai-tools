@@ -5,8 +5,15 @@
     <link>https://heiimzy.github.io/free-ai-tools/blog/</link>
     <description>每小时更新AI领域最新动态，涵盖AI新闻、AI工具推荐、AI赚钱变现方法、AI提升效率技巧</description>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 18 May 2026 23:30:00 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 18 May 2026 23:30:00 GMT</lastBuildDate>
     <atom:link href="https://heiimzy.github.io/free-ai-tools/blog/rss.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>今日AI日报：开源模型大爆发（DeepSeek V4/Gemma 4/Kimi K2.6）、Claude调整第三方定价、Semble省98% Token</title>
+      <link>https://heiimzy.github.io/free-ai-tools/blog/posts/039-ai-news-may-2026-live-roundup.zh.html</link>
+      <description>今日AI要闻：Gemma 4/DeepSeek V4/Kimi K2.6等开源模型密集发布，Interconnects深度分析开源模型生态差距争议；Claude调整第三方工具API定价，6月15日生效；Semble开源代码搜索工具为AI Agent节省98% Token消耗；Google Gemini Intelligence上线；'AI不会让你的流程更快'爆款文章获529分引发热议；Notion开发者平台上线Markdown API。</description>
+      <pubDate>Mon, 18 May 2026 23:30:00 GMT</pubDate>
+      <guid>https://heiimzy.github.io/free-ai-tools/blog/posts/039-ai-news-may-2026-live-roundup.zh.html</guid>
+    </item>
     <item>
       <title>2026年5月AI新闻周报：Schmidt被嘘背后AI信任危机、arXiv封禁AI写论文、43万API密钥泄露</title>
       <link>https://heiimzy.github.io/free-ai-tools/blog/posts/038-ai-news-may-2026-week3-deep.zh.html</link>
