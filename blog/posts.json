@@ -1,5 +1,33 @@
 [
   {
+    "id": "035",
+    "date": "2026-05-18",
+    "zh": {
+      "title": "2026年5月AI工具精选：文心5.1压缩70%、Qoder 1.0智能体开发台、Gemma 4开源、荣耀机器人手机",
+      "summary": "2026年5月最新AI工具精选：百度文心5.1参数压缩至1/3成本仅为6%、阿里云Qoder 1.0升级为智能体自主开发工作台、Google Gemma 4全系列开源Apache 2.0、蚂蚁百灵Ring-2.6-1T万亿级思考模型可调节推理强度、荣耀全球首款机器人手机官宣、火山引擎Doubao-Seed-2.0-lite发布。含5月AI工具选型建议。",
+      "tags": [
+        "AI工具",
+        "文心5.1",
+        "Qoder 1.0",
+        "Gemma 4",
+        "开源模型"
+      ],
+      "file": "posts/035-ai-tools-may-2026-edition.zh.html"
+    },
+    "en": {
+      "title": "Best AI Tools of May 2026: ChatGPT Finances, Anthropic Orbit, Coder Agents, Claude for M365 Hits GA",
+      "summary": "May 2026 new AI tool roundup: ChatGPT Finances links to 12,000+ banks via Plaid for read-only transaction analysis; Anthropic Orbit delivers proactive daily briefs from Gmail/Slack/GitHub/Calendar/Drive/Figma; Coder Agents launch self-hosted model-agnostic AI coding agents; Claude for Microsoft 365 reaches GA for Excel/PowerPoint/Word; Dataiku Cobuild on Snowflake; OCI Enterprise AI with Grok 4.3; Prismatic Skills for Claude Code. Plus: 5 key AI tool trends for May 2026.",
+      "tags": [
+        "AI tools",
+        "ChatGPT Finances",
+        "Anthropic Orbit",
+        "Coder Agents",
+        "Claude M365"
+      ],
+      "file": "posts/035-ai-tools-may-2026-edition.en.html"
+    }
+  },
+  {
     "id": "034",
     "date": "2026-05-18",
     "zh": {
