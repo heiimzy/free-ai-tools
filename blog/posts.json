@@ -1,5 +1,21 @@
 [
   {
+    "id": "041",
+    "date": "2026-05-18",
+    "zh": {
+      "title": "⚡ 5月18日下午快讯：三星罢工倒计时内存飙涨、iPhone 17 Pro直降1000元、灵童机器人发布桌面人形机器人",
+      "summary": "⚡ 今日快讯：三星18天罢工倒计时，买家恐慌性囤货内存价格恐暴涨；iPhone 17 Pro系列直降1000元引发抢购潮，华为小米同步跟降；铠侠NAND ASP指引远超预期；灵童机器人发布新一代桌面人形机器人；A股半导体板块午后走弱。",
+      "tags": ["实时快讯", "半导体", "消费电子", "三星", "A股"],
+      "file": "posts/041-afternoon-semi-electronics-market-may-2026.zh.html"
+    },
+    "en": {
+      "title": "⚡ Flash Briefing May 18: Samsung Strike Countdown Panics Memory Market, Apple Slashes iPhone 17 Pro ¥1000 in China, Kioxia Beats ASP Guidance",
+      "summary": "Flash briefing: Samsung faces 18-day strike deadline as buyers stockpile DRAM/NAND; Apple cuts iPhone 17 Pro by ¥1000 in China, Huawei and Xiaomi follow; Kioxia NAND ASP guidance crushes expectations; Lingtong Robot launches desktop humanoid with 1000-unit global co-creation plan; China A-share semiconductor stocks slide.",
+      "tags": ["Flash", "Semiconductors", "Samsung", "Apple", "Kioxia", "Robotics"],
+      "file": "posts/041-afternoon-semi-electronics-market-may-2026.en.html"
+    }
+  },
+  {
     "id": "040",
     "date": "2026-05-18",
     "zh": {
