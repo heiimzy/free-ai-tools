@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>预产期计算器 - 在线怀孕周期/预产期计算工具 | Free AI Tools</title>
+  <meta name="description" content="免费在线预产期计算器，根据末次月经(LMP)或受孕日期计算预产期和当前孕周。自动显示怀孕周期进展、孕早期/中期/晚期阶段、关键产检时间节点。适合孕期妈妈计算预产期、跟踪孕周进度、规划产检日程。">
+  <meta name="keywords" content="预产期计算器,怀孕周期计算,孕周计算,预产期,Due Date Calculator,末次月经计算,受孕日期,孕期计算器">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/due-date-calculator.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .dd-layout { max-width: 480px; margin: 0 auto; display: grid; gap: 1rem; }
+    .dd-toggle { display: flex; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    .dd-toggle button { flex: 1; padding: 0.6rem 1rem; border: none; background: none; color: var(--text-muted); font-family: inherit; font-size: 0.8rem; cursor: pointer; transition: 0.2s; font-weight: 600; }
+    .dd-toggle button.active { background: var(--primary); color: white; }
+    .dd-field { display: flex; flex-direction: column; gap: 0.3rem; }
+    .dd-field label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+    .dd-field input[type="date"] { padding: 0.55rem 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: inherit; font-size: 0.95rem; }
+    .dd-field input[type="date"]:focus { outline: none; border-color: var(--primary); }
+    .dd-result { background: linear-gradient(135deg, rgba(244,114,182,0.08), rgba(167,139,250,0.05)); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; text-align: center; position: relative; overflow: hidden; }
+    .dd-result .label { font-size: 0.75rem; color: var(--text-muted); }
+    .dd-result .date { font-size: 1.6rem; font-weight: 800; color: var(--secondary); margin: 0.3rem 0; }
+    .dd-result .week { font-size: 1rem; color: var(--primary); }
+    .dd-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.6rem; }
+    .dd-stats > div { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 0.7rem; text-align: center; }
+    .dd-stats .num { font-size: 1.2rem; font-weight: 700; display: block; }
+    .dd-stats .num.pink { color: var(--secondary); }
+    .dd-stats .num.purple { color: var(--primary); }
+    .dd-stats .num.green { color: #34d399; }
+    .dd-stats .label { font-size: 0.65rem; color: var(--text-muted); }
+    .dd-progress { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; }
+    .dd-progress-bar { height: 8px; background: rgba(167,139,250,0.15); border-radius: 4px; overflow: hidden; margin: 0.5rem 0; }
+    .dd-progress-bar .fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 4px; transition: width 0.3s; }
+    .dd-trimester { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); position: relative; }
+    .dd-trimester span { position: relative; z-index: 1; }
+    .dd-info { font-size: 0.78rem; color: var(--text-muted); line-height: 1.6; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem 1rem; margin-top: 0.5rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/due-date-calculator.html">预产期计算</a><a href="../tools/compound-interest-calculator.html">复利计算</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>预产期计算器 / Due Date Calculator</h1>
+      <p>根据末次月经或受孕日期计算预产期和当前孕周。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="dd-layout">
+        <div class="dd-toggle" id="ddToggle">
+          <button class="active" onclick="setMode('lmp')">末次月经 (LMP)</button>
+          <button onclick="setMode('conception')">受孕日期</button>
+        </div>
+
+        <div class="dd-field">
+          <label id="ddDateLabel">末次月经第一天</label>
+          <input type="date" id="ddDate" onchange="calculate()">
+        </div>
+
+        <div class="dd-result" id="ddResult">
+          <div class="label">预产期</div>
+          <div class="date" id="ddDueDate">—</div>
+          <div class="week" id="ddCurrentWeek">当前孕周：—</div>
+        </div>
+
+        <div class="dd-stats">
+          <div><span class="num pink" id="ddWeeksLeft">—</span><span class="label">剩余周数</span></div>
+          <div><span class="num purple" id="ddDaysLeft">—</span><span class="label">剩余天数</span></div>
+          <div><span class="num green" id="ddTrimester">—</span><span class="label">孕期阶段</span></div>
+        </div>
+
+        <div class="dd-progress">
+          <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text-muted);">
+            <span>孕程进度</span>
+            <span id="ddProgressPct">0%</span>
+          </div>
+          <div class="dd-progress-bar"><div class="fill" id="ddProgressFill" style="width:0%"></div></div>
+          <div class="dd-trimester">
+            <span>🤰 孕早期 (1-12周)</span>
+            <span>🤱 孕中期 (13-27周)</span>
+            <span>👶 孕晚期 (28-40周)</span>
+          </div>
+        </div>
+
+        <div class="dd-info">
+          <strong>💡 说明：</strong> 预产期计算基于标准的40周妊娠周期（280天）。末次月经法(Naegele's Rule)是预产期 = LMP + 280天。受孕日期法 = 受孕日 + 266天。预产期是一个估计值，只有约5%的婴儿在预产期当天出生，通常在37-42周内分娩都属于正常范围。本计算仅供参考，请以医生诊断为准。
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线预产期计算器</h2>
+      <p>免费的在线预产期计算工具，支持两种计算方式：末次月经法（Naegele's Rule，LMP + 280天）和受孕日期法（受孕日 + 266天）。自动计算当前孕周、剩余周数、剩余天数、孕早期/中期/晚期阶段判断，可视化进度条展示孕程进展。适合孕期妈妈推算预产期、跟踪怀孕周期、规划产检时间。所有计算在浏览器本地完成，数据不会上传到服务器。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/due-date-calculator.html">预产期计算</a> | <a href="../tools/calorie-calculator.html">热量计算</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let currentMode = 'lmp';
+
+    function setMode(mode) {
+      currentMode = mode;
+      document.querySelectorAll('#ddToggle button').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('#ddToggle button')[mode === 'lmp' ? 0 : 1].classList.add('active');
+      document.getElementById('ddDateLabel').textContent = mode === 'lmp' ? '末次月经第一天' : '受孕日期';
+      calculate();
+    }
+
+    function formatDate(d) {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return y + '-' + m + '-' + day;
+    }
+
+    function daysBetween(a, b) {
+      return Math.floor((b - a) / (1000 * 60 * 60 * 24));
+    }
+
+    function calculate() {
+      const input = document.getElementById('ddDate');
+      if (!input.value) {
+        // Set default to 280 days ago (approximately conception date for today)
+        const defaultDate = new Date();
+        defaultDate.setDate(defaultDate.getDate() - 70); // ~10 weeks ago as example
+        input.value = formatDate(defaultDate);
+      }
+
+      const inputDate = new Date(input.value);
+      if (isNaN(inputDate.getTime())) return;
+
+      let dueDate;
+      if (currentMode === 'lmp') {
+        dueDate = new Date(inputDate);
+        dueDate.setDate(dueDate.getDate() + 280);
+      } else {
+        dueDate = new Date(inputDate);
+        dueDate.setDate(dueDate.getDate() + 266);
+      }
+
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      dueDate.setHours(0,0,0,0);
+
+      const totalDays = 280;
+      const daysElapsed = daysBetween(currentMode === 'lmp' ? inputDate : new Date(inputDate.getTime() - 14), today);
+      const weeksElapsed = Math.max(0, Math.floor(daysElapsed / 7));
+      const daysRemaining = daysBetween(today, dueDate);
+      const weeksRemaining = Math.max(0, Math.floor(daysRemaining / 7));
+      const progressPct = Math.min(100, Math.max(0, (daysElapsed / totalDays) * 100));
+
+      // Determine trimester
+      let trimester, trimesterIcon;
+      if (weeksElapsed < 13) {
+        trimester = '孕早期';
+        trimesterIcon = '🤰';
+      } else if (weeksElapsed < 28) {
+        trimester = '孕中期';
+        trimesterIcon = '🤱';
+      } else {
+        trimester = '孕晚期';
+        trimesterIcon = '👶';
+      }
+
+      document.getElementById('ddDueDate').textContent = formatDate(dueDate);
+      document.getElementById('ddCurrentWeek').textContent = '当前孕周：' + Math.min(40, weeksElapsed) + ' 周';
+      document.getElementById('ddWeeksLeft').textContent = Math.max(0, weeksRemaining) + ' 周';
+      document.getElementById('ddDaysLeft').textContent = Math.max(0, daysRemaining) + ' 天';
+      document.getElementById('ddTrimester').textContent = trimesterIcon + ' ' + trimester;
+      document.getElementById('ddProgressPct').textContent = Math.round(progressPct) + '%';
+      document.getElementById('ddProgressFill').style.width = progressPct + '%';
+    }
+
+    window.addEventListener('DOMContentLoaded', calculate);
+  </script>
+</body>
+</html>

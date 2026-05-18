@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>复利计算器 - 在线投资/存款复利收益计算工具 | Free AI Tools</title>
+  <meta name="description" content="免费在线复利计算器，基于 A = P(1+r/n)^(nt) 公式计算投资或存款的复利收益。支持本金、年利率、存款年限、复利频率（日/月/季/半年/年）、每月追加存款等参数。图表展示本金与收益增长趋势，适合投资规划、退休储蓄、教育基金计算。">
+  <meta name="keywords" content="复利计算器,投资复利,复利收益,定投计算,利滚利计算,Compound Interest Calculator,储蓄计算器,年金计算">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/compound-interest-calculator.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .ci-layout { max-width: 520px; margin: 0 auto; display: grid; gap: 1rem; }
+    .ci-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .ci-field { display: flex; flex-direction: column; gap: 0.3rem; }
+    .ci-field label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+    .ci-field input, .ci-field select { padding: 0.5rem 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: inherit; font-size: 0.9rem; }
+    .ci-field input:focus, .ci-field select:focus { outline: none; border-color: var(--primary); }
+    .ci-field input[type="number"] { -moz-appearance: textfield; }
+    .ci-field input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .ci-summary { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.6rem; }
+    .ci-summary > div { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 0.75rem; text-align: center; }
+    .ci-summary .num { font-size: 1.3rem; font-weight: 800; display: block; }
+    .ci-summary .num.total { color: var(--primary); }
+    .ci-summary .num.earned { color: #34d399; }
+    .ci-summary .num.principal { color: #fbbf24; }
+    .ci-summary .label { font-size: 0.65rem; color: var(--text-muted); }
+    .ci-chart { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; height: 180px; display: flex; align-items: flex-end; gap: 2px; position: relative; overflow: hidden; }
+    .ci-chart .bar-group { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 1px; min-width: 8px; }
+    .ci-chart .bar-principal { width: 100%; background: rgba(251,191,36,0.5); border-radius: 2px 2px 0 0; transition: height 0.3s; min-width: 4px; }
+    .ci-chart .bar-interest { width: 100%; background: rgba(52,211,153,0.6); border-radius: 2px 2px 0 0; transition: height 0.3s; min-width: 4px; }
+    .ci-chart .year-label { font-size: 0.5rem; color: var(--text-muted); text-align: center; margin-top: 0.2rem; }
+    @media (max-width: 400px) { .ci-row { grid-template-columns: 1fr; } .ci-summary { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/compound-interest-calculator.html">复利计算</a><a href="../tools/discount-calculator.html">折扣计算</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>复利计算器 / Compound Interest Calculator</h1>
+      <p>计算投资或存款的复利增长，含图表可视化展示。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="ci-layout">
+        <div class="ci-row">
+          <div class="ci-field">
+            <label>本金 (元)</label>
+            <input type="number" id="ciPrincipal" value="10000" min="0" step="1000" oninput="calculate()">
+          </div>
+          <div class="ci-field">
+            <label>年利率 (%)</label>
+            <input type="number" id="ciRate" value="8" min="0" max="100" step="0.1" oninput="calculate()">
+          </div>
+        </div>
+        <div class="ci-row">
+          <div class="ci-field">
+            <label>年限</label>
+            <input type="number" id="ciYears" value="10" min="1" max="100" step="1" oninput="calculate()">
+          </div>
+          <div class="ci-field">
+            <label>复利频率</label>
+            <select id="ciFrequency" onchange="calculate()">
+              <option value="12">每月</option>
+              <option value="4">每季度</option>
+              <option value="2">每半年</option>
+              <option value="1" selected="selected">每年</option>
+              <option value="365">每日</option>
+            </select>
+          </div>
+        </div>
+        <div class="ci-field">
+          <label>每月追加存款 (元，可选)</label>
+          <input type="number" id="ciMonthly" value="0" min="0" step="100" oninput="calculate()">
+        </div>
+
+        <div class="ci-summary">
+          <div><span class="label">最终总额</span><span class="num total" id="ciTotal">¥0</span></div>
+          <div><span class="label">本金投入</span><span class="num principal" id="ciPrincipalAmt">¥0</span></div>
+          <div><span class="label">收益</span><span class="num earned" id="ciEarned">¥0</span></div>
+        </div>
+
+        <div class="ci-chart" id="ciChart"></div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线复利计算器</h2>
+      <p>免费的在线复利计算工具，基于标准复利公式 A = P(1+r/n)^(nt) + PMT × [((1+r/n)^(nt)-1)/(r/n)] 计算投资或存款的终值。支持自定义本金、年利率、投资年限、复利频率（每日/每月/每季度/每半年/每年）和每月追加存款。柱状图直观展示每年本金与收益的构成变化，帮助理解复利效应——时间越长、复利频率越高，收益增长越快。适合退休储蓄规划、教育基金计算、投资理财目标设定等场景。所有计算在浏览器本地完成，数据不会上传到服务器。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/compound-interest-calculator.html">复利计算</a> | <a href="../tools/discount-calculator.html">折扣计算</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function calculate() {
+      const principal = parseFloat(document.getElementById('ciPrincipal').value) || 0;
+      const rate = (parseFloat(document.getElementById('ciRate').value) || 0) / 100;
+      const years = parseInt(document.getElementById('ciYears').value) || 1;
+      const n = parseInt(document.getElementById('ciFrequency').value) || 1;
+      const monthly = parseFloat(document.getElementById('ciMonthly').value) || 0;
+
+      let totalPrincipal = principal;
+      let total = principal;
+      const yearlyData = [];
+
+      for (let y = 1; y <= years; y++) {
+        // Compound existing balance
+        total = total * Math.pow(1 + rate / n, n);
+        // Add monthly contributions (compounded from each month)
+        if (monthly > 0) {
+          const monthlyRate = rate / 12;
+          const months = 12;
+          // Future value of monthly contributions for this year
+          if (monthlyRate > 0) {
+            total += monthly * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate);
+          } else {
+            total += monthly * months;
+          }
+        }
+        totalPrincipal += monthly * 12;
+        yearlyData.push({ year: y, total: Math.round(total), principal: Math.round(totalPrincipal) });
+      }
+
+      const earned = total - totalPrincipal;
+
+      document.getElementById('ciTotal').textContent = '¥' + Math.round(total).toLocaleString();
+      document.getElementById('ciPrincipalAmt').textContent = '¥' + Math.round(totalPrincipal).toLocaleString();
+      document.getElementById('ciEarned').textContent = '¥' + Math.round(earned).toLocaleString();
+
+      // Chart
+      const chart = document.getElementById('ciChart');
+      if (yearlyData.length === 0) return;
+      const maxVal = Math.max(...yearlyData.map(d => d.total));
+      chart.innerHTML = yearlyData.map(d => {
+        const hPct = (d.principal / maxVal * 100);
+        const hI = ((d.total - d.principal) / maxVal * 100);
+        return '<div class="bar-group"><div style="display:flex;flex-direction:column;justify-content:flex-end;height:100%;width:100%;">' +
+          '<div class="bar-interest" style="height:' + hI + '%"></div>' +
+          '<div class="bar-principal" style="height:' + hPct + '%"></div>' +
+          '</div><div class="year-label">' + d.year + '</div></div>';
+      }).join('');
+    }
+
+    window.addEventListener('DOMContentLoaded', calculate);
+  </script>
+</body>
+</html>
