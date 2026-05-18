@@ -1,5 +1,33 @@
 [
   {
+    "id": "037",
+    "date": "2026-05-18",
+    "zh": {
+      "title": "2026年5月AI提效全景：百度DuMate多任务并行、伐谋2.0登顶、商汤轻量化多模态开源",
+      "summary": "2026年5月AI提效最新动态：百度Create大会发布DuMate移动端App实现多任务并行执行、伐谋2.0面向业务专家的决策智能体登顶MLE-Bench、商汤SenseNova 6.7 Flash-Lite多模态Token消耗降60%、企业智能助手2.1.0数字员工24小时在线。本月中国AI提效进入多智能体协同+全链路自动化新阶段。",
+      "tags": [
+        "AI提效",
+        "DuMate",
+        "伐谋2.0",
+        "SenseNova",
+        "智能体"
+      ],
+      "file": "posts/037-ai-productivity-may-2026-agent-wave.zh.html"
+    },
+    "en": {
+      "title": "AI Productivity May 2026: ServiceNow Autonomous Workforce, Productive 5.0, Freshworks No-Code Agents, and the Rise of Agent Governance",
+      "summary": "May 2026 AI productivity deep dive: ServiceNow Knowledge 2026 unveils autonomous AI workforce resolving IT cases 99% faster; Productive 5.0 launches always-on agents for professional services; Freshworks Freddy AI Agent Studio goes no-code; Red Hat AI Factory + NVIDIA OpenShell for secure autonomous agents; Okta + AWS deliver identity foundation for AI agents. The era of enterprise agent governance arrives.",
+      "tags": [
+        "AI productivity",
+        "ServiceNow",
+        "agentic AI",
+        "enterprise agents",
+        "agent governance"
+      ],
+      "file": "posts/037-ai-productivity-may-2026-agent-wave.en.html"
+    }
+  },
+  {
     "id": "036",
     "date": "2026-05-18",
     "zh": {
