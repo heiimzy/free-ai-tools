@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>文本清洗工具 - 在线文本格式化/整理/去杂 | Free AI Tools</title>
+  <meta name="description" content="免费在线文本清洗工具，一键去除多余空格、空行、HTML标签、特殊字符、控制字符，支持大小写转换、行合并、Unicode标准化。适合文本整理、数据清洗、内容格式化。">
+  <meta name="keywords" content="文本清洗,文字整理,文本格式化,去除HTML标签,去空格,换行转换,数据清洗,Text Cleaner,在线文本工具">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/text-cleaner.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .tc-layout { max-width: 560px; margin: 0 auto; display: grid; gap: 1rem; }
+    .tc-field label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 0.3rem; }
+    .tc-field textarea { width: 100%; min-height: 140px; padding: 0.65rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: inherit; font-size: 0.85rem; resize: vertical; box-sizing: border-box; }
+    .tc-field textarea:focus { outline: none; border-color: var(--primary); }
+    .tc-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .tc-actions button { padding: 0.4rem 0.75rem; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: inherit; font-size: 0.75rem; cursor: pointer; transition: 0.15s; }
+    .tc-actions button:hover { border-color: var(--primary); background: rgba(167,139,250,0.1); }
+    .tc-actions button.primary { background: var(--primary); color: white; border-color: var(--primary); }
+    .tc-actions button.primary:hover { opacity: 0.9; }
+    .tc-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
+    .tc-stats > div { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem; text-align: center; }
+    .tc-stats .num { font-size: 1rem; font-weight: 700; color: var(--primary); display: block; }
+    .tc-stats .label { font-size: 0.6rem; color: var(--text-muted); }
+    .tc-tips { font-size: 0.78rem; color: var(--text-muted); line-height: 1.6; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem 1rem; }
+    .tc-tips code { color: var(--primary); font-size: 0.75rem; }
+    @media (max-width: 400px) { .tc-stats { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/text-cleaner.html">文本清洗</a><a href="../tools/find-replace.html">查找替换</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>文本清洗工具 / Text Cleaner</h1>
+      <p>一键清理格式化文本，去除杂乱的空白、标签和特殊字符。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="tc-layout">
+        <div class="tc-field">
+          <label>输入文本</label>
+          <textarea id="tcInput" oninput="autoClean()" placeholder="在此粘贴需要清洗的文本..."></textarea>
+        </div>
+
+        <div class="tc-actions">
+          <button class="primary" onclick="autoClean()">🔄 一键清洗</button>
+          <button onclick="stripHtml()">去除HTML标签</button>
+          <button onclick="collapseSpaces()">合并多余空格</button>
+          <button onclick="removeEmptyLines()">删除空行</button>
+          <button onclick="removeSpecialChars()">去除非ASCII</button>
+          <button onclick="toLowerCase()">转小写</button>
+          <button onclick="toUpperCase()">转大写</button>
+          <button onclick="linesToSpaces()">行合并为一行</button>
+          <button onclick="unescapeHtml()">HTML实体解码</button>
+          <button onclick="clearAll()">清空</button>
+        </div>
+
+        <div class="tc-field">
+          <label>清洗结果 <span style="font-weight:400;color:var(--text-muted);font-size:0.7rem;">（点击结果框复制）</span></label>
+          <textarea id="tcOutput" readonly style="min-height:120px;cursor:pointer;" onclick="copyOutput()" placeholder="清洗后的文本显示在此..."></textarea>
+        </div>
+
+        <div class="tc-stats" id="tcStats">
+          <div><span class="num" id="tcChars">0</span><span class="label">字符数</span></div>
+          <div><span class="num" id="tcWords">0</span><span class="label">单词数</span></div>
+          <div><span class="num" id="tcLines">0</span><span class="label">行数</span></div>
+          <div><span class="num" id="tcSpaces">0</span><span class="label">空格节省</span></div>
+        </div>
+
+        <div class="tc-tips">
+          <strong>💡 说明：</strong> 本工具自动执行基础清洗（去除首尾空白、合并空行、标准化换行符）。点击上方按钮执行专项清洗，可组合使用。<br>
+          • <code>一键清洗</code> = 去首尾空白 + 合并空行 + 标准化换行<br>
+          • <code>行合并为一行</code> 将换行替换为空格<br>
+          • <code>去除非ASCII</code> 移除扩展字符和特殊符号<br>
+          • 所有处理在浏览器本地完成，数据不会上传。
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线文本清洗工具</h2>
+      <p>免费的在线文本清洗与格式化工具，提供多种文本整理功能：去除多余空格和空行、删除HTML标签、清理特殊字符和控制字符、大小写转换、行合并、Unicode标准化、HTML实体解码。实时显示字符数、单词数、行数变化和空格节省量。适合内容编辑清理粘贴文本格式、数据分析师清洗数据集、开发者处理用户输入内容。所有处理在浏览器本地完成，数据不会上传到服务器。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/text-cleaner.html">文本清洗</a> | <a href="../tools/find-replace.html">查找替换</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function $(id) { return document.getElementById(id); }
+
+    function getInput() { return $('tcInput').value; }
+    function setOutput(v) { $('tcOutput').value = v; updateStats(v); }
+    function showToast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2000); }
+
+    function updateStats(text) {
+      const input = getInput();
+      $('tcChars').textContent = text.length;
+      $('tcWords').textContent = text.trim() ? text.trim().split(/\s+/).length : 0;
+      $('tcLines').textContent = text ? text.split('\n').length : 0;
+      $('tcSpaces').textContent = Math.max(0, input.length - text.length);
+    }
+
+    function autoClean() {
+      let t = getInput();
+      t = t.trim();
+      // Remove multiple consecutive blank lines (keep single)
+      t = t.replace(/\n{3,}/g, '\n\n');
+      // Normalize line endings
+      t = t.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+      setOutput(t);
+      updateStats(t);
+    }
+
+    function stripHtml() {
+      let t = getInput();
+      t = t.replace(/<[^>]*>/g, '');
+      // Decode common HTML entities after stripping
+      t = t.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+      setOutput(t);
+    }
+
+    function collapseSpaces() {
+      let t = getInput();
+      t = t.replace(/[ \t]+/g, ' ');
+      // Remove spaces at beginning of lines
+      t = t.replace(/^ +/gm, '');
+      setOutput(t);
+    }
+
+    function removeEmptyLines() {
+      let t = getInput();
+      t = t.split('\n').filter(line => line.trim() !== '').join('\n');
+      setOutput(t);
+    }
+
+    function removeSpecialChars() {
+      let t = getInput();
+      // Remove non-ASCII characters but keep newlines and tabs
+      t = t.replace(/[^\x20-\x7E\n\r\t]/g, '');
+      setOutput(t);
+    }
+
+    function toLowerCase() {
+      setOutput(getInput().toLowerCase());
+    }
+
+    function toUpperCase() {
+      setOutput(getInput().toUpperCase());
+    }
+
+    function linesToSpaces() {
+      let t = getInput();
+      t = t.split('\n').map(line => line.trim()).filter(line => line).join(' ');
+      setOutput(t);
+    }
+
+    function unescapeHtml() {
+      let t = getInput();
+      const div = document.createElement('div');
+      div.innerHTML = t;
+      setOutput(div.textContent || div.innerText || '');
+    }
+
+    function clearAll() {
+      $('tcInput').value = '';
+      setOutput('');
+    }
+
+    function copyOutput() {
+      const t = $('tcOutput').value;
+      if (!t) return;
+      navigator.clipboard.writeText(t).then(() => showToast('已复制到剪贴板!')).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = t; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+        showToast('已复制到剪贴板!');
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', autoClean);
+  </script>
+</body>
+</html>

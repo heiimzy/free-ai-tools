@@ -225,6 +225,9 @@
   <url><loc>https://heiimzy.github.io/free-ai-tools/blog/posts/002-anthropic-surpasses-openai.en.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://heiimzy.github.io/free-ai-tools/blog/posts/001-welcome-to-ai-daily.zh.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://heiimzy.github.io/free-ai-tools/blog/posts/001-welcome-to-ai-daily.en.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://heiimzy.github.io/free-ai-tools/tools/border-radius-generator.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://heiimzy.github.io/free-ai-tools/tools/text-cleaner.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://heiimzy.github.io/free-ai-tools/tools/image-placeholder.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://heiimzy.github.io/free-ai-tools/privacy.html</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://heiimzy.github.io/free-ai-tools/terms.html</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
 </urlset>

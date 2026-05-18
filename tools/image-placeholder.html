@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>占位图片生成器 - 在线生成自定义尺寸占位图 | Free AI Tools</title>
+  <meta name="description" content="免费在线占位图片生成器，生成指定尺寸的自定义占位图。支持自定义文字、背景色、文字颜色、图片格式（PNG/JPG/SVG），一键下载或复制URL。适合前端开发、UI设计、网页原型开发时使用。">
+  <meta name="keywords" content="占位图生成器,Placeholder Image Generator,图片占位,自定义尺寸占位图,前端开发工具,网页占位图,在线图片生成">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/image-placeholder.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .ip-layout { max-width: 520px; margin: 0 auto; display: grid; gap: 1rem; }
+    .ip-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .ip-field { display: flex; flex-direction: column; gap: 0.3rem; }
+    .ip-field label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+    .ip-field input { padding: 0.5rem 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: inherit; font-size: 0.9rem; }
+    .ip-field input:focus { outline: none; border-color: var(--primary); }
+    .ip-field input[type="color"] { height: 42px; padding: 3px; cursor: pointer; }
+    .ip-field input[type="number"] { -moz-appearance: textfield; }
+    .ip-preview-wrap { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; display: flex; flex-direction: column; align-items: center; gap: 0.75rem; }
+    .ip-preview-wrap canvas { max-width: 100%; border-radius: 6px; }
+    .ip-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; }
+    .ip-actions button { padding: 0.5rem 1rem; border-radius: 8px; border: none; background: var(--primary); color: white; font-family: inherit; font-size: 0.8rem; cursor: pointer; transition: 0.15s; font-weight: 600; }
+    .ip-actions button:hover { opacity: 0.9; }
+    .ip-actions button.sec { background: var(--bg-card); border: 1px solid var(--border); color: var(--text); }
+    .ip-url { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 0.6rem 0.75rem; font-family: monospace; font-size: 0.75rem; color: var(--text-muted); word-break: break-all; cursor: pointer; transition: 0.2s; }
+    .ip-url:hover { border-color: var(--primary); }
+    .ip-presets { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+    .ip-presets button { padding: 0.25rem 0.55rem; border-radius: 5px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: inherit; font-size: 0.7rem; cursor: pointer; transition: 0.15s; }
+    .ip-presets button:hover { border-color: var(--primary); }
+    @media (max-width: 400px) { .ip-row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/image-placeholder.html">占位图</a><a href="../tools/image-resizer.html">图片调整</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>占位图片生成器 / Placeholder Image Generator</h1>
+      <p>生成自定义尺寸、颜色和文字的占位图片，适合原型设计和开发。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="ip-layout">
+        <div class="ip-row">
+          <div class="ip-field">
+            <label>宽度 (px)</label>
+            <input type="number" id="ipWidth" value="400" min="10" max="2000" oninput="generate()">
+          </div>
+          <div class="ip-field">
+            <label>高度 (px)</label>
+            <input type="number" id="ipHeight" value="300" min="10" max="2000" oninput="generate()">
+          </div>
+        </div>
+
+        <div>
+          <label style="font-size:0.75rem;color:var(--text-muted);font-weight:600;">常用尺寸</label>
+          <div class="ip-presets">
+            <button onclick="setSize(800,600)">800×600</button>
+            <button onclick="setSize(400,300)">400×300</button>
+            <button onclick="setSize(300,250)">300×250</button>
+            <button onclick="setSize(1200,630)">1200×630</button>
+            <button onclick="setSize(1920,1080)">1920×1080</button>
+            <button onclick="setSize(150,150)">150×150</button>
+          </div>
+        </div>
+
+        <div class="ip-row">
+          <div class="ip-field">
+            <label>背景色</label>
+            <input type="color" id="ipBg" value="#a78bfa" oninput="generate()">
+          </div>
+          <div class="ip-field">
+            <label>文字颜色</label>
+            <input type="color" id="ipFg" value="#ffffff" oninput="generate()">
+          </div>
+        </div>
+
+        <div class="ip-field">
+          <label>显示文字（可选）</label>
+          <input type="text" id="ipText" value="400 × 300" oninput="generate()" placeholder="留空则仅显示尺寸">
+        </div>
+
+        <div class="ip-preview-wrap">
+          <canvas id="ipCanvas"></canvas>
+          <div class="ip-actions">
+            <button onclick="download('png')">下载 PNG</button>
+            <button class="sec" onclick="download('jpg')">下载 JPG</button>
+            <button class="sec" onclick="copyDataUrl()">复制 Data URL</button>
+          </div>
+          <div class="ip-url" id="ipUrl" onclick="copyDataUrl()">点击复制 Data URL</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线占位图片生成器</h2>
+      <p>免费的在线占位图片生成工具，输入任意宽度和高度即可生成自定义占位图。支持自定义背景色、文字颜色和显示文字。内置常用尺寸预设（800×600、400×300、300×250、1200×630 OG图、1920×1080全高清、150×150头像）。可下载为PNG或JPG格式，也支持复制Data URL直接用于HTML/CSS。适合前端开发者在网站原型设计阶段生成临时图片占位、UI设计师填充设计稿中的图片区域。所有生成在浏览器本地完成，不涉及图片上传。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/image-placeholder.html">占位图生成</a> | <a href="../tools/image-compressor.html">图片压缩</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function $(id) { return document.getElementById(id); }
+    function showToast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2000); }
+
+    function setSize(w, h) {
+      $('ipWidth').value = w;
+      $('ipHeight').value = h;
+      if (!$('ipText').value || $('ipText').value.match(/^\d+\s*×\s*\d+$/)) {
+        $('ipText').value = w + ' × ' + h;
+      }
+      generate();
+    }
+
+    function generate() {
+      const w = parseInt($('ipWidth').value) || 400;
+      const h = parseInt($('ipHeight').value) || 300;
+      const bg = $('ipBg').value;
+      const fg = $('ipFg').value;
+      const text = $('ipText').value || (w + ' × ' + h);
+
+      const canvas = $('ipCanvas');
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+
+      // Background
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, w, h);
+
+      // Text
+      ctx.fillStyle = fg;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      // Font size: responsive to canvas size
+      let fontSize = Math.min(w, h) * 0.1;
+      fontSize = Math.max(12, Math.min(fontSize, 60));
+      ctx.font = 'bold ' + Math.round(fontSize) + 'px "M PLUS Rounded 1c", sans-serif';
+
+      // If text is the dimensions, draw it in 2 lines
+      if (text.match(/^\d+\s*×\s*\d+$/)) {
+        ctx.font = 'bold ' + Math.round(fontSize * 0.7) + 'px "M PLUS Rounded 1c", sans-serif';
+        ctx.fillText(text, w / 2, h / 2 - fontSize * 0.3);
+        ctx.font = Math.round(fontSize * 0.4) + 'px "M PLUS Rounded 1c", sans-serif';
+        ctx.fillStyle = fg + '80';
+        ctx.fillText(w + ' × ' + h + ' px', w / 2, h / 2 + fontSize * 0.5);
+      } else {
+        // Word wrap the custom text
+        const maxWidth = w * 0.85;
+        const words = text.split(/\s+/);
+        let lines = [];
+        let currentLine = '';
+        for (let word of words) {
+          const test = currentLine ? currentLine + ' ' + word : word;
+          if (ctx.measureText(test).width > maxWidth && currentLine) {
+            lines.push(currentLine);
+            currentLine = word;
+          } else {
+            currentLine = test;
+          }
+        }
+        if (currentLine) lines.push(currentLine);
+        if (lines.length === 0) lines = [text];
+
+        const lineHeight = fontSize * 1.3;
+        const startY = h / 2 - (lines.length - 1) * lineHeight / 2;
+        for (let i = 0; i < lines.length; i++) {
+          ctx.fillText(lines[i], w / 2, startY + i * lineHeight);
+        }
+      }
+
+      // Update URL
+      canvas.toBlob(function(blob) {
+        if (blob) {
+          $('ipUrl').textContent = 'data:image/png;base64,' + arrayBufferToBase64(blob);
+        }
+      });
+    }
+
+    function arrayBufferToBase64(blob) {
+      return new Promise(function(resolve) {
+        const reader = new FileReader();
+        reader.onloadend = function() {
+          const result = reader.result;
+          const base64 = result.split(',')[1];
+          resolve(base64);
+        };
+        reader.readAsDataURL(blob);
+      });
+    }
+
+    // Override the URL update to work async
+    let currentDataUrl = '';
+
+    function generate() {
+      const w = parseInt($('ipWidth').value) || 400;
+      const h = parseInt($('ipHeight').value) || 300;
+      const bg = $('ipBg').value;
+      const fg = $('ipFg').value;
+      const text = $('ipText').value || (w + ' × ' + h);
+
+      const canvas = $('ipCanvas');
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.fillStyle = fg;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      let fontSize = Math.min(w, h) * 0.1;
+      fontSize = Math.max(12, Math.min(fontSize, 60));
+
+      if (text.match(/^\d+\s*×\s*\d+$/)) {
+        ctx.font = 'bold ' + Math.round(fontSize * 0.7) + 'px "M PLUS Rounded 1c", sans-serif';
+        ctx.fillText(text, w / 2, h / 2 - fontSize * 0.3);
+        ctx.font = Math.round(fontSize * 0.4) + 'px "M PLUS Rounded 1c", sans-serif';
+        ctx.fillStyle = fg + '80';
+        ctx.fillText(w + ' × ' + h + ' px', w / 2, h / 2 + fontSize * 0.5);
+      } else {
+        const maxWidth = w * 0.85;
+        const words = text.split(/\s+/);
+        let lines = [];
+        let currentLine = '';
+        for (let word of words) {
+          const test = currentLine ? currentLine + ' ' + word : word;
+          if (ctx.measureText(test).width > maxWidth && currentLine) {
+            lines.push(currentLine);
+            currentLine = word;
+          } else {
+            currentLine = test;
+          }
+        }
+        if (currentLine) lines.push(currentLine);
+        if (lines.length === 0) lines = [text];
+
+        const lineHeight = fontSize * 1.3;
+        const startY = h / 2 - (lines.length - 1) * lineHeight / 2;
+        for (let i = 0; i < lines.length; i++) {
+          ctx.fillText(lines[i], w / 2, startY + i * lineHeight);
+        }
+      }
+
+      // Update Data URL
+      currentDataUrl = canvas.toDataURL('image/png');
+      $('ipUrl').textContent = currentDataUrl;
+    }
+
+    function download(format) {
+      const canvas = $('ipCanvas');
+      const w = $('ipWidth').value || 400;
+      const h = $('ipHeight').value || 300;
+      const mime = format === 'jpg' ? 'image/jpeg' : 'image/png';
+      const ext = format === 'jpg' ? 'jpg' : 'png';
+      const link = document.createElement('a');
+      link.download = 'placeholder-' + w + 'x' + h + '.' + ext;
+      link.href = canvas.toDataURL(mime, format === 'jpg' ? 0.92 : undefined);
+      link.click();
+      showToast('已下载 ' + ext.toUpperCase() + ' 格式');
+    }
+
+    function copyDataUrl() {
+      if (!currentDataUrl) return;
+      navigator.clipboard.writeText(currentDataUrl).then(() => {
+        showToast('Data URL 已复制!');
+      }).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = currentDataUrl; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+        showToast('Data URL 已复制!');
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', generate);
+  </script>
+</body>
+</html>

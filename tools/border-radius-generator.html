@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Border Radius Generator - 可视化圆角边框生成器 | Free AI Tools</title>
+  <meta name="description" content="免费在线CSS Border Radius生成器，可视化调整四个角的圆角半径，支持同步/独立调节、预设形状（圆形、药丸、葫芦形）、实时预览，一键复制CSS代码。适合前端开发者和设计师使用。">
+  <meta name="keywords" content="border radius generator,CSS圆角生成器,border-radius可视化,圆角边框,CSS生成器,前端工具,在线CSS工具">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/border-radius-generator.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .br-layout { max-width: 520px; margin: 0 auto; display: grid; gap: 1rem; }
+    .br-preview-wrap { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; display: flex; justify-content: center; align-items: center; min-height: 200px; }
+    .br-preview { width: 200px; height: 160px; background: linear-gradient(135deg, #a78bfa, #f472b6); transition: border-radius 0.15s; }
+    .br-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .br-corner { display: flex; flex-direction: column; gap: 0.2rem; }
+    .br-corner label { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; }
+    .br-corner input[type="range"] { width: 100%; accent-color: var(--primary); }
+    .br-corner .val { font-size: 0.75rem; color: var(--primary); font-weight: 700; text-align: right; }
+    .br-sync { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+    .br-sync label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+    .br-presets { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .br-presets button { padding: 0.3rem 0.7rem; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: inherit; font-size: 0.75rem; cursor: pointer; transition: 0.15s; }
+    .br-presets button:hover { border-color: var(--primary); }
+    .br-presets button.active { border-color: var(--primary); background: rgba(167,139,250,0.15); color: var(--primary); }
+    .br-code { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem 1rem; font-family: monospace; font-size: 0.85rem; color: var(--primary); word-break: break-all; cursor: pointer; transition: 0.2s; }
+    .br-code:hover { border-color: var(--primary); }
+    .br-size { display: flex; gap: 0.75rem; align-items: center; }
+    .br-size input[type="range"] { flex: 1; accent-color: var(--primary); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/border-radius-generator.html">圆角生成</a><a href="../tools/gradient-generator.html">渐变生成</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>CSS Border Radius 生成器 / Border Radius Generator</h1>
+      <p>可视化调整CSS圆角边框，实时预览并一键复制代码。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="br-layout">
+        <div class="br-preview-wrap">
+          <div class="br-preview" id="brPreview"></div>
+        </div>
+
+        <div class="br-sync">
+          <label>🔗 同步调节</label>
+          <input type="checkbox" id="brSync" checked onchange="toggleSync()">
+          <span style="font-size:0.7rem;color:var(--text-muted);">四个角统一调整</span>
+        </div>
+
+        <div id="brSingleControls">
+          <div class="br-controls">
+            <div class="br-corner"><label>↖ 左上</label><input type="range" id="brTL" min="0" max="100" value="20" oninput="update()"><span class="val" id="brTLVal">20px</span></div>
+            <div class="br-corner"><label>↗ 右上</label><input type="range" id="brTR" min="0" max="100" value="20" oninput="update()"><span class="val" id="brTRVal">20px</span></div>
+            <div class="br-corner"><label>↙ 左下</label><input type="range" id="brBL" min="0" max="100" value="20" oninput="update()"><span class="val" id="brBLVal">20px</span></div>
+            <div class="br-corner"><label>↘ 右下</label><input type="range" id="brBR" min="0" max="100" value="20" oninput="update()"><span class="val" id="brBRVal">20px</span></div>
+          </div>
+        </div>
+
+        <div id="brGlobalControl" style="display:none;">
+          <div class="br-corner"><label>全局圆角</label><input type="range" id="brGlobal" min="0" max="100" value="20" oninput="updateGlobal()"><span class="val" id="brGlobalVal">20px</span></div>
+        </div>
+
+        <div>
+          <label style="font-size:0.75rem;color:var(--text-muted);font-weight:600;">预设形状</label>
+          <div class="br-presets" id="brPresets">
+            <button onclick="setPreset('rounded')">圆角</button>
+            <button onclick="setPreset('circle')">圆形</button>
+            <button onclick="setPreset('pill')">胶囊</button>
+            <button onclick="setPreset('squircle')">拟物</button>
+            <button onclick="setPreset('custom')">自定义</button>
+          </div>
+        </div>
+
+        <div class="br-size">
+          <label style="font-size:0.75rem;color:var(--text-muted);font-weight:600;">预览尺寸</label>
+          <input type="range" id="brSize" min="100" max="300" value="200" oninput="updateSize()">
+          <span style="font-size:0.75rem;color:var(--text-muted);" id="brSizeLabel">200px</span>
+        </div>
+
+        <div class="br-code" id="brCode" onclick="copyCode()" title="点击复制CSS">border-radius: 20px;</div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线CSS Border Radius生成器</h2>
+      <p>免费的CSS圆角边框可视化生成工具，通过滑块调整四个角的圆角半径（左上、右上、左下、右下），支持同步调节或独立调节模式。内置预设形状：圆角（统一小圆角）、圆形（50%完全圆形）、胶囊（两端半圆）、拟物（iOS风格非对称圆角）。实时预览渐变背景上的圆角效果，自动生成标准CSS border-radius代码，点击即可复制。适合前端开发者快速生成UI圆角样式、设计师可视化调整组件圆角。所有操作在浏览器本地完成，无需上传数据。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/border-radius-generator.html">圆角生成</a> | <a href="../tools/shadow-generator.html">阴影生成</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function $(id) { return document.getElementById(id); }
+
+    function update() {
+      if ($('brSync').checked) return;
+      const tl = $('brTL').value;
+      const tr = $('brTR').value;
+      const bl = $('brBL').value;
+      const br = $('brBR').value;
+      $('brTLVal').textContent = tl + 'px';
+      $('brTRVal').textContent = tr + 'px';
+      $('brBLVal').textContent = bl + 'px';
+      $('brBRVal').textContent = br + 'px';
+      apply(tl + 'px ' + tr + 'px ' + br + 'px ' + bl + 'px');
+    }
+
+    function updateGlobal() {
+      const v = $('brGlobal').value;
+      $('brGlobalVal').textContent = v + 'px';
+      $('brTL').value = $('brTR').value = $('brBL').value = $('brBR').value = v;
+      $('brTLVal').textContent = $('brTRVal').textContent = $('brBLVal').textContent = $('brBRVal').textContent = v + 'px';
+      apply(v + 'px');
+    }
+
+    function apply(css) {
+      $('brPreview').style.borderRadius = css;
+      $('brCode').textContent = 'border-radius: ' + css + ';';
+    }
+
+    function toggleSync() {
+      const sync = $('brSync').checked;
+      $('brSingleControls').style.display = sync ? 'none' : 'block';
+      $('brGlobalControl').style.display = sync ? 'block' : 'none';
+      if (sync) {
+        $('brGlobal').value = $('brTL').value;
+        $('brGlobalVal').textContent = $('brTL').value + 'px';
+        updateGlobal();
+      }
+    }
+
+    function setPreset(name) {
+      document.querySelectorAll('#brPresets button').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('#brPresets button').forEach(b => {
+        if (b.textContent.includes(name === 'rounded' ? '圆角' : name === 'circle' ? '圆形' : name === 'pill' ? '胶囊' : name === 'squircle' ? '拟物' : '自定义')) b.classList.add('active');
+      });
+      const sync = $('brSync').checked;
+      let set = (tl, tr, bl, br) => {
+        $('brTL').value = tl; $('brTR').value = tr; $('brBL').value = bl; $('brBR').value = br;
+        if (sync) { $('brGlobal').value = tl; $('brGlobalVal').textContent = tl + 'px'; }
+        update();
+        if (sync) updateGlobal();
+      };
+      switch(name) {
+        case 'rounded': set(12, 12, 12, 12); break;
+        case 'circle': set(100, 100, 100, 100); break;
+        case 'pill': set(100, 100, 100, 100); break;
+        case 'squircle': set(30, 12, 12, 30); break;
+        default: set(20, 20, 20, 20); break;
+      }
+    }
+
+    function updateSize() {
+      const s = $('brSize').value;
+      $('brPreview').style.width = s + 'px';
+      $('brPreview').style.height = Math.round(s * 0.8) + 'px';
+      $('brSizeLabel').textContent = s + 'px';
+    }
+
+    function copyCode() {
+      const code = $('brCode').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        showToast('CSS代码已复制!');
+      }).catch(() => {
+        // Fallback
+        const ta = document.createElement('textarea');
+        ta.value = code; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+        showToast('CSS代码已复制!');
+      });
+    }
+
+    function showToast(msg) {
+      const t = $('toast'); t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2000);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      updateGlobal();
+    });
+  </script>
+</body>
+</html>
