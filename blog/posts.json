@@ -1,5 +1,39 @@
 [
   {
+    "id": "036",
+    "date": "2026-05-18",
+    "zh": {
+      "title": "2026年5月AI变现全景：Codex首赚16.88美元、豆包三档订阅上线、阿里AI单季90亿",
+      "summary": "2026年5月AI变现最新动态：OpenAI Codex自主运行22小时赚取16.88美元实现AI首次全闭环赚钱；豆包推出三档付费订阅计划；阿里AI单季收入89.71亿元连续11季三位数增长；Token经济崛起成为AI商业化核心标尺；AI智能体装机商成为普通人变现新路径。",
+      "tags": [
+        "AI变现",
+        "AI赚钱",
+        "Codex",
+        "豆包订阅",
+        "Token经济",
+        "AI商业化",
+        "阿里AI收入",
+        "智能体装机"
+      ],
+      "file": "posts/036-ai-monetization-may-2026-deep.zh.html"
+    },
+    "en": {
+      "title": "AI Monetization in May 2026: Figma's 46% Surge, the Pricing Revolution, and the ROI Test",
+      "summary": "May 2026 AI monetization deep dive: Figma Q1 revenue surges 46% to $333M driven by AI feature monetization; SBIGrowth study reveals companies that charge separately for AI meet revenue targets at 84% rate vs 58% that bundle for free; Anthropic projected 10-80x revenue growth; the 6 emerging AI pricing models reshaping enterprise software; Creative Strategies' ROI test framework for measuring AI monetization success.",
+      "tags": [
+        "AI monetization",
+        "Figma earnings",
+        "AI pricing models",
+        "consumption-based pricing",
+        "AI ROI",
+        "Anthropic revenue",
+        "AI business models",
+        "SaaS AI monetization"
+      ],
+      "file": "posts/036-ai-monetization-may-2026-deep.en.html"
+    }
+  },
+  {
     "id": "035",
     "date": "2026-05-18",
     "zh": {
