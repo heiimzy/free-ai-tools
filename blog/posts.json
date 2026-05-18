@@ -1,5 +1,33 @@
 [
   {
+    "id": "034",
+    "date": "2026-05-18",
+    "zh": {
+      "title": "2026年5月第三周AI新闻：GPT-5.5免费开放、十五五AI+战略落地、张江AI商店开业",
+      "summary": "2026年5月第三周AI新闻汇总：OpenAI GPT-5.5 Instant向所有用户免费开放，幻觉率降低52.5%；国家十五五规划全面实施AI+行动；安徽AI规上企业营收突破2000亿；张江AI应用商店正式开业；杭州成立AI通识教育联盟；Apple因虚假AI广告和解2.5亿美元；阿里腾讯明确加大AI投入。",
+      "tags": [
+        "AI新闻",
+        "GPT-5.5",
+        "十五五",
+        "AI教育",
+        "产业政策"
+      ],
+      "file": "posts/034-ai-news-may-2026-week3.zh.html"
+    },
+    "en": {
+      "title": "AI News This Week: GPT-5.5 Free for All, Anthropic Mythos Finds Thousands of Zero-Days, Apple Pays $250M",
+      "summary": "May 2026 week 3 AI news roundup: OpenAI GPT-5.5 Instant goes free for all users with 52.5% hallucination reduction; Anthropic Mythos Project Glasswing reveals thousands of zero-day vulnerabilities; Apple settles misleading AI ad lawsuit for $250M; DeepSeek V4 nears frontier performance; Cerebras IPO surges 70%; NIST signs pre-deployment testing agreements.",
+      "tags": [
+        "AI news",
+        "GPT-5.5",
+        "Anthropic Mythos",
+        "AI safety",
+        "Cerebras"
+      ],
+      "file": "posts/034-ai-news-may-2026-week3.en.html"
+    }
+  },
+  {
     "id": "033",
     "date": "2026-05-22",
     "zh": {
