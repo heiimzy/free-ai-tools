@@ -1,5 +1,21 @@
 [
   {
+    "id": "042",
+    "date": "2026-05-18",
+    "zh": {
+      "title": "⚡ 5月18日快讯：央行原副行长朱民呼吁AI监管政策、美伊推升油价、星宸激光雷达芯片2027量产",
+      "summary": "⚡ 最新快讯：央行原副行长朱民称需要形成适当的政策来引领AI使用；美伊僵局推升油价全球债市抛售加剧；星宸科技车载激光雷达芯片预计2027年规模化量产；沪深两市成交额突破2.5万亿元；MLCC价格循环反转向上关键点。",
+      "tags": ["实时快讯", "AI政策", "朱民", "美伊局势", "激光雷达"],
+      "file": "posts/042-ai-policy-market-may-2026.zh.html"
+    },
+    "en": {
+      "title": "⚡ Flash Briefing May 18: China's Former Central Bank Governor Calls for AI Regulatory Framework, Iran Tensions Push Oil Higher, StarVision LiDAR Chip Targets 2027",
+      "summary": "Flash briefing: Former PBoC VP Zhu Min calls for appropriate AI regulatory policies; US-Iran standoff drives oil prices up, global bond selloff intensifies; StarVision Semiconductor announces automotive LiDAR chip mass production targeted for 2027; Shanghai-Shenzhen market turnover breaks 2.5 trillion yuan; MLCC price cycle nears reversal inflection point.",
+      "tags": ["Flash", "AI Policy", "Geopolitics", "LiDAR", "Markets"],
+      "file": "posts/042-ai-policy-market-may-2026.en.html"
+    }
+  },
+  {
     "id": "041",
     "date": "2026-05-18",
     "zh": {
