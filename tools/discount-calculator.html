@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>折扣计算器 - 在线折后价/节省金额计算工具 | Free AI Tools</title>
+  <meta name="description" content="免费在线折扣计算器，快速计算打折后的最终价格和节省金额。支持百分比折扣、固定金额折扣、多件折扣，可选计算消费税。适合网购比价、购物计算、促销活动价格核算。">
+  <meta name="keywords" content="折扣计算器,打折计算,折后价,优惠计算,打折工具,促销计算,满减计算,购物计算器">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/discount-calculator.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .dc-layout { max-width: 480px; margin: 0 auto; display: grid; gap: 1rem; }
+    .dc-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .dc-field { display: flex; flex-direction: column; gap: 0.3rem; }
+    .dc-field label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+    .dc-field input, .dc-field select { padding: 0.55rem 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: inherit; font-size: 0.95rem; }
+    .dc-field input:focus, .dc-field select:focus { outline: none; border-color: var(--primary); }
+    .dc-field input[type="number"] { -moz-appearance: textfield; }
+    .dc-field input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .dc-summary { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; }
+    .dc-summary > div { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; text-align: center; }
+    .dc-summary .num { font-size: 1.4rem; font-weight: 800; color: var(--primary); display: block; margin-top: 0.2rem; }
+    .dc-summary .label { font-size: 0.7rem; color: var(--text-muted); }
+    .dc-summary .num.saved { color: #34d399; }
+    .dc-summary .num.tax { color: #fbbf24; }
+    .dc-detail { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; font-size: 0.85rem; color: var(--text-muted); line-height: 1.8; }
+    .dc-detail strong { color: var(--text); }
+    @media (max-width: 400px) { .dc-row { grid-template-columns: 1fr; } .dc-summary { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/discount-calculator.html">折扣计算</a><a href="../tools/sleep-cycle-calculator.html">睡眠计算器</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>折扣计算器 / Discount Calculator</h1>
+      <p>快速计算打折后的价格、节省金额，支持消费税计算。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="dc-layout">
+        <div class="dc-row">
+          <div class="dc-field">
+            <label>原价</label>
+            <input type="number" id="dcPrice" value="100" min="0" step="0.01" oninput="calculate()">
+          </div>
+          <div class="dc-field">
+            <label>折扣类型</label>
+            <select id="dcType" onchange="calculate()">
+              <option value="percent">百分比折扣（%）</option>
+              <option value="fixed">固定金额折扣（元）</option>
+              <option value="multi">多件折扣</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="dcDynamic"></div>
+
+        <div class="dc-summary">
+          <div>
+            <span class="label">最终价格</span>
+            <span class="num" id="dcFinal">¥0.00</span>
+          </div>
+          <div>
+            <span class="label">节省金额</span>
+            <span class="num saved" id="dcSaved">¥0.00</span>
+          </div>
+          <div>
+            <span class="label">含税总价</span>
+            <span class="num tax" id="dcTaxTotal">¥0.00</span>
+          </div>
+        </div>
+
+        <div class="dc-detail" id="dcDetail"></div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线折扣计算器</h2>
+      <p>免费的在线折扣计算工具，支持三种折扣模式：百分比折扣（如8折、7.5折）、固定金额折扣（如满100减20）、多件折扣（如买2件打8折）。支持添加消费税计算，显示折后价、节省金额、含税总价和详细计算公式。适合网购比价、双11/618促销计算、实体店购物价格核算、批发采购折扣计算。所有计算在浏览器本地完成，数据不会上传到服务器。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/discount-calculator.html">折扣计算</a> | <a href="../tools/sleep-cycle-calculator.html">睡眠计算器</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function calculate() {
+      const price = parseFloat(document.getElementById('dcPrice').value) || 0;
+      const type = document.getElementById('dcType').value;
+
+      let discount = 0;
+      let detail = '';
+
+      if (type === 'percent') {
+        const pct = parseFloat(document.getElementById('dcPct')?.value) || 10;
+        discount = price * pct / 100;
+        detail = '折扣率：<strong>' + pct + '%</strong><br>节省：<strong>¥' + discount.toFixed(2) + '</strong><br>折后价 = ¥' + price.toFixed(2) + ' × (1 - ' + pct/100 + ') = <strong>¥' + (price - discount).toFixed(2) + '</strong>';
+      } else if (type === 'fixed') {
+        const fixed = parseFloat(document.getElementById('dcFixed')?.value) || 0;
+        discount = Math.min(fixed, price);
+        detail = '立减：<strong>¥' + fixed.toFixed(2) + '</strong><br>节省：<strong>¥' + discount.toFixed(2) + '</strong><br>折后价 = ¥' + price.toFixed(2) + ' - ¥' + discount.toFixed(2) + ' = <strong>¥' + (price - discount).toFixed(2) + '</strong>';
+      } else if (type === 'multi') {
+        const qty = parseInt(document.getElementById('dcQty')?.value) || 2;
+        const discountPct = parseFloat(document.getElementById('dcMultiPct')?.value) || 10;
+        const total = price * qty;
+        discount = total * discountPct / 100;
+        detail = '购买 <strong>' + qty + ' 件</strong>，每件 ¥' + price.toFixed(2) + '<br>总价：¥' + total.toFixed(2) + '<br>折扣率：<strong>' + discountPct + '%</strong><br>节省：<strong>¥' + discount.toFixed(2) + '</strong><br>折后总价 = ¥' + total.toFixed(2) + ' × (1 - ' + discountPct/100 + ') = <strong>¥' + (total - discount).toFixed(2) + '</strong><br>每件均价：<strong>¥' + ((total - discount) / qty).toFixed(2) + '</strong>';
+      }
+
+      const finalPrice = price - (type === 'multi' ? 0 : discount);
+      const finalTotal = type === 'multi' ? (price * parseInt(document.getElementById('dcQty')?.value || 2) - discount) : finalPrice;
+      const savedTotal = type === 'multi' ? discount : discount;
+
+      // Tax calculation
+      const taxRate = parseFloat(document.getElementById('dcTax')?.value) || 0;
+      const taxAmount = finalTotal * taxRate / 100;
+      const grandTotal = finalTotal + taxAmount;
+
+      document.getElementById('dcFinal').textContent = '¥' + (type === 'multi' ? (finalTotal) : finalPrice).toFixed(2);
+      document.getElementById('dcSaved').textContent = '¥' + savedTotal.toFixed(2);
+      document.getElementById('dcTaxTotal').textContent = taxRate > 0 ? '¥' + grandTotal.toFixed(2) : '¥' + finalTotal.toFixed(2);
+
+      let taxLine = '';
+      if (taxRate > 0) {
+        taxLine = '<br>消费税：<strong>' + taxRate + '%</strong>（¥' + taxAmount.toFixed(2) + '）<br>含税总价：<strong>¥' + grandTotal.toFixed(2) + '</strong>';
+      }
+
+      document.getElementById('dcDetail').innerHTML = detail + taxLine;
+    }
+
+    function renderDynamicFields() {
+      const type = document.getElementById('dcType').value;
+      const container = document.getElementById('dcDynamic');
+      let html = '';
+      if (type === 'percent') {
+        html = '<div class="dc-row"><div class="dc-field"><label>折扣百分比 (%)</label><input type="number" id="dcPct" value="10" min="0" max="100" step="0.1" oninput="calculate()"></div><div class="dc-field"><label>消费税 (%)</label><input type="number" id="dcTax" value="0" min="0" max="50" step="0.1" oninput="calculate()"></div></div>';
+      } else if (type === 'fixed') {
+        html = '<div class="dc-row"><div class="dc-field"><label>立减金额 (元)</label><input type="number" id="dcFixed" value="20" min="0" step="0.01" oninput="calculate()"></div><div class="dc-field"><label>消费税 (%)</label><input type="number" id="dcTax" value="0" min="0" max="50" step="0.1" oninput="calculate()"></div></div>';
+      } else {
+        html = '<div class="dc-row"><div class="dc-field"><label>购买数量</label><input type="number" id="dcQty" value="2" min="2" max="999" oninput="calculate()"></div><div class="dc-field"><label>多件折扣 (%)</label><input type="number" id="dcMultiPct" value="10" min="0" max="100" step="0.1" oninput="calculate()"></div></div><div class="dc-row"><div class="dc-field"><label>消费税 (%)</label><input type="number" id="dcTax" value="0" min="0" max="50" step="0.1" oninput="calculate()"></div><div></div></div>';
+      }
+      container.innerHTML = html;
+      calculate();
+    }
+
+    document.getElementById('dcType').addEventListener('change', renderDynamicFields);
+    window.addEventListener('DOMContentLoaded', renderDynamicFields);
+  </script>
+</body>
+</html>

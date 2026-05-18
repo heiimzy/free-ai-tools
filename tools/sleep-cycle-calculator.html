@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>睡眠周期计算器 - 最佳起床时间/入睡时间计算 | Free AI Tools</title>
+  <meta name="description" content="免费在线睡眠周期计算器，基于90分钟睡眠周期理论，计算最佳入睡时间和起床时间。输入起床时间反推最佳入睡时间，或输入入睡时间计算最佳闹钟时间。帮你减少起床疲惫感，提升睡眠质量。">
+  <meta name="keywords" content="睡眠周期计算器,最佳起床时间,睡眠计算器,90分钟睡眠周期,REM周期,入睡时间计算,清醒入睡时间,睡眠质量">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/sleep-cycle-calculator.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .sc-layout { max-width: 500px; margin: 0 auto; display: grid; gap: 1.25rem; }
+    .sc-toggle { display: flex; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    .sc-toggle button { flex: 1; padding: 0.6rem 1rem; border: none; background: none; color: var(--text-muted); font-family: inherit; font-size: 0.85rem; cursor: pointer; transition: 0.2s; font-weight: 600; }
+    .sc-toggle button.active { background: var(--primary); color: white; }
+    .sc-input { display: flex; gap: 0.75rem; align-items: center; justify-content: center; flex-wrap: wrap; }
+    .sc-input input[type="time"] { padding: 0.6rem 1rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-size: 1.1rem; font-family: inherit; }
+    .sc-input label { font-size: 0.85rem; color: var(--text-muted); }
+    .sc-results { display: grid; gap: 0.6rem; }
+    .sc-result { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; text-align: center; transition: 0.2s; }
+    .sc-result.best { border-color: var(--primary); background: rgba(167,139,250,0.06); }
+    .sc-result .label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.25rem; }
+    .sc-result .time { font-size: 1.8rem; font-weight: 800; color: var(--primary); }
+    .sc-result .cycles { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem; }
+    .sc-info { font-size: 0.78rem; color: var(--text-muted); line-height: 1.6; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem 1rem; }
+    .sc-note { font-size: 0.78rem; color: var(--text-muted); line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/text-rewriter.html">AI改写</a><a href="../tools/sleep-cycle-calculator.html">睡眠计算器</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>睡眠周期计算器 / Sleep Cycle Calculator</h1>
+      <p>基于90分钟睡眠周期理论，计算最佳入睡或起床时间，让你醒来更清醒。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="sc-layout">
+        <div class="sc-toggle" id="scToggle">
+          <button class="active" onclick="setMode('wake')">我要在⏰ 起床</button>
+          <button onclick="setMode('sleep')">我要在🌙 入睡</button>
+        </div>
+
+        <div class="sc-input">
+          <label>选择时间</label>
+          <input type="time" id="scTime" value="07:00" onchange="calculate()">
+        </div>
+
+        <div class="sc-results" id="scResults"></div>
+
+        <div class="sc-info">
+          <strong>💡 睡眠周期原理：</strong> 人的睡眠以约90分钟为一个周期（包括浅睡眠、深睡眠和REM睡眠）。在周期结束时醒来最清醒，在深睡眠阶段被叫醒最痛苦。建议将睡眠时间设为90分钟的整数倍（6h、7.5h、9h等）。
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线睡眠周期计算器</h2>
+      <p>免费的在线睡眠周期计算工具，基于广泛认可的90分钟睡眠周期理论。提供两种计算模式：(1) 输入起床时间，反推最佳入睡时间——适合计划今晚几点睡觉；(2) 输入入睡时间，计算最佳闹钟时间——适合计算睡几小时后起床最清醒。每个人的入睡时间约为14分钟，计算已包含在内。建议成年人保持5-6个完整睡眠周期（7.5-9小时）。工具纯本地计算，不保存任何数据。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/text-rewriter.html">AI改写</a> | <a href="../tools/sleep-cycle-calculator.html">睡眠计算器</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let currentMode = 'wake';
+
+    function setMode(mode) {
+      currentMode = mode;
+      document.querySelectorAll('#scToggle button').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('#scToggle button')[mode === 'wake' ? 0 : 1].classList.add('active');
+      calculate();
+    }
+
+    function formatTime(h, m) {
+      const period = h >= 12 ? '下午/晚上' : '上午';
+      const hh = h % 12 || 12;
+      return period + ' ' + String(hh).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+    }
+
+    function formatTimeSimple(h, m) {
+      return String(h % 24).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+    }
+
+    function calculate() {
+      const val = document.getElementById('scTime').value;
+      if (!val) return;
+      let [h, m] = val.split(':').map(Number);
+      const results = document.getElementById('scResults');
+
+      if (currentMode === 'wake') {
+        // Input: wake-up time. Calculate best bedtimes.
+        // Assume ~14 min to fall asleep, so subtract from each cycle end
+        let html = '<div class="sc-result best"><div class="label">推荐睡眠时长</div><div class="time">7.5 小时</div><div class="cycles">5 个完整周期 · 最推荐</div></div>';
+        const cycles = [6, 5, 4, 3];
+        const labels = ['最佳', '不错', '可以', '最少'];
+        const detail = ['7.5h · 5周期 ✨', '6h · 4周期 👍', '4.5h · 3周期 💪', '3h · 2周期 ⚠️'];
+
+        for (let i = 0; i < cycles.length; i++) {
+          const totalMin = cycles[i] * 90 + 14; // +14 min to fall asleep
+          let bh = h - Math.floor(totalMin / 60);
+          let bm = m - (totalMin % 60);
+          if (bm < 0) { bm += 60; bh--; }
+          if (bh < 0) bh += 24;
+
+          const cls = i === 0 ? 'sc-result best' : 'sc-result';
+          html += '<div class="' + cls + '">' +
+            '<div class="label">' + labels[i] + ' 入睡时间（' + detail[i] + '）</div>' +
+            '<div class="time">' + formatTimeSimple(bh, bm) + '</div>' +
+            '<div class="cycles">睡至 ' + formatTimeSimple(h, m) + ' · ' + cycles[i] + ' 个周期</div></div>';
+        }
+        results.innerHTML = html;
+      } else {
+        // Input: bedtime. Calculate best wake times
+        // Assume ~14 min to fall asleep
+        let html = '';
+        const cycles = [6, 5, 4, 3];
+        const labels = ['最佳', '不错', '可以', '最少'];
+        const detail = ['9h · 6周期 ✨', '7.5h · 5周期 👍', '6h · 4周期 💪', '4.5h · 3周期 ⚠️'];
+
+        for (let i = 0; i < cycles.length; i++) {
+          const totalMin = cycles[i] * 90 + 14;
+          let wh = h + Math.floor(totalMin / 60);
+          let wm = m + (totalMin % 60);
+          if (wm >= 60) { wm -= 60; wh++; }
+          if (wh >= 24) wh -= 24;
+
+          const cls = i === 0 ? 'sc-result best' : 'sc-result';
+          const label = wh < 12 ? '起床时间' : '起床时间';
+          html += '<div class="' + cls + '">' +
+            '<div class="label">' + labels[i] + ' ' + label + '（' + detail[i] + '）</div>' +
+            '<div class="time">' + formatTimeSimple(wh, wm) + '</div>' +
+            '<div class="cycles">' + cycles[i] + ' 个周期 · ' + (cycles[i] * 90) + ' 分钟睡眠</div></div>';
+        }
+        results.innerHTML = html;
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', calculate);
+  </script>
+</body>
+</html>

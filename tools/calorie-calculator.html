@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>热量计算器 - 每日卡路里/BMR基础代谢计算工具 | Free AI Tools</title>
+  <meta name="description" content="免费在线热量计算器，基于Mifflin-St Jeor公式计算基础代谢率(BMR)和每日卡路里需求。支持英制/公制单位，根据年龄、性别、身高、体重和活动水平计算维持/减脂/增肌热量。适合健身减脂、饮食管理和健康生活方式规划。">
+  <meta name="keywords" content="热量计算器,卡路里计算,BMR计算,基础代谢,每日热量需求,减肥热量,增肌热量,TDEE计算">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/calorie-calculator.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .cl-layout { max-width: 520px; margin: 0 auto; display: grid; gap: 1rem; }
+    .cl-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .cl-row.three { grid-template-columns: 1fr 1fr 1fr; }
+    .cl-field { display: flex; flex-direction: column; gap: 0.3rem; }
+    .cl-field label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+    .cl-field input, .cl-field select { padding: 0.5rem 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: inherit; font-size: 0.9rem; }
+    .cl-field input:focus, .cl-field select:focus { outline: none; border-color: var(--primary); }
+    .cl-field input[type="number"] { -moz-appearance: textfield; }
+    .cl-field input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .cl-bmr { background: linear-gradient(135deg, rgba(167,139,250,0.1), rgba(244,114,182,0.05)); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; text-align: center; }
+    .cl-bmr .num { font-size: 2.2rem; font-weight: 800; color: var(--primary); }
+    .cl-bmr .label { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem; }
+    .cl-tdee { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+    .cl-tdee > div { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 0.75rem; text-align: center; }
+    .cl-tdee .num { font-size: 1.1rem; font-weight: 700; color: var(--primary); display: block; }
+    .cl-tdee .label { font-size: 0.65rem; color: var(--text-muted); }
+    .cl-goals { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.6rem; }
+    .cl-goals > div { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 0.75rem; text-align: center; }
+    .cl-goals .num { font-size: 1.1rem; font-weight: 700; display: block; }
+    .cl-goals .num.lose { color: #ef4444; }
+    .cl-goals .num.maintain { color: #34d399; }
+    .cl-goals .num.gain { color: #fbbf24; }
+    .cl-goals .label { font-size: 0.65rem; color: var(--text-muted); }
+    .cl-unit { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
+    .cl-unit button { padding: 0.3rem 0.75rem; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-muted); font-family: inherit; font-size: 0.75rem; cursor: pointer; transition: 0.15s; }
+    .cl-unit button.active { border-color: var(--primary); color: var(--primary); background: rgba(167,139,250,0.1); }
+    @media (max-width: 400px) { .cl-row { grid-template-columns: 1fr; } .cl-row.three { grid-template-columns: 1fr; } .cl-tdee { grid-template-columns: 1fr; } .cl-goals { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/calorie-calculator.html">热量计算</a><a href="../tools/discount-calculator.html">折扣计算</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>热量计算器 / Calorie Calculator</h1>
+      <p>基于科学公式计算基础代谢率（BMR）和每日热量需求，助你科学管理体重。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="cl-layout">
+        <div class="cl-unit">
+          <button class="active" onclick="setUnit('metric')">公制 (kg/cm)</button>
+          <button onclick="setUnit('imperial')">英制 (lb/in)</button>
+        </div>
+
+        <div class="cl-row three">
+          <div class="cl-field">
+            <label>年龄</label>
+            <input type="number" id="clAge" value="30" min="1" max="120" oninput="calculate()">
+          </div>
+          <div class="cl-field">
+            <label>性别</label>
+            <select id="clGender" onchange="calculate()">
+              <option value="male">男性</option>
+              <option value="female">女性</option>
+            </select>
+          </div>
+          <div class="cl-field">
+            <label>活动水平</label>
+            <select id="clActivity" onchange="calculate()">
+              <option value="1.2">久坐（几乎不运动）</option>
+              <option value="1.375" selected="selected">轻度（1-3天/周）</option>
+              <option value="1.55">中度（3-5天/周）</option>
+              <option value="1.725">活跃（6-7天/周）</option>
+              <option value="1.9">非常活跃（每天高强度）</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="cl-row">
+          <div class="cl-field">
+            <label id="clWeightLabel">体重 (kg)</label>
+            <input type="number" id="clWeight" value="70" min="1" step="0.1" oninput="calculate()">
+          </div>
+          <div class="cl-field">
+            <label id="clHeightLabel">身高 (cm)</label>
+            <input type="number" id="clHeight" value="175" min="1" step="0.1" oninput="calculate()">
+          </div>
+        </div>
+
+        <div class="cl-bmr">
+          <div class="label">基础代谢率 (BMR)</div>
+          <div class="num" id="clBmr">0</div>
+          <div class="label">千卡/天 · 身体静止时消耗的热量</div>
+        </div>
+
+        <div class="cl-tdee">
+          <div><span class="label">维持体重 (TDEE)</span><span class="num" id="clMaintain">0</span></div>
+          <div><span class="label">BMI 指数</span><span class="num" id="clBmi">0</span></div>
+        </div>
+
+        <div class="cl-goals">
+          <div><span class="label">减脂（热量缺口）</span><span class="num lose" id="clLose">0</span></div>
+          <div><span class="label">维持</span><span class="num maintain" id="clMaintain2">0</span></div>
+          <div><span class="label">增肌（热量盈余）</span><span class="num gain" id="clGain">0</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线热量计算器</h2>
+      <p>免费的在线每日卡路里需求计算工具，基于Mifflin-St Jeor基础代谢率公式（被公认为最准确的BMR估算公式之一）。输入年龄、性别、身高、体重和活动水平，自动计算：基础代谢率（BMR）、每日总热量消耗（TDEE）、BMI指数、减脂推荐热量（缺口10-20%）、增肌推荐热量（盈余10-20%）。支持公制（kg/cm）和英制（lb/in）单位切换。适合健身减脂人群规划饮食热量、增肌人群计算热量盈余、健康管理了解自身代谢水平。所有计算在浏览器本地完成，数据不会上传到服务器。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/calorie-calculator.html">热量计算</a> | <a href="../tools/discount-calculator.html">折扣计算</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let currentUnit = 'metric';
+
+    function setUnit(unit) {
+      currentUnit = unit;
+      document.querySelectorAll('.cl-unit button').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.cl-unit button')[unit === 'metric' ? 0 : 1].classList.add('active');
+      const wLabel = document.getElementById('clWeightLabel');
+      const hLabel = document.getElementById('clHeightLabel');
+      const w = document.getElementById('clWeight');
+      const h = document.getElementById('clHeight');
+      if (unit === 'metric') {
+        wLabel.textContent = '体重 (kg)';
+        hLabel.textContent = '身高 (cm)';
+        w.value = 70;
+        h.value = 175;
+      } else {
+        wLabel.textContent = '体重 (lb)';
+        hLabel.textContent = '身高 (in)';
+        w.value = 154;
+        h.value = 69;
+      }
+      calculate();
+    }
+
+    function calculate() {
+      const age = parseInt(document.getElementById('clAge').value) || 30;
+      const gender = document.getElementById('clGender').value;
+      const activity = parseFloat(document.getElementById('clActivity').value) || 1.375;
+      let weight = parseFloat(document.getElementById('clWeight').value) || 70;
+      let height = parseFloat(document.getElementById('clHeight').value) || 175;
+
+      // Convert to metric if imperial
+      if (currentUnit === 'imperial') {
+        weight = weight * 0.453592; // lb to kg
+        height = height * 2.54; // in to cm
+      }
+
+      // Mifflin-St Jeor
+      let bmr;
+      if (gender === 'male') {
+        bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+      } else {
+        bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+      }
+      bmr = Math.round(bmr);
+
+      const tdee = Math.round(bmr * activity);
+      const lose = Math.round(tdee - tdee * 0.15);
+      const gain = Math.round(tdee + tdee * 0.15);
+      const bmi = weight / Math.pow(height / 100, 2);
+
+      document.getElementById('clBmr').textContent = bmr.toLocaleString();
+      document.getElementById('clMaintain').textContent = tdee.toLocaleString() + ' 千卡';
+      document.getElementById('clBmi').textContent = bmi.toFixed(1);
+      document.getElementById('clLose').textContent = lose.toLocaleString() + ' 千卡';
+      document.getElementById('clMaintain2').textContent = tdee.toLocaleString() + ' 千卡';
+      document.getElementById('clGain').textContent = gain.toLocaleString() + ' 千卡';
+    }
+
+    window.addEventListener('DOMContentLoaded', calculate);
+  </script>
+</body>
+</html>
