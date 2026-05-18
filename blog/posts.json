@@ -1,5 +1,21 @@
 [
   {
+    "id": "043",
+    "date": "2026-05-18",
+    "zh": {
+      "title": "⚡ 5月18日晚间快讯：马斯克Neuralink首例失明治疗手术今年进行、英伟达周三财报定AI牛市方向、酷开发布企业AI操作系统",
+      "summary": "⚡ 最新快讯：马斯克宣布Neuralink计划今年进行首例用于治疗失明的植入手术；英伟达周三财报决定AI牛市命运；酷开发布企业AI操作系统；摩根大通大幅上调存储芯片三巨头目标价；我国'逐日工程'太空无线充电取得重大进展；玻璃基板或开启后摩尔时代材料革命。",
+      "tags": ["实时快讯", "Neuralink", "英伟达", "脑机接口", "AI操作系统"],
+      "file": "posts/043-neuralink-nvidia-ai-os-may-2026.zh.html"
+    },
+    "en": {
+      "title": "⚡ Flash Briefing May 18 Evening: Musk Says First Neuralink Blindness Surgery This Year, Nvidia Earnings to Decide AI Bull Market, Coocaa Launches Enterprise AI OS",
+      "summary": "Flash briefing: Elon Musk announces Neuralink plans first blindness-restoring implant surgery this year; Nvidia Wednesday earnings seen as make-or-break for AI bull market; Coocaa launches enterprise AI operating system; JPMorgan hikes Samsung/SK Hynix/Kioxia targets on LTA valuation shift; China 'Sun-Chasing Project' achieves breakthrough for space-based wireless power transmission; glass substrates may revolutionize AI chip packaging.",
+      "tags": ["Flash", "Neuralink", "Nvidia", "BCI", "AI OS", "Semiconductors"],
+      "file": "posts/043-neuralink-nvidia-ai-os-may-2026.en.html"
+    }
+  },
+  {
     "id": "042",
     "date": "2026-05-18",
     "zh": {
