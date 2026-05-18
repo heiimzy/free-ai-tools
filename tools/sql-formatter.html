@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL格式化工具 - 在线SQL美化与压缩 | Free AI Tools</title>
+  <meta name="description" content="免费在线SQL格式化工具，美化或压缩SQL查询语句。支持MySQL、PostgreSQL、SQLite等方言，可自定义缩进大小、关键字大小写，实时预览格式结果并一键复制。适合数据库管理员、后端开发者和数据分析师日常使用。">
+  <meta name="keywords" content="SQL格式化,SQL美化,SQL压缩,SQL在线工具,SQL格式化器,SQL Beautifier,SQL Formatter,MySQL格式化,数据库工具">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/sql-formatter.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .sf-layout { max-width: 560px; margin: 0 auto; display: grid; gap: 1rem; }
+    .sf-field { display: flex; flex-direction: column; gap: 0.3rem; }
+    .sf-field label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+    .sf-field textarea { width: 100%; min-height: 140px; padding: 0.65rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; resize: vertical; box-sizing: border-box; }
+    .sf-field textarea:focus { outline: none; border-color: var(--primary); }
+    .sf-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; }
+    .sf-field select { padding: 0.45rem 0.65rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: inherit; font-size: 0.85rem; }
+    .sf-field select:focus { outline: none; border-color: var(--primary); }
+    .sf-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .sf-actions button { padding: 0.5rem 1rem; border-radius: 8px; border: none; background: var(--primary); color: white; font-family: inherit; font-size: 0.8rem; cursor: pointer; transition: 0.15s; font-weight: 600; }
+    .sf-actions button:hover { opacity: 0.9; }
+    .sf-actions button.sec { background: var(--bg-card); border: 1px solid var(--border); color: var(--text); }
+    .sf-output { width: 100%; min-height: 140px; padding: 0.65rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; resize: vertical; box-sizing: border-box; overflow: auto; white-space: pre-wrap; word-break: break-all; }
+    .sf-stats { font-size: 0.75rem; color: var(--text-muted); display: flex; gap: 1rem; }
+    .sf-samples { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+    .sf-samples button { padding: 0.2rem 0.5rem; border-radius: 5px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-muted); font-family: inherit; font-size: 0.7rem; cursor: pointer; }
+    .sf-samples button:hover { border-color: var(--primary); color: var(--text); }
+    @media (max-width: 400px) { .sf-row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/sql-formatter.html">SQL格式化</a><a href="../tools/code-to-image.html">代码转图片</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>SQL 格式化工具 / SQL Formatter</h1>
+      <p>美化或压缩SQL查询语句，支持多种数据库方言。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="sf-layout">
+        <div class="sf-field">
+          <label>SQL 输入</label>
+          <textarea id="sfInput" placeholder="粘贴 SQL 语句..." oninput="autoFormat()">SELECT u.id,u.name,COUNT(o.id)as total_orders FROM users u LEFT JOIN orders o ON u.id=o.user_id WHERE u.status='active' AND o.created_at>='2026-01-01' GROUP BY u.id,u.name HAVING total_orders>5 ORDER BY total_orders DESC LIMIT 10;</textarea>
+        </div>
+
+        <div>
+          <label style="font-size:0.75rem;color:var(--text-muted);font-weight:600;">示例 SQL</label>
+          <div class="sf-samples">
+            <button onclick="loadSample('select')">SELECT</button>
+            <button onclick="loadSample('join')">JOIN</button>
+            <button onclick="loadSample('create')">CREATE TABLE</button>
+            <button onclick="loadSample('insert')">INSERT</button>
+          </div>
+        </div>
+
+        <div class="sf-row">
+          <div class="sf-field">
+            <label>缩进</label>
+            <select id="sfIndent" onchange="format()">
+              <option value="  ">2 空格</option>
+              <option value="    " selected>4 空格</option>
+              <option value="\t">Tab</option>
+            </select>
+          </div>
+          <div class="sf-field">
+            <label>关键字</label>
+            <select id="sfCase" onchange="format()">
+              <option value="upper">大写</option>
+              <option value="lower" selected>小写</option>
+            </select>
+          </div>
+          <div class="sf-field">
+            <label>模式</label>
+            <select id="sfMode" onchange="format()">
+              <option value="format">美化</option>
+              <option value="minify">压缩</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="sf-actions">
+          <button onclick="format()">格式化</button>
+          <button class="sec" onclick="copyOutput()">复制结果</button>
+          <button class="sec" onclick="clearAll()">清空</button>
+        </div>
+
+        <div class="sf-field">
+          <label>输出</label>
+          <div class="sf-output" id="sfOutput"></div>
+        </div>
+
+        <div class="sf-stats">
+          <span id="sfStats">字符: 0 | 行数: 0 | 关键字: 0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线SQL格式化美化工具</h2>
+      <p>免费的在线SQL格式化工具，一键美化或压缩SQL查询语句。支持MySQL、PostgreSQL、SQLite等主要数据库方言。可自定义缩进大小（2空格/4空格/Tab）、关键字大小写（大写/小写）、美化/压缩模式。内置示例SQL快速体验。格式化后的SQL可一键复制到剪贴板。适合数据库管理员优化SQL可读性、后端开发者调试查询、数据分析师整理复杂SQL逻辑。所有处理在浏览器本地完成，SQL语句不会上传到服务器。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/sql-formatter.html">SQL格式化</a> | <a href="../tools/jwt-debugger.html">JWT调试</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function $(id) { return document.getElementById(id); }
+    function showToast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2000); }
+
+    const SAMPLES = {
+      select: "SELECT id,username,email,created_at FROM users WHERE status='active' AND deleted_at IS NULL ORDER BY created_at DESC LIMIT 20;",
+      join: "SELECT u.username,u.email,o.id as order_id,o.total,o.status FROM users u INNER JOIN orders o ON u.id=o.user_id WHERE o.created_at>='2026-01-01' AND o.status IN ('pending','processing') ORDER BY o.created_at DESC;",
+      create: "CREATE TABLE IF NOT EXISTS users (id BIGINT AUTO_INCREMENT PRIMARY KEY,username VARCHAR(50) NOT NULL UNIQUE,email VARCHAR(255) NOT NULL,password_hash VARCHAR(255) NOT NULL,status ENUM('active','inactive','banned') DEFAULT 'active',created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;",
+      insert: "INSERT INTO products (name,category,price,stock,description) VALUES ('Wireless Mouse','Electronics',29.99,150,'Ergonomic wireless mouse with USB-C charging'),('Mechanical Keyboard','Electronics',89.99,75,'RGB mechanical keyboard with Cherry MX switches'),('USB-C Hub','Accessories',34.99,200,'7-in-1 USB-C hub with HDMI, USB 3.0, SD card') ON DUPLICATE KEY UPDATE stock=stock+VALUES(stock);"
+    };
+
+    function loadSample(name) {
+      $('sfInput').value = SAMPLES[name] || '';
+      format();
+    }
+
+    const KEYWORDS = [
+      'SELECT', 'FROM', 'WHERE', 'AND', 'OR', 'NOT', 'IN', 'IS', 'NULL',
+      'INSERT', 'INTO', 'VALUES', 'UPDATE', 'SET', 'DELETE',
+      'CREATE', 'TABLE', 'ALTER', 'DROP', 'INDEX', 'VIEW',
+      'JOIN', 'LEFT', 'RIGHT', 'INNER', 'OUTER', 'CROSS', 'ON',
+      'ORDER', 'BY', 'GROUP', 'HAVING', 'LIMIT', 'OFFSET',
+      'AS', 'DISTINCT', 'COUNT', 'SUM', 'AVG', 'MIN', 'MAX',
+      'BETWEEN', 'LIKE', 'EXISTS', 'CASE', 'WHEN', 'THEN', 'ELSE', 'END',
+      'ASC', 'DESC', 'UNION', 'ALL', 'ANY', 'SOME',
+      'IF', 'PRIMARY', 'KEY', 'FOREIGN', 'REFERENCES', 'CONSTRAINT',
+      'DEFAULT', 'CHECK', 'UNIQUE', 'AUTO_INCREMENT', 'ENGINE',
+      'CHARSET', 'COLLATE', 'DATABASE', 'USE', 'SHOW',
+      'TRUE', 'FALSE', 'WITH', 'RECURSIVE', 'OVER', 'PARTITION',
+      'ROW_NUMBER', 'RANK', 'DENSE_RANK', 'LAG', 'LEAD',
+      'CAST', 'COALESCE', 'NULLIF', 'GREATEST', 'LEAST',
+      'BEGIN', 'COMMIT', 'ROLLBACK', 'TRANSACTION',
+      'EXPLAIN', 'ANALYZE', 'VACUUM', 'TRUNCATE', 'REPLACE',
+      'DUPLICATE', 'KEY', 'IGNORE', 'DO'
+    ];
+    const KEYWORDS_SET = new Set(KEYWORDS);
+
+    function format() {
+      const input = $('sfInput').value.trim();
+      const indent = $('sfIndent').value;
+      const useUpper = $('sfCase').value === 'upper';
+      const mode = $('sfMode').value;
+
+      if (!input) {
+        $('sfOutput').textContent = '';
+        $('sfStats').textContent = '字符: 0 | 行数: 0 | 关键字: 0';
+        return;
+      }
+
+      try {
+        let result;
+        if (mode === 'minify') {
+          result = minifySql(input);
+        } else {
+          result = beautifySql(input, indent, useUpper);
+        }
+
+        $('sfOutput').textContent = result;
+        const keywordCount = result.split(/\s+/).filter(w => KEYWORDS_SET.has(w.toUpperCase())).length;
+        $('sfStats').textContent = `字符: ${result.length} | 行数: ${result.split('\n').length} | 关键字: ${keywordCount}`;
+      } catch (e) {
+        $('sfOutput').textContent = '格式化出错: ' + e.message;
+      }
+    }
+
+    function minifySql(sql) {
+      return sql.replace(/--.*$/gm, '')
+               .replace(/\/\*[\s\S]*?\*\//g, '')
+               .replace(/\s+/g, ' ')
+               .replace(/\s*([(),;])\s*/g, '$1')
+               .replace(/\s*([=<>!])\s*/g, '$1')
+               .trim();
+    }
+
+    function beautifySql(sql, indent, useUpper) {
+      // Remove comments
+      sql = sql.replace(/--.*$/gm, '');
+      sql = sql.replace(/\/\*[\s\S]*?\*\//g, '');
+
+      let tokens = tokenize(sql);
+      let out = '';
+      let depth = 0;
+      let newline = false;
+      let prevToken = '';
+
+      // Process special keywords that increase indent
+      const indentKeywords = new Set(['SELECT', 'SELECT DISTINCT']);
+      const clauseKeywords = ['FROM', 'WHERE', 'ORDER BY', 'GROUP BY', 'HAVING', 'LIMIT', 'OFFSET', 'INTO', 'VALUES', 'SET', 'ON DUPLICATE KEY UPDATE'];
+      const joinKeywords = ['JOIN', 'INNER JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'OUTER JOIN', 'CROSS JOIN', 'LEFT OUTER JOIN', 'RIGHT OUTER JOIN', 'FULL OUTER JOIN', 'NATURAL JOIN'];
+      const openParenKeywords = ['IN', 'CASE', 'WHEN'];
+
+      // Track clause positions
+      let clauseIndent = 0;
+      let inSelect = false;
+      let selectDepth = 0;
+
+      for (let i = 0; i < tokens.length; i++) {
+        let token = tokens[i];
+        let upper = token.toUpperCase();
+        let isKeyword = KEYWORDS_SET.has(upper);
+
+        // Apply case
+        if (isKeyword && useUpper) {
+          token = upper;
+        } else if (isKeyword && !useUpper) {
+          token = upper; // we use uppercase internally for keywords
+        }
+
+        // Handle special characters
+        if (token === '(') {
+          if (prevToken && KEYWORDS_SET.has(prevToken.toUpperCase())) {
+            // Keyword followed by parenthesis
+          }
+          out += token;
+          depth++;
+          newline = false;
+          prevToken = '(';
+          continue;
+        }
+
+        if (token === ')') {
+          depth = Math.max(0, depth - 1);
+          out += token;
+          newline = false;
+          prevToken = ')';
+          continue;
+        }
+
+        if (token === ';') {
+          out += ';';
+          // If more tokens follow, add newline
+          if (i < tokens.length - 1) {
+            out += '\n';
+          }
+          newline = false;
+          prevToken = ';';
+          continue;
+        }
+
+        if (token === ',') {
+          out += ',';
+          // Comma in SELECT clause gets special treatment
+          if (inSelect) {
+            out += '\n' + getIndent(depth + selectDepth, indent);
+          } else {
+            out += ' ';
+          }
+          newline = false;
+          prevToken = ',';
+          continue;
+        }
+
+        // Handle clause keywords
+        let clauseMatch = null;
+        for (let clause of clauseKeywords) {
+          if (upper === clause || upper.startsWith(clause)) {
+            clauseMatch = clause;
+            break;
+          }
+        }
+
+        // Handle join keywords
+        let joinMatch = null;
+        for (let jk of joinKeywords) {
+          if (upper === jk) {
+            joinMatch = jk;
+            break;
+          }
+        }
+
+        if (clauseMatch) {
+          out += '\n' + getIndent(depth, indent);
+          if (clauseMatch === 'SELECT' || clauseMatch === 'SELECT DISTINCT') {
+            inSelect = true;
+            selectDepth = 1;
+            out += clauseMatch + ' ';
+            prevToken = clauseMatch;
+            continue;
+          }
+          if (clauseMatch === 'ORDER BY' || clauseMatch === 'GROUP BY') {
+            out += clauseMatch + ' ';
+            prevToken = clauseMatch;
+            continue;
+          }
+          out += clauseMatch;
+          if (clauseMatch === 'VALUES') {
+            out += ' ';
+            // Values get indent
+            prevToken = clauseMatch;
+            continue;
+          }
+          inSelect = false;
+          out += ' ';
+          prevToken = clauseMatch;
+          continue;
+        }
+
+        if (joinMatch) {
+          out += '\n' + getIndent(depth, indent) + joinMatch + ' ';
+          prevToken = joinMatch;
+          continue;
+        }
+
+        // Regular keyword handling
+        if (isKeyword) {
+          // Check if it's an "AND"/"OR" that should start a new line in WHERE clause
+          if ((upper === 'AND' || upper === 'OR') && !newline) {
+            out += '\n' + getIndent(depth + 1, indent) + token;
+            newline = true;
+            prevToken = token;
+            continue;
+          }
+        }
+
+        out += token + ' ';
+        prevToken = token;
+        newline = false;
+      }
+
+      return out.replace(/ +/g, ' ').replace(/ \)/g, ')').replace(/ ,/g, ',').trim();
+    }
+
+    function getIndent(depth, indentStr) {
+      const tab = indentStr === '\t' ? '\t' : indentStr;
+      return Array(Math.max(0, depth) + 1).join(tab);
+    }
+
+    function tokenize(sql) {
+      const tokens = [];
+      let i = 0;
+      let current = '';
+      const s = sql;
+
+      while (i < s.length) {
+        const ch = s[i];
+
+        // String literals
+        if (ch === "'" || ch === '"') {
+          if (current.trim()) { tokens.push(current.trim()); current = ''; }
+          let str = ch;
+          i++;
+          while (i < s.length && s[i] !== ch) {
+            if (s[i] === '\\') { str += s[i] + (s[i+1] || ''); i += 2; }
+            else { str += s[i]; i++; }
+          }
+          str += ch;
+          i++;
+          tokens.push(str);
+          continue;
+        }
+
+        // Backtick identifiers
+        if (ch === '`') {
+          if (current.trim()) { tokens.push(current.trim()); current = ''; }
+          let bt = '`';
+          i++;
+          while (i < s.length && s[i] !== '`') { bt += s[i]; i++; }
+          bt += '`';
+          i++;
+          tokens.push(bt);
+          continue;
+        }
+
+        // Parentheses and commas
+        if (ch === '(' || ch === ')' || ch === ',') {
+          if (current.trim()) { tokens.push(current.trim()); current = ''; }
+          tokens.push(ch);
+          i++;
+          continue;
+        }
+
+        // Semicolon
+        if (ch === ';') {
+          if (current.trim()) { tokens.push(current.trim()); current = ''; }
+          tokens.push(';');
+          i++;
+          continue;
+        }
+
+        // Whitespace
+        if (/\s/.test(ch)) {
+          if (current.trim()) { tokens.push(current.trim()); current = ''; }
+          i++;
+          continue;
+        }
+
+        current += ch;
+        i++;
+      }
+
+      if (current.trim()) {
+        tokens.push(current.trim());
+      }
+
+      return tokens;
+    }
+
+    function copyOutput() {
+      const text = $('sfOutput').textContent;
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => showToast('已复制!')).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        document.execCommand('copy'); ta.remove();
+        showToast('已复制!');
+      });
+    }
+
+    function clearAll() {
+      $('sfInput').value = '';
+      $('sfOutput').textContent = '';
+      $('sfStats').textContent = '字符: 0 | 行数: 0 | 关键字: 0';
+    }
+
+    function autoFormat() {
+      // Debounced auto-format
+      if (window._fmtTimer) clearTimeout(window._fmtTimer);
+      window._fmtTimer = setTimeout(format, 300);
+    }
+
+    window.addEventListener('DOMContentLoaded', format);
+  </script>
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JWT调试器 - 在线JWT Token解码与验证 | Free AI Tools</title>
+  <meta name="description" content="免费在线JWT调试器，解码和检查JSON Web Token。自动解析Header和Payload，高亮显示claims，检查签名算法，验证Token过期时间。适合后端开发者、API集成工程师调试认证流程。支持HS256/RS256/ES256等算法识别。">
+  <meta name="keywords" content="JWT调试器,JWT解码,JWT Token解析,JSON Web Token调试,JWT在线工具,JWT Debugger,Token解码,API认证调试">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/jwt-debugger.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .jw-layout { max-width: 560px; margin: 0 auto; display: grid; gap: 1rem; }
+    .jw-field { display: flex; flex-direction: column; gap: 0.3rem; }
+    .jw-field label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+    .jw-field textarea, .jw-field input { padding: 0.55rem 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; }
+    .jw-field textarea { width: 100%; min-height: 60px; resize: vertical; box-sizing: border-box; word-break: break-all; }
+    .jw-field input:focus, .jw-field textarea:focus { outline: none; border-color: var(--primary); }
+    .jw-sections { display: grid; gap: 0.75rem; }
+    .jw-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 0.75rem; }
+    .jw-section h3 { font-size: 0.8rem; margin: 0 0 0.5rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.4rem; }
+    .jw-section h3 .badge { font-size: 0.6rem; padding: 0.15rem 0.45rem; border-radius: 4px; font-weight: 600; }
+    .jw-section pre { margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; line-height: 1.5; white-space: pre-wrap; word-break: break-word; color: var(--text); max-height: 260px; overflow: auto; }
+    .jw-section .json-key { color: var(--secondary); }
+    .jw-section .json-string { color: #a3be8c; }
+    .jw-section .json-number { color: #fab387; }
+    .jw-section .json-bool { color: #89b4fa; }
+    .jw-section .json-null { color: #6c7086; font-style: italic; }
+    .jw-algo { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 600; background: rgba(167,139,250,0.15); color: var(--primary); }
+    .jw-status { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+    .jw-status > div { padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 0.72rem; background: rgba(167,139,250,0.05); border: 1px solid var(--border); }
+    .jw-status .good { color: #a3be8c; }
+    .jw-status .bad { color: #ff5f57; }
+    .jw-status .warn { color: #febc2e; }
+    .jw-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .jw-actions button { padding: 0.45rem 1rem; border-radius: 8px; border: none; background: var(--primary); color: white; font-family: inherit; font-size: 0.8rem; cursor: pointer; transition: 0.15s; font-weight: 600; }
+    .jw-actions button:hover { opacity: 0.9; }
+    .jw-actions button.sec { background: var(--bg-card); border: 1px solid var(--border); color: var(--text); }
+    .jw-error { background: rgba(255,95,87,0.1); border: 1px solid rgba(255,95,87,0.2); border-radius: 8px; padding: 0.6rem 0.75rem; font-size: 0.8rem; color: #ff5f57; display: none; }
+    .jw-samples { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+    .jw-samples button { padding: 0.2rem 0.5rem; border-radius: 5px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-muted); font-family: inherit; font-size: 0.7rem; cursor: pointer; }
+    .jw-samples button:hover { border-color: var(--primary); color: var(--text); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/jwt-debugger.html">JWT调试</a><a href="../tools/sql-formatter.html">SQL格式化</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>JWT 调试器 / JWT Debugger</h1>
+      <p>解码和检查 JSON Web Token，查看 claims、验证签名算法和过期时间。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="jw-layout">
+        <div class="jw-field">
+          <label>JWT Token</label>
+          <textarea id="jwInput" placeholder="在此粘贴 JWT token..." oninput="decode()">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjk5OTk5OTk5OTksInJvbGUiOiJhZG1pbiIsImVtYWlsIjoidXNlckBleGFtcGxlLmNvbSJ9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c</textarea>
+        </div>
+
+        <div>
+          <label style="font-size:0.75rem;color:var(--text-muted);font-weight:600;">示例 Token</label>
+          <div class="jw-samples">
+            <button onclick="loadToken('admin')">Admin</button>
+            <button onclick="loadToken('user')">User</button>
+            <button onclick="loadToken('expired')">已过期</button>
+          </div>
+        </div>
+
+        <div class="jw-error" id="jwError"></div>
+
+        <div class="jw-actions">
+          <button onclick="decode()">解码</button>
+          <button class="sec" onclick="copyJson()">复制 Payload JSON</button>
+          <button class="sec" onclick="clearToken()">清空</button>
+        </div>
+
+        <div class="jw-sections">
+          <div class="jw-section">
+            <h3>Header <span class="badge jw-algo" id="jwAlgo">HS256</span></h3>
+            <pre id="jwHeader">{\n  "alg": "HS256",\n  "typ": "JWT"\n}</pre>
+          </div>
+
+          <div class="jw-section">
+            <h3>Payload</h3>
+            <pre id="jwPayload">{\n  "sub": "1234567890",\n  "name": "John Doe",\n  "iat": 1516239022,\n  "exp": 9999999999,\n  "role": "admin",\n  "email": "user@example.com"\n}</pre>
+          </div>
+
+          <div class="jw-section">
+            <h3>Signature</h3>
+            <pre id="jwSignature">SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c</pre>
+          </div>
+        </div>
+
+        <div>
+          <h3 style="font-size:0.8rem;color:var(--text-muted);font-weight:600;margin-bottom:0.3rem;">Token 状态</h3>
+          <div class="jw-status" id="jwStatus">
+            <div class="good">✓ 格式正确</div>
+            <div class="good">✓ 未过期</div>
+            <div id="jwIssuer"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线JWT Token调试解码工具</h2>
+      <p>免费的在线JWT调试器，解码和检查JSON Web Token。粘贴JWT即可自动解析Header和Payload，以格式化的JSON展示所有claims。自动识别签名算法（HS256/RS256/ES256等），检查Token是否过期，显示签发时间(iat)和过期时间(exp)。支持复制Payload JSON方便调试。内置三个示例Token（管理员、普通用户、已过期Token）快速体验。适合后端开发者调试API认证、前端工程师验证Token内容、DevOps排查授权问题。所有解码在浏览器本地完成，Token不会上传到服务器。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/jwt-debugger.html">JWT调试</a> | <a href="../tools/code-to-image.html">代码转图片</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function $(id) { return document.getElementById(id); }
+    function showToast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2000); }
+    let lastPayload = {};
+
+    // Sample tokens
+    const SAMPLES = {
+      admin: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjk5OTk5OTk5OTksInJvbGUiOiJhZG1pbiIsImVtYWlsIjoidXNlckBleGFtcGxlLmNvbSJ9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
+      user: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1Njc4OTAxMjM0IiwibmFtZSI6IkpvaW4gU21pdGgiLCJpYXQiOjE3MTYyMzkwMjIsImV4cCI6MTc0Nzc2NTAyMiwicm9sZSI6InVzZXIiLCJlbWFpbCI6ImpvaW5Ac21pdGguY29tIn0.fake_signature_here',
+      expired: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5OTg3NjU0MzIxIiwibmFtZSI6Ik9sZCBVc2VyIiwiaWF0IjoxNTAwMDAwMDAwLCJleHAiOjE1MDAwMDAwNjAsInJvbGUiOiJ1c2VyIn0.fake_expired_signature'
+    };
+
+    function loadToken(name) {
+      $('jwInput').value = SAMPLES[name] || '';
+      decode();
+    }
+
+    function decode() {
+      const token = $('jwInput').value.trim();
+      const errorEl = $('jwError');
+
+      if (!token) {
+        errorEl.style.display = 'none';
+        $('jwHeader').textContent = '(等待输入)';
+        $('jwPayload').textContent = '(等待输入)';
+        $('jwSignature').textContent = '(等待输入)';
+        $('jwAlgo').textContent = '-';
+        $('jwStatus').innerHTML = '';
+        return;
+      }
+
+      const parts = token.split('.');
+      if (parts.length !== 3) {
+        errorEl.textContent = '⚠️ 无效的JWT格式：Token应包含3个由点号(.)分隔的部分（header.payload.signature）';
+        errorEl.style.display = 'block';
+        $('jwHeader').textContent = '(格式错误)';
+        $('jwPayload').textContent = '(格式错误)';
+        $('jwSignature').textContent = '(格式错误)';
+        $('jwAlgo').textContent = '-';
+        $('jwStatus').innerHTML = '';
+        return;
+      }
+
+      errorEl.style.display = 'none';
+      const [headerB64, payloadB64, sigB64] = parts;
+
+      try {
+        // Decode header
+        const headerJson = JSON.parse(base64UrlDecode(headerB64));
+        $('jwHeader').textContent = JSON.stringify(headerJson, null, 2);
+        $('jwAlgo').textContent = headerJson.alg || 'unknown';
+
+        // Decode payload
+        const payloadJson = JSON.parse(base64UrlDecode(payloadB64));
+        lastPayload = payloadJson;
+        $('jwPayload').innerHTML = syntaxHighlight(JSON.stringify(payloadJson, null, 2));
+
+        // Signature
+        $('jwSignature').textContent = sigB64;
+
+        // Build status
+        let statusHtml = '';
+
+        // Valid JSON structure
+        statusHtml += '<div class="good">✓ 格式正确</div>';
+
+        // Check expiration
+        const now = Math.floor(Date.now() / 1000);
+        if (payloadJson.exp) {
+          if (payloadJson.exp > now) {
+            const daysLeft = Math.round((payloadJson.exp - now) / 86400);
+            statusHtml += `<div class="good">✓ 未过期（剩余 ${daysLeft} 天）</div>`;
+          } else {
+            const daysAgo = Math.round((now - payloadJson.exp) / 86400);
+            statusHtml += `<div class="bad">✗ 已过期（${daysAgo} 天前）</div>`;
+          }
+        } else {
+          statusHtml += '<div class="warn">⚠ 无 exp 声明（不过期）</div>';
+        }
+
+        // Issuer
+        if (payloadJson.iss) {
+          statusHtml += `<div>🏢 签发者: ${payloadJson.iss}</div>`;
+        }
+        // Subject
+        if (payloadJson.sub) {
+          statusHtml += `<div>👤 主题: ${payloadJson.sub}</div>`;
+        }
+        // Role
+        if (payloadJson.role) {
+          statusHtml += `<div>🔑 角色: ${payloadJson.role}</div>`;
+        }
+        // IAT
+        if (payloadJson.iat) {
+          const iatDate = new Date(payloadJson.iat * 1000);
+          statusHtml += `<div>📅 签发: ${iatDate.toISOString().split('T')[0]}</div>`;
+        }
+
+        $('jwStatus').innerHTML = statusHtml;
+
+      } catch (e) {
+        errorEl.textContent = '⚠️ 解析错误：' + e.message + ' — 请检查Token是否完整且有效';
+        errorEl.style.display = 'block';
+      }
+    }
+
+    function base64UrlDecode(str) {
+      // Replace URL-safe chars and add padding
+      let base64 = str.replace(/-/g, '+').replace(/_/g, '/');
+      while (base64.length % 4) base64 += '=';
+      try {
+        const decoded = atob(base64);
+        // Check if it's UTF-8 (handle non-ASCII)
+        try {
+          return decodeURIComponent(Array.from(decoded).map(c =>
+            '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+          ).join(''));
+        } catch {
+          return decoded;
+        }
+      } catch (e) {
+        throw new Error('Base64解码失败');
+      }
+    }
+
+    function syntaxHighlight(json) {
+      // Colorize JSON for display
+      return json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"([^"]+)":/g, '<span class="json-key">"$1"</span>:')
+        .replace(/: "([^"]*)"/g, ': <span class="json-string">"$1"</span>')
+        .replace(/: (\d+\.?\d*)/g, ': <span class="json-number">$1</span>')
+        .replace(/: (true|false)/g, ': <span class="json-bool">$1</span>')
+        .replace(/: (null)/g, ': <span class="json-null">$1</span>');
+    }
+
+    function copyJson() {
+      const text = JSON.stringify(lastPayload, null, 2);
+      if (!text || text === '{}') { showToast('请先解码一个Token'); return; }
+      navigator.clipboard.writeText(text).then(() => showToast('Payload JSON已复制!')).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        document.execCommand('copy'); ta.remove();
+        showToast('Payload JSON已复制!');
+      });
+    }
+
+    function clearToken() {
+      $('jwInput').value = '';
+      decode();
+    }
+
+    window.addEventListener('DOMContentLoaded', decode);
+  </script>
+</body>
+</html>

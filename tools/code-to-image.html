@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>代码转图片工具 - 在线生成代码截图 | Free AI Tools</title>
+  <meta name="description" content="免费在线代码转图片工具，将代码片段转换为漂亮的社交分享图片。支持多种编程语言、代码主题（黑暗/明亮/Monokai等）、自定义背景色和内边距。一键下载高清PNG图片，适合开发者分享代码到Twitter、LinkedIn、微博等社交平台。">
+  <meta name="keywords" content="代码转图片,Code to Image,代码截图生成,代码分享图片,代码美化截图,Poetry代码截图,代码卡片生成,编程截图工具">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/code-to-image.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .ci-layout { max-width: 560px; margin: 0 auto; display: grid; gap: 1rem; }
+    .ci-field { display: flex; flex-direction: column; gap: 0.3rem; }
+    .ci-field label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+    .ci-field textarea { width: 100%; min-height: 150px; padding: 0.65rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; resize: vertical; box-sizing: border-box; tab-size: 2; }
+    .ci-field textarea:focus { outline: none; border-color: var(--primary); }
+    .ci-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .ci-field select, .ci-field input { padding: 0.45rem 0.65rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: inherit; font-size: 0.85rem; }
+    .ci-field select:focus, .ci-field input:focus { outline: none; border-color: var(--primary); }
+    .ci-field input[type="color"] { height: 42px; padding: 3px; cursor: pointer; }
+    .ci-preview { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; display: flex; flex-direction: column; align-items: center; gap: 0.75rem; }
+    .ci-preview canvas { max-width: 100%; border-radius: 8px; }
+    .ci-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; }
+    .ci-actions button { padding: 0.5rem 1rem; border-radius: 8px; border: none; background: var(--primary); color: white; font-family: inherit; font-size: 0.8rem; cursor: pointer; transition: 0.15s; font-weight: 600; }
+    .ci-actions button:hover { opacity: 0.9; }
+    .ci-actions button.sec { background: var(--bg-card); border: 1px solid var(--border); color: var(--text); }
+    .ci-samples { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+    .ci-samples button { padding: 0.2rem 0.5rem; border-radius: 5px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-muted); font-family: inherit; font-size: 0.7rem; cursor: pointer; }
+    .ci-samples button:hover { border-color: var(--primary); color: var(--text); }
+    @media (max-width: 400px) { .ci-row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/code-to-image.html">代码转图片</a><a href="../tools/sql-formatter.html">SQL格式化</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>代码转图片 / Code to Image</h1>
+      <p>将代码片段转化为精美的社交分享图片，支持多种主题和语言。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="ci-layout">
+        <div class="ci-field">
+          <label>代码</label>
+          <textarea id="ciCode" placeholder="在此粘贴代码..." oninput="render()">function fibonacci(n) {
+  if (n <= 1) return n;
+  let a = 0, b = 1;
+  for (let i = 2; i <= n; i++) {
+    [a, b] = [b, a + b];
+  }
+  return b;
+}
+
+console.log(fibonacci(10)); // 55</textarea>
+        </div>
+
+        <div>
+          <label style="font-size:0.75rem;color:var(--text-muted);font-weight:600;">示例代码</label>
+          <div class="ci-samples">
+            <button onclick="loadSample('js')">JavaScript</button>
+            <button onclick="loadSample('python')">Python</button>
+            <button onclick="loadSample('go')">Go</button>
+            <button onclick="loadSample('rust')">Rust</button>
+          </div>
+        </div>
+
+        <div class="ci-row">
+          <div class="ci-field">
+            <label>主题</label>
+            <select id="ciTheme" onchange="render()">
+              <option value="dark">暗色 (Dark)</option>
+              <option value="light">亮色 (Light)</option>
+              <option value="monokai" selected>Monokai</option>
+              <option value="dracula">Dracula</option>
+              <option value="github">GitHub Light</option>
+              <option value="nord">Nord</option>
+            </select>
+          </div>
+          <div class="ci-field">
+            <label>语言</label>
+            <select id="ciLang" onchange="render()">
+              <option value="javascript">JavaScript</option>
+              <option value="python">Python</option>
+              <option value="html">HTML</option>
+              <option value="css">CSS</option>
+              <option value="go">Go</option>
+              <option value="rust">Rust</option>
+              <option value="typescript">TypeScript</option>
+              <option value="java">Java</option>
+              <option value="sql">SQL</option>
+              <option value="bash">Bash</option>
+              <option value="json">JSON</option>
+              <option value="yaml">YAML</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="ci-row">
+          <div class="ci-field">
+            <label>窗口背景色</label>
+            <input type="color" id="ciBg" value="#1e1e2e" oninput="render()">
+          </div>
+          <div class="ci-field">
+            <label>字号 (px)</label>
+            <input type="number" id="ciFontSize" value="14" min="10" max="28" oninput="render()">
+          </div>
+        </div>
+
+        <div class="ci-preview">
+          <canvas id="ciCanvas"></canvas>
+          <div class="ci-actions">
+            <button onclick="download()">下载 PNG</button>
+            <button class="sec" onclick="copyCanvas()">复制到剪贴板</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线代码转图片工具</h2>
+      <p>免费的在线代码截图生成器，将代码片段转换为精美的社交分享图片。支持JavaScript、Python、Go、Rust、TypeScript、HTML、CSS、SQL等多种编程语言。内置多种代码主题（Monokai、Dracula、Nord、GitHub Light等），可自定义窗口背景色、字号和内边距。生成的PNG图片高清无水印，适合开发者分享代码到Twitter/X、LinkedIn、微博、掘金等平台代替传统截图。所有转换在浏览器本地完成，代码不会上传到服务器。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/code-to-image.html">代码转图片</a> | <a href="../tools/sql-formatter.html">SQL格式化</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function $(id) { return document.getElementById(id); }
+    function showToast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2000); }
+
+    const SAMPLES = {
+      js: `function fibonacci(n) {\n  if (n <= 1) return n;\n  let a = 0, b = 1;\n  for (let i = 2; i <= n; i++) {\n    [a, b] = [b, a + b];\n  }\n  return b;\n}\n\nconsole.log(fibonacci(10)); // 55`,
+      python: `def fibonacci(n):\n    a, b = 0, 1\n    for _ in range(n):\n        a, b = b, a + b\n    return a\n\nprint(fibonacci(10))  # 55`,
+      go: `package main\n\nimport "fmt"\n\nfunc fibonacci(n int) int {\n    if n <= 1 {\n        return n\n    }\n    a, b := 0, 1\n    for i := 2; i <= n; i++ {\n        a, b = b, a+b\n    }\n    return b\n}\n\nfunc main() {\n    fmt.Println(fibonacci(10))\n}`,
+      rust: `fn fibonacci(n: u32) -> u32 {\n    match n {\n        0 => 0,\n        1 => 1,\n        _ => fibonacci(n - 1) + fibonacci(n - 2),\n    }\n}\n\nfn main() {\n    println!("{}", fibonacci(10));\n}`
+    };
+
+    function loadSample(name) {
+      $('ciCode').value = SAMPLES[name] || '';
+      render();
+    }
+
+    // Theme color definitions
+    const THEMES = {
+      monokai:     { bg: '#272822', fg: '#f8f8f2', line: '#3e3d32', comment: '#75715e', keyword: '#f92672', str: '#e6db74', num: '#ae81ff', fn: '#a6e22e', type: '#66d9ef', op: '#f92672' },
+      dark:        { bg: '#1e1e2e', fg: '#cdd6f4', line: '#313244', comment: '#6c7086', keyword: '#cba6f7', str: '#a6e3a1', num: '#fab387', fn: '#89b4fa', type: '#38bdae', op: '#89b4fa' },
+      light:       { bg: '#ffffff', fg: '#1e1e2e', line: '#e6e9ef', comment: '#9ca0b0', keyword: '#8839ef', str: '#40a02b', num: '#fe640b', fn: '#1e66f5', type: '#04a5e5', op: '#d20f39' },
+      dracula:     { bg: '#282a36', fg: '#f8f8f2', line: '#44475a', comment: '#6272a4', keyword: '#ff79c6', str: '#f1fa8c', num: '#bd93f9', fn: '#50fa7b', type: '#8be9fd', op: '#ff79c6' },
+      github:      { bg: '#ffffff', fg: '#24292f', line: '#d0d7de', comment: '#6e7781', keyword: '#cf222e', str: '#0a3069', num: '#0550ae', fn: '#6639ba', type: '#0550ae', op: '#d20f39' },
+      nord:        { bg: '#2e3440', fg: '#d8dee9', line: '#434c5e', comment: '#616e88', keyword: '#81a1c1', str: '#a3be8c', num: '#b48ead', fn: '#88c0d0', type: '#8fbcbb', op: '#81a1c1' }
+    };
+
+    function escapeHtml(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    // Simple syntax highlighting (produces HTML with spans)
+    function highlight(code, lang) {
+      const t = THEMES[$('ciTheme').value] || THEMES.monokai;
+      let h = escapeHtml(code);
+
+      // Keywords per language
+      const keywords = ['function','return','if','else','for','while','do','switch','case','break','continue','var','let','const','class','import','export','from','def','class','if','elif','else','for','in','while','return','import','from','async','await','yield','try','except','finally','with','as','pass','raise','None','True','False','and','or','not','is','lambda','package','import','func','defer','go','range','select','struct','interface','map','type','chan','match','fn','let','mut','if','else','for','in','while','return','impl','trait','enum','use','mod','pub','self','super','where','as','move','ref','static','const','true','false'];
+
+      // Highlight strings (double and single quoted)
+      h = h.replace(/(["'`])(?:(?!\1|\\).|\\.)*\1/g, '<span style="color:' + t.str + '">$&</span>');
+
+      // Highlight comments: // and /* */
+      h = h.replace(/(\/\/.*)/g, '<span style="color:' + t.comment + '">$1</span>');
+      h = h.replace(/(\/\*[\s\S]*?\*\/)/g, '<span style="color:' + t.comment + '">$1</span>');
+
+      // Highlight numbers
+      h = h.replace(/\b(\d+\.?\d*)\b/g, '<span style="color:' + t.num + '">$1</span>');
+
+      // Highlight keywords (word boundaries)
+      const kwSet = new Set(keywords);
+      // Process word by word to avoid nested span issues
+      // First wrap in a container to handle remaining words
+      h = h.replace(/\b([a-zA-Z_]\w*)\b/g, function(match) {
+        if (kwSet.has(match)) {
+          return '<span style="color:' + t.keyword + '">' + match + '</span>';
+        }
+        return match;
+      });
+
+      // Highlight function calls (word followed by parenthesis)
+      h = h.replace(/\b([a-zA-Z_]\w*)(?=\s*\()/g, function(match) {
+        // Skip if already wrapped
+        if (match.startsWith('<span') || match.startsWith('&')) return match;
+        return '<span style="color:' + t.fn + '">' + match + '</span>';
+      });
+
+      return h;
+    }
+
+    function render() {
+      const code = $('ciCode').value;
+      const canvas = $('ciCanvas');
+      const theme = THEMES[$('ciTheme').value] || THEMES.monokai;
+      const fontSize = parseInt($('ciFontSize').value) || 14;
+      const bgColor = $('ciBg').value;
+      const lang = $('ciLang').value;
+
+      // If no code, show empty
+      if (!code.trim()) {
+        const ctx = canvas.getContext('2d');
+        canvas.width = 0; canvas.height = 0;
+        return;
+      }
+
+      const lineHeight = fontSize * 1.6;
+      const padding = 32;
+      const windowTitleH = 38;
+      const radius = 12;
+
+      // Highlight HTML
+      const highlighted = highlight(code, lang);
+
+      // Measure using off-screen rendering
+      const measureDiv = document.createElement('div');
+      measureDiv.style.cssText = 'position:absolute;left:-9999px;top:0;visibility:hidden;font-family:"JetBrains Mono",monospace;font-size:' + fontSize + 'px;line-height:' + lineHeight + 'px;white-space:pre;padding:' + padding + 'px;';
+      measureDiv.innerHTML = highlighted || escapeHtml(code);
+      document.body.appendChild(measureDiv);
+
+      const lines = code.split('\n');
+      const maxLineW = Math.max(...lines.map(l => l.length));
+      const charW = fontSize * 0.6;
+      const contentW = Math.max(200, Math.min(800, maxLineW * charW + padding * 2));
+      const contentH = Math.max(60, lines.length * lineHeight + padding * 2);
+
+      const totalW = Math.ceil(contentW);
+      const totalH = Math.ceil(contentH + windowTitleH);
+
+      canvas.width = totalW * 2; // 2x for retina
+      canvas.height = totalH * 2;
+      const ctx = canvas.getContext('2d');
+      ctx.scale(2, 2);
+
+      // Draw rounded rect background
+      function roundRect(ctx, x, y, w, h, r) {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + w - r, y);
+        ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+        ctx.lineTo(x + w, y + h - r);
+        ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        ctx.lineTo(x + r, y + h);
+        ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+        ctx.lineTo(x, y + r);
+        ctx.quadraticCurveTo(x, y, x + r, y);
+        ctx.closePath();
+      }
+
+      // Shadow
+      ctx.shadowColor = 'rgba(0,0,0,0.3)';
+      ctx.shadowBlur = 20;
+      ctx.shadowOffsetY = 8;
+      roundRect(ctx, 0, 0, totalW, totalH, radius);
+      ctx.fillStyle = bgColor;
+      ctx.fill();
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur = 0;
+
+      // Redraw background on top of shadow
+      roundRect(ctx, 0, 0, totalW, totalH, radius);
+      ctx.fillStyle = bgColor;
+      ctx.fill();
+
+      // Window title bar
+      ctx.fillStyle = 'rgba(0,0,0,0.15)';
+      ctx.beginPath();
+      ctx.moveTo(radius, 0);
+      ctx.lineTo(totalW - radius, 0);
+      ctx.quadraticCurveTo(totalW, 0, totalW, radius);
+      ctx.lineTo(totalW, windowTitleH);
+      ctx.lineTo(0, windowTitleH);
+      ctx.lineTo(0, radius);
+      ctx.quadraticCurveTo(0, 0, radius, 0);
+      ctx.closePath();
+      ctx.fill();
+
+      // Window buttons
+      const btns = [['#ff5f57', 14], ['#febc2e', 14 + 22], ['#28c840', 14 + 44]];
+      btns.forEach(([color, x]) => {
+        ctx.beginPath();
+        ctx.arc(x, windowTitleH / 2, 5, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+      });
+
+      // Title text
+      ctx.fillStyle = theme.comment;
+      ctx.font = '11px "M PLUS Rounded 1c", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(lang + '.py', totalW / 2, windowTitleH / 2);
+
+      // Draw code text
+      const textX = padding;
+      const textY = windowTitleH + padding;
+      ctx.font = fontSize + 'px "JetBrains Mono", monospace';
+      ctx.textBaseline = 'top';
+
+      const lines2 = code.split('\n');
+      // Draw line numbers
+      const lineNumW = ctx.measureText(String(lines2.length)).width + 16;
+      lines2.forEach((line, i) => {
+        const y = textY + i * lineHeight;
+
+        // Line number
+        ctx.fillStyle = theme.comment + '60';
+        ctx.textAlign = 'right';
+        ctx.fillText(String(i + 1), textX + lineNumW - 8, y);
+      });
+
+      // Draw highlighted code with offset
+      measureDiv.style.left = '-9999px';
+      // Position the highlighted HTML on a temporary canvas-like element for drawing
+      // Actually use a simpler approach: draw the HTML onto a temp element then paint to canvas
+      const tempSpan = document.createElement('span');
+      tempSpan.innerHTML = highlighted;
+      tempSpan.style.cssText = 'font-family:"JetBrains Mono",monospace;font-size:' + fontSize + 'px;line-height:' + lineHeight + 'px;white-space:pre;position:absolute;left:-9999px;top:0;';
+      document.body.appendChild(tempSpan);
+
+      // For canvas, we need to parse the spans and draw with colors
+      // Simplified: draw line by line using the HTML structure
+      ctx.textAlign = 'left';
+      const codeLines = code.split('\n');
+      const hlLines = highlighted.split('\n');
+
+      // Process line by line
+      for (let i = 0; i < codeLines.length; i++) {
+        const y = textY + i * lineHeight;
+        // Draw code text with full color
+        const lineHtml = hlLines[i] || escapeHtml(codeLines[i]);
+
+        // Parse spans and draw
+        const spanRegex = /<span style="color:([^"]+)">([^<]+)<\/span>/g;
+        const plainText = escapeHtml(codeLines[i]);
+
+        // Approach: draw entire line first in default color, then overlay colored parts
+        // Better: use a temp div, then measure and draw
+        const lineDiv = document.createElement('div');
+        lineDiv.innerHTML = lineHtml;
+        lineDiv.style.cssText = 'font-family:"JetBrains Mono",monospace;font-size:' + fontSize + 'px;line-height:' + lineHeight + 'px;white-space:pre;position:absolute;left:-9999px;top:0;';
+        document.body.appendChild(lineDiv);
+
+        const children = lineDiv.childNodes;
+        let xPos = 0;
+        for (let j = 0; j < children.length; j++) {
+          const node = children[j];
+          if (node.nodeType === 3) {
+            // Text node
+            ctx.fillStyle = theme.fg;
+            ctx.fillText(node.textContent, textX + lineNumW + xPos, y);
+            xPos += ctx.measureText(node.textContent).width;
+          } else if (node.tagName === 'SPAN') {
+            const color = node.style.color || theme.fg;
+            ctx.fillStyle = color;
+            ctx.fillText(node.textContent, textX + lineNumW + xPos, y);
+            xPos += ctx.measureText(node.textContent).width;
+          }
+        }
+
+        document.body.removeChild(lineDiv);
+      }
+
+      document.body.removeChild(tempSpan);
+      document.body.removeChild(measureDiv);
+    }
+
+    function download() {
+      const canvas = $('ciCanvas');
+      if (!canvas.width || !canvas.height) { showToast('请先输入代码'); return; }
+      const link = document.createElement('a');
+      link.download = 'code-snippet-' + Date.now() + '.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      showToast('PNG已下载!');
+    }
+
+    function copyCanvas() {
+      const canvas = $('ciCanvas');
+      if (!canvas.width || !canvas.height) { showToast('请先输入代码'); return; }
+      canvas.toBlob(function(blob) {
+        navigator.clipboard.write([
+          new ClipboardItem({ 'image/png': blob })
+        ]).then(function() { showToast('已复制到剪贴板!'); }).catch(function() {
+          const dataUrl = canvas.toDataURL('image/png');
+          const ta = document.createElement('textarea');
+          ta.value = dataUrl; document.body.appendChild(ta); ta.select();
+          document.execCommand('copy'); ta.remove();
+          showToast('已复制Data URL!');
+        });
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', render);
+  </script>
+</body>
+</html>
