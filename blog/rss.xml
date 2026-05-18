@@ -5,8 +5,15 @@
     <link>https://heiimzy.github.io/free-ai-tools/blog/</link>
     <description>每小时更新AI领域最新动态，涵盖AI新闻、AI工具推荐、AI赚钱变现方法、AI提升效率技巧</description>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 22 May 2026 12:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Sun, 18 May 2026 23:30:00 GMT</lastBuildDate>
     <atom:link href="https://heiimzy.github.io/free-ai-tools/blog/rss.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>2026年5月AI新闻周报：Schmidt被嘘背后AI信任危机、arXiv封禁AI写论文、43万API密钥泄露</title>
+      <link>https://heiimzy.github.io/free-ai-tools/blog/posts/038-ai-news-may-2026-week3-deep.zh.html</link>
+      <description>2026年5月第三周AI新闻综述：前谷歌CEO Eric Schmidt演讲遭全场嘘声暴露AI信任裂痕；arXiv宣布AI代写论文封禁一年；43万AI API密钥在GitHub公开泄露；Yum Brands联手NVIDIA在500家餐厅部署AI；AnyFrame开源AI Agent沙盒发布；CLI-Anything让所有软件Agent原生。本周AI行业迎来信任、安全、治理三重考验。</description>
+      <pubDate>Mon, 18 May 2026 23:30:00 GMT</pubDate>
+      <guid>https://heiimzy.github.io/free-ai-tools/blog/posts/038-ai-news-may-2026-week3-deep.zh.html</guid>
+    </item>
     <item>
       <title>2026年5月AI提效全景：百度DuMate多任务并行、伐谋2.0登顶、商汤轻量化多模态开源</title>
       <link>https://heiimzy.github.io/free-ai-tools/blog/posts/037-ai-productivity-may-2026-agent-wave.zh.html</link>

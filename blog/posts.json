@@ -1,5 +1,33 @@
 [
   {
+    "id": "038",
+    "date": "2026-05-18",
+    "zh": {
+      "title": "2026年5月AI新闻周报：Schmidt被嘘背后AI信任危机、arXiv封禁AI写论文、43万API密钥泄露",
+      "summary": "2026年5月第三周AI新闻综述：前谷歌CEO Eric Schmidt演讲遭全场嘘声暴露AI信任裂痕；arXiv宣布AI代写论文封禁一年；43万AI API密钥在GitHub公开泄露；Yum Brands联手NVIDIA在500家餐厅部署AI；AnyFrame开源AI Agent沙盒发布；CLI-Anything让所有软件Agent原生。本周AI行业迎来信任、安全、治理三重考验。",
+      "tags": [
+        "AI新闻",
+        "AI信任危机",
+        "AI安全",
+        "arXiv",
+        "AI Agent"
+      ],
+      "file": "posts/038-ai-news-may-2026-week3-deep.zh.html"
+    },
+    "en": {
+      "title": "AI News Roundup May 2026 Week 3: Schmidt Booed, arXiv Bans AI Papers, Open-Source Agent Sandboxes, and the API Key Leak Crisis",
+      "summary": "May 2026 week 3 AI news roundup: Ex-Google CEO Eric Schmidt booed off stage at commencement; arXiv announces 1-year ban for AI-generated papers; 435K+ AI API keys found exposed on GitHub; AnyFrame open-source sandbox for AI agents; CLI-Anything makes all software agent-native; Yum Brands + NVIDIA deploy AI in 500 restaurants; archivists use LLMs for handwriting transcription at scale. The week the AI trust deficit became undeniable.",
+      "tags": [
+        "AI news",
+        "AI trust",
+        "AI security",
+        "open source",
+        "AI agents"
+      ],
+      "file": "posts/038-ai-news-may-2026-week3-deep.en.html"
+    }
+  },
+  {
     "id": "037",
     "date": "2026-05-18",
     "zh": {
