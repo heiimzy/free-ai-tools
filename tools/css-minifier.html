@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS 压缩工具 - 在线CSS代码压缩 | Free AI Tools</title>
+  <meta name="description" content="免费在线CSS压缩工具，移除空格换行注释、压缩CSS代码减少文件体积。支持美化与压缩切换，实时预览大小变化。">
+  <meta name="keywords" content="CSS压缩,CSS Minifier,CSS Minify,在线CSS压缩,CSS优化,前端性能,样式表压缩">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/css-minifier.html">
+  <style>
+    .layout { display: grid; gap: 1.5rem; }
+    .code-textarea { width: 100%; min-height: 220px; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: monospace; font-size: 0.82rem; resize: vertical; box-sizing: border-box; line-height: 1.5; }
+    .code-textarea:focus { outline: none; border-color: var(--primary); }
+    .code-textarea::placeholder { color: var(--text-muted); opacity: 0.5; }
+    .actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .info { color: var(--text-muted); font-size: 0.8rem; margin-top: 0.3rem; }
+    .samples { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+    .samples button { font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 12px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); cursor: pointer; }
+    .samples button:hover { border-color: var(--primary); color: var(--primary); }
+    .stats { display: flex; gap: 1rem; margin-top: 0.5rem; flex-wrap: wrap; }
+    .stat-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 0.4rem 0.8rem; text-align: center; min-width: 80px; }
+    .stat-item .num { font-size: 1rem; font-weight: 700; color: var(--primary); }
+    .stat-item .label { font-size: 0.7rem; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/css-minifier.html">CSS压缩</a><a href="../tools/text-rewriter.html">AI改写</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>CSS 压缩工具</h1>
+      <p>CSS 代码压缩瘦身，减少文件体积，提升网页加载速度。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="layout">
+        <div>
+          <label>输入 CSS</label>
+          <div class="samples">
+            <button onclick="loadSample(0)">示例 1</button>
+            <button onclick="loadSample(1)">示例 2</button>
+          </div>
+          <textarea class="code-textarea" id="inputText" placeholder="粘贴 CSS 代码..."></textarea>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-primary" onclick="minifyCSS()">🔧 压缩</button>
+          <button class="btn btn-secondary" onclick="beautifyCSS()">✨ 美化</button>
+          <button class="btn btn-secondary" onclick="stripComments()">🗑️ 移除注释</button>
+          <button class="btn btn-secondary" onclick="clearAll()">🗑️ 清空</button>
+        </div>
+
+        <div>
+          <label>输出 <span id="sizeInfo" class="info"></span></label>
+          <textarea class="code-textarea" id="outputText" readonly placeholder="输出结果..."></textarea>
+          <div id="stats" class="stats"></div>
+          <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+            <button class="btn btn-success" onclick="copyResult()">📋 复制结果</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">[广告位] Google AdSense</div>
+  </main>
+  <footer><div class="container"><p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a></p></div></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const SAMPLES = [
+      `.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 15px;
+}
+
+/* 这是注释，压缩时会被移除 */
+.hero-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.hero-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  padding: 2rem 0;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+  .container { padding: 10px; }
+  .hero-title { font-size: 1.8rem; }
+  .card-grid { grid-template-columns: 1fr; }
+}`,
+      `@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+:root {
+  --primary: #6366f1;
+  --secondary: #ec4899;
+  --bg: #0f172a;
+  --text: #f1f5f9;
+  --radius: 8px;
+  --shadow: 0 4px 6px -1px rgba(0,0,0,0.3);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s ease;
+}
+
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { filter: brightness(1.1); }`
+    ];
+
+    function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+    function $(id){return document.getElementById(id);}
+    function getInput(){return $('inputText').value;}
+    function setOutput(v){
+      $('outputText').value=v;
+      const inSize=getInput().length, outSize=v.length;
+      const saved=inSize?((1-outSize/inSize)*100).toFixed(1):'0';
+      $('sizeInfo').textContent=inSize?`(输入 ${inSize}B → 输出 ${outSize}B，缩减 ${saved}%)`:'';
+      $('stats').innerHTML=inSize?`<div class="stat-item"><div class="num">${inSize}B</div><div class="label">原始</div></div><div class="stat-item"><div class="num">${outSize}B</div><div class="label">压缩后</div></div><div class="stat-item"><div class="num">${saved}%</div><div class="label">缩减率</div></div>`:'';
+    }
+
+    function minifyCSS(){
+      let css=getInput().trim();
+      if(!css){setOutput('');showToast('请输入CSS代码');return;}
+      css=css.replace(/\/\*[\s\S]*?\*\//g,'');
+      css=css.replace(/\/\/(?!.*\{).*/g,'');
+      css=css.replace(/\s*([{}:;,])\s*/g,'$1');
+      css=css.replace(/;\s*}/g,'}');
+      css=css.replace(/[\n\r\s]{2,}/g,' ');
+      css=css.trim();
+      if(css.length&&!css.endsWith(';')&&!css.endsWith('}')) css+=';';
+      setOutput(css);
+    }
+
+    function beautifyCSS(){
+      let css=getInput().trim();
+      if(!css){setOutput('');showToast('请输入CSS代码');return;}
+      css=css.replace(/\{/g,' {\n  ').replace(/}/g,'}\n').replace(/;/g,';\n  ').replace(/;\s*\n\s*/g,';\n  ');
+      css=css.replace(/\n\s*\n/g,'\n').replace(/\{\n\s*\n/g,'{\n').replace(/}\n\s*}/g,'}\n}');
+      const lines=css.split('\n').map(l=>l.trimRight());
+      setOutput(lines.join('\n').trim());
+    }
+
+    function stripComments(){
+      const css=getInput().trim();
+      if(!css){setOutput('');showToast('请输入CSS代码');return;}
+      setOutput(css.replace(/\/\*[\s\S]*?\*\//g,'').replace(/\n{3,}/g,'\n\n').trim());
+    }
+
+    function clearAll(){$('inputText').value='';setOutput('');$('stats').innerHTML='';}
+    function copyResult(){
+      const v=$('outputText').value;
+      if(!v){showToast('没有可复制的内容');return;}
+      navigator.clipboard.writeText(v).then(()=>showToast('已复制到剪贴板')).catch(()=>showToast('复制失败'));
+    }
+    function loadSample(i){$('inputText').value=SAMPLES[i];setOutput('');$('stats').innerHTML='';}
+  </script>
+</body>
+</html>

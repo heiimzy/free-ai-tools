@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML 压缩工具 - 在线HTML代码压缩 | Free AI Tools</title>
+  <meta name="description" content="免费在线HTML压缩工具，移除多余空格、换行、注释，压缩HTML代码减少文件体积。实时预览压缩效果，一键复制。">
+  <meta name="keywords" content="HTML压缩,HTML Minifier,HTML压缩工具,网页优化,前端性能优化,HTML瘦身">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/html-minifier.html">
+  <style>
+    .layout { display: grid; gap: 1.5rem; }
+    .code-textarea { width: 100%; min-height: 220px; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: monospace; font-size: 0.82rem; resize: vertical; box-sizing: border-box; line-height: 1.5; }
+    .code-textarea:focus { outline: none; border-color: var(--primary); }
+    .code-textarea::placeholder { color: var(--text-muted); opacity: 0.5; }
+    .actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .info { color: var(--text-muted); font-size: 0.8rem; margin-top: 0.3rem; }
+    .options { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; margin: 0.5rem 0; font-size: 0.85rem; color: var(--text-muted); }
+    .options label { display: flex; align-items: center; gap: 0.3rem; cursor: pointer; }
+    .options input[type="checkbox"] { accent-color: var(--primary); }
+    .samples { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+    .samples button { font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 12px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); cursor: pointer; }
+    .samples button:hover { border-color: var(--primary); color: var(--primary); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/html-minifier.html">HTML压缩</a><a href="../tools/text-rewriter.html">AI改写</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>HTML 压缩工具</h1>
+      <p>移除多余空格、换行、注释，让HTML更小更快。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="layout">
+        <div>
+          <label>输入 HTML</label>
+          <div class="samples">
+            <button onclick="loadSample(0)">示例 1</button>
+            <button onclick="loadSample(1)">示例 2</button>
+          </div>
+          <textarea class="code-textarea" id="inputText" placeholder="粘贴 HTML 代码..."></textarea>
+        </div>
+
+        <div class="options">
+          <label><input type="checkbox" id="removeComments" checked> 移除注释</label>
+          <label><input type="checkbox" id="collapseWhitespace" checked> 合并空白</label>
+          <label><input type="checkbox" id="removeQuotes"> 移除可选引号</label>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-primary" onclick="minify()">🔧 压缩 HTML</button>
+          <button class="btn btn-secondary" onclick="beautify()">✨ 美化</button>
+          <button class="btn btn-secondary" onclick="clearAll()">🗑️ 清空</button>
+        </div>
+
+        <div>
+          <label>输出 <span id="sizeInfo" class="info"></span></label>
+          <textarea class="code-textarea" id="outputText" readonly placeholder="输出结果..."></textarea>
+          <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+            <button class="btn btn-success" onclick="copyResult()">📋 复制结果</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">[广告位] Google AdSense</div>
+  </main>
+  <footer><div class="container"><p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a></p></div></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const SAMPLES = [
+      `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>示例页面</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="/">首页</a>
+      <a href="/about">关于</a>
+      <a href="/contact">联系</a>
+    </nav>
+  </header>
+  <main>
+    <section class="hero">
+      <h1>欢迎光临</h1>
+      <p>这是一个示例段落，包含一些 <strong>重要</strong> 的内容。</p>
+      <!-- 这是注释，压缩时会被移除 -->
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2026 My Site</p>
+  </footer>
+</body>
+</html>`,
+      `<div class="card">
+  <div class="card-header">
+    <h2 class="card-title">用户信息</h2>
+    <span class="card-badge">VIP</span>
+  </div>
+  <div class="card-body">
+    <ul class="info-list">
+      <li><strong>姓名：</strong>张三</li>
+      <li><strong>邮箱：</strong>zhangsan@example.com</li>
+      <li><strong>注册时间：</strong>2026-01-15</li>
+    </ul>
+    <!-- 操作按钮组 -->
+    <div class="btn-group">
+      <button class="btn-primary">编辑</button>
+      <button class="btn-secondary">删除</button>
+    </div>
+  </div>
+</div>`
+    ];
+
+    function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+    function $(id){return document.getElementById(id);}
+    function getInput(){return $('inputText').value;}
+    function setOutput(v){
+      $('outputText').value=v;
+      const inSize=getInput().length, outSize=v.length;
+      const saved=inSize?((1-outSize/inSize)*100).toFixed(1):'0';
+      $('sizeInfo').textContent=inSize?`(输入 ${inSize}B → 输出 ${outSize}B，缩减 ${saved}%)`:'';
+    }
+
+    function minify(){
+      let html=getInput().trim();
+      if(!html){setOutput('');showToast('请输入HTML代码');return;}
+      if($('removeComments').checked) html=html.replace(/<!--[\s\S]*?-->/g,'');
+      if($('collapseWhitespace').checked){
+        html=html.replace(/>\s+</g,'><');
+        html=html.replace(/\s{2,}/g,' ');
+        html=html.replace(/\n\s*/g,'');
+        html=html.trim();
+      }
+      if($('removeQuotes').checked) html=html.replace(/\s+([\w-]+)="([^"]*?)"/g,(m,name,val)=>{return val.includes(' ')?m:' '+name+(val?'="'+val+'"':'');});
+      setOutput(html);
+    }
+
+    function beautify(){
+      let html=getInput().trim();
+      if(!html){setOutput('');showToast('请输入HTML代码');return;}
+      let indent=0, out='';
+      const tokens=html.replace(/>\s*</g,'>\n<').split('\n');
+      for(let t of tokens){
+        const s=t.trim();
+        if(!s) continue;
+        if(s.startsWith('</')){indent=Math.max(0,indent-1);out+='  '.repeat(indent)+s+'\n';}
+        else if(s.startsWith('<')&&!s.endsWith('/>')){out+='  '.repeat(indent)+s+'\n';if(!s.match(/<(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)/i)&&!s.includes('</')) indent++;}
+        else{out+='  '.repeat(indent)+s+'\n';}
+      }
+      setOutput(out.trim());
+    }
+
+    function clearAll(){$('inputText').value='';setOutput('');}
+    function copyResult(){
+      const v=$('outputText').value;
+      if(!v){showToast('没有可复制的内容');return;}
+      navigator.clipboard.writeText(v).then(()=>showToast('已复制到剪贴板')).catch(()=>showToast('复制失败'));
+    }
+    function loadSample(i){$('inputText').value=SAMPLES[i];setOutput('');}
+  </script>
+</body>
+</html>

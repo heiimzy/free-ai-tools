@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XML 格式化工具 - 在线XML美化压缩 | Free AI Tools</title>
+  <meta name="description" content="免费在线XML格式化与压缩工具，支持XML代码美化排版、一键压缩、标签属性整理。实时预览，一键复制结果。">
+  <meta name="keywords" content="XML格式化,XML压缩,XML美化,XML工具,在线XML格式化,数据格式转换">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/xml-formatter.html">
+  <style>
+    .xml-layout { display: grid; gap: 1.5rem; }
+    .xml-textarea { width: 100%; min-height: 200px; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: monospace; font-size: 0.82rem; resize: vertical; box-sizing: border-box; line-height: 1.5; }
+    .xml-textarea:focus { outline: none; border-color: var(--primary); }
+    .xml-textarea::placeholder { color: var(--text-muted); opacity: 0.5; }
+    .xml-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .xml-info { color: var(--text-muted); font-size: 0.8rem; margin-top: 0.3rem; }
+    .error-msg { color: #f472b6; font-size: 0.85rem; margin-top: 0.3rem; display: none; }
+    .samples { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+    .samples button { font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 12px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); cursor: pointer; }
+    .samples button:hover { border-color: var(--primary); color: var(--primary); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/xml-formatter.html">XML工具</a><a href="../tools/text-rewriter.html">AI改写</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>XML 格式化 / 压缩工具</h1>
+      <p>XML 代码美化排版、一键压缩、标签属性对齐。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="xml-layout">
+        <div>
+          <label>输入 XML</label>
+          <div class="samples">
+            <button onclick="loadSample(0)">示例 1</button>
+            <button onclick="loadSample(1)">示例 2</button>
+          </div>
+          <textarea class="xml-textarea" id="inputText" placeholder="粘贴 XML 代码..." style="min-height:220px;"></textarea>
+        </div>
+
+        <div class="xml-actions">
+          <button class="btn btn-primary" onclick="formatXML()">✨ 美化格式</button>
+          <button class="btn btn-secondary" onclick="minifyXML()">🔧 压缩</button>
+          <button class="btn btn-secondary" onclick="clearAll()">🗑️ 清空</button>
+        </div>
+
+        <div>
+          <label>输出 <span id="sizeInfo" class="xml-info"></span></label>
+          <textarea class="xml-textarea" id="outputText" readonly placeholder="输出结果..." style="min-height:220px;"></textarea>
+          <div id="errorMsg" class="error-msg"></div>
+          <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+            <button class="btn btn-success" onclick="copyResult()">📋 复制结果</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ad-placeholder">[广告位] Google AdSense</div>
+  </main>
+  <footer><div class="container"><p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a></p></div></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const SAMPLES = [
+      `<?xml version="1.0" encoding="UTF-8"?>
+<bookstore>
+  <book category="COOKING">
+    <title lang="en">Everyday Italian</title>
+    <author>Giada De Laurentiis</author>
+    <year>2005</year>
+    <price>30.00</price>
+  </book>
+  <book category="CHILDREN">
+    <title lang="en">Harry Potter</title>
+    <author>J K. Rowling</author>
+    <year>2005</year>
+    <price>29.99</price>
+  </book>
+  <book category="WEB">
+    <title lang="en">Learning XML</title>
+    <author>Erik T. Ray</author>
+    <year>2003</year>
+    <price>39.95</price>
+  </book>
+</bookstore>`,
+      `<root><users><user id="1"><name>Alice</name><email>alice@example.com</email><roles><role>admin</role><role>editor</role></roles></user><user id="2"><name>Bob</name><email>bob@example.com</email><roles><role>viewer</role></roles></user></users><config><theme>dark</theme><locale>zh-CN</locale><timeout>30</timeout></config></root>`
+    ];
+
+    function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+    function $(id){return document.getElementById(id);}
+    function getInput(){return $('inputText').value;}
+    function setOutput(v){
+      $('outputText').value=v;
+      $('errorMsg').style.display='none';
+      const inSize=getInput().length, outSize=v.length;
+      const saved=inSize?((1-outSize/inSize)*100).toFixed(1):'0';
+      $('sizeInfo').textContent=inSize?`(输入 ${inSize}B → 输出 ${outSize}B，压缩 ${saved}%)`:'';
+
+    }
+    function showError(msg){const e=$('errorMsg');e.textContent=msg;e.style.display='block';$('sizeInfo').textContent='';}
+
+    function formatXML(){
+      const xml=getInput().trim();
+      if(!xml){setOutput('');showToast('请输入XML代码');return;}
+      let indent=0;
+      const lines=[];
+      const cleaned=xml.replace(/>\s*</g,'>\n<');
+      const tokens=cleaned.split('\n');
+      for(let t of tokens){
+        const trim=t.trim();
+        if(!trim) continue;
+        if(trim.startsWith('<?')||trim.startsWith('<!--')){lines.push('  '.repeat(indent)+trim);continue;}
+        if(trim.startsWith('</')){indent=Math.max(0,indent-1);lines.push('  '.repeat(indent)+trim);}
+        else if(trim.endsWith('/>')||trim.startsWith('<![CDATA[')){lines.push('  '.repeat(indent)+trim);}
+        else if(trim.startsWith('<')){lines.push('  '.repeat(indent)+trim);if(!trim.match(/<\/.+>$/)) indent++;}
+        else if(trim.includes('<')){lines.push('  '.repeat(indent)+trim);}
+        else if(!trim.startsWith('<')){lines.push('  '.repeat(indent)+trim);}
+        else{lines.push('  '.repeat(indent)+trim);}
+      }
+      setOutput(lines.join('\n'));
+    }
+
+    function minifyXML(){
+      const xml=getInput().trim();
+      if(!xml){setOutput('');showToast('请输入XML代码');return;}
+      const min=xml.replace(/>\s+</g,'><').replace(/\s{2,}/g,' ').replace(/\n\s*/g,'').trim();
+      setOutput(min);
+    }
+
+    function clearAll(){
+      $('inputText').value='';
+      setOutput('');
+      $('errorMsg').style.display='none';
+    }
+
+    function copyResult(){
+      const v=$('outputText').value;
+      if(!v){showToast('没有可复制的内容');return;}
+      navigator.clipboard.writeText(v).then(()=>showToast('已复制到剪贴板')).catch(()=>showToast('复制失败'));
+    }
+
+    function loadSample(i){
+      $('inputText').value=SAMPLES[i];
+      setOutput('');
+      $('errorMsg').style.display='none';
+    }
+  </script>
+</body>
+</html>
