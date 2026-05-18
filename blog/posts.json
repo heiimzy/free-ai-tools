@@ -1,5 +1,21 @@
 [
   {
+    "id": "047",
+    "date": "2026-05-18",
+    "zh": {
+      "title": "⚡ 5月18日晚间快讯：国内首例128通道全植入式脑机接口临床试验启动、运营商集体进入「Token时刻」转型AI平台",
+      "summary": "⚡ 最新快讯：国内首次128通道全植入式脑机接口开启临床试验，信号采集精度大幅提升；三大运营商集体进入Token时刻，从管道商转型AI平台，中国移动Token调用量增速超预期。",
+      "tags": ["实时快讯", "脑机接口", "AI基础设施", "运营商", "Token经济"],
+      "file": "posts/047-china-bci-telecom-token-may-2026.zh.html"
+    },
+    "en": {
+      "title": "⚡ Flash Briefing May 18 Evening: China Launches First 128-Channel Fully Implanted BCI Clinical Trial, Telecom Operators Pivot to AI Token Platforms",
+      "summary": "⚡ Flash briefing: China's first 128-channel fully implanted brain-computer interface clinical trial begins; China's three major telecom operators transform from pipeline providers to AI token platform companies, signaling a fundamental shift in business models.",
+      "tags": ["Flash", "BCI", "AI Infrastructure", "Telecom", "Token Economy"],
+      "file": "posts/047-china-bci-telecom-token-may-2026.en.html"
+    }
+  },
+  {
     "id": "046",
     "date": "2026-05-18",
     "zh": {
