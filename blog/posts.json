@@ -1,5 +1,21 @@
 [
   {
+    "id": "044",
+    "date": "2026-05-18",
+    "zh": {
+      "title": "⚡ 5月18日快讯：轻工业全品类机器人第一股诞生、AI短期推通胀长期才通缩、海光CPU主频突破5.15GHz",
+      "summary": "⚡ 最新快讯：轻工业全品类机器人第一股诞生；沃什称AI短期在通胀长期才通缩，降息门槛远高预期；长端利率失控上行AI牛市遇大考；海光信息新一代终端CPU单核主频达5.15GHz；华羽先翔完成亿元Pre-A+轮融资蚂蚁领投；华尔街大行集体上调铠侠目标价44%。",
+      "tags": ["实时快讯", "机器人IPO", "AI通胀", "海光CPU", "宏观点金"],
+      "file": "posts/044-robot-ipo-ai-inflation-may-2026.zh.html"
+    },
+    "en": {
+      "title": "⚡ Flash Briefing May 18: Robotics IPO Milestone, Warsh Says AI Inflationary Near-Term Deflationary Long-Term, Haiguang CPU Hits 5.15GHz",
+      "summary": "Flash briefing: China's 'first lightweight full-category robotics IPO' marks sector milestone; Kevin Warsh warns AI is inflationary near-term but deflationary long-term, rate cut thresholds higher than expected; Haiguang Information's new CPU reaches 5.15GHz; Ant Group leads Huayu Xianxiang's $14M+ funding round; Wall Street raises Kioxia targets by 44%.",
+      "tags": ["Flash", "Robotics", "AI Economy", "Haiguang CPU", "Semiconductors"],
+      "file": "posts/044-robot-ipo-ai-inflation-may-2026.en.html"
+    }
+  },
+  {
     "id": "043",
     "date": "2026-05-18",
     "zh": {
