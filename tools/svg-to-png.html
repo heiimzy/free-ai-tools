@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SVG转PNG工具 - 在线SVG图片格式转换 | Free AI Tools</title>
+  <meta name="description" content="免费在线SVG转PNG工具，将SVG代码或文件转换为PNG图片格式。支持自定义尺寸、背景色和缩放比例，实时预览转换效果，一键下载高清PNG图片。适合设计师和开发者批量转换图标和矢量图。">
+  <meta name="keywords" content="SVG转PNG,SVG转换PNG,在线SVG转换,矢量图转位图,SVG渲染,图片格式转换,免费SVG工具">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/svg-to-png.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .sp-layout { max-width: 520px; margin: 0 auto; display: grid; gap: 1rem; }
+    .sp-field { display: flex; flex-direction: column; gap: 0.3rem; }
+    .sp-field label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+    .sp-field textarea { width: 100%; min-height: 140px; padding: 0.65rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: monospace; font-size: 0.8rem; resize: vertical; box-sizing: border-box; }
+    .sp-field textarea:focus { outline: none; border-color: var(--primary); }
+    .sp-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .sp-field input { padding: 0.5rem 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: inherit; font-size: 0.9rem; }
+    .sp-field input:focus { outline: none; border-color: var(--primary); }
+    .sp-field input[type="color"] { height: 42px; padding: 3px; cursor: pointer; }
+    .sp-field input[type="number"] { -moz-appearance: textfield; }
+    .sp-preview { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; display: flex; flex-direction: column; align-items: center; gap: 0.75rem; min-height: 120px; }
+    .sp-preview img, .sp-preview canvas { max-width: 100%; border-radius: 6px; }
+    .sp-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; }
+    .sp-actions button { padding: 0.5rem 1rem; border-radius: 8px; border: none; background: var(--primary); color: white; font-family: inherit; font-size: 0.8rem; cursor: pointer; transition: 0.15s; font-weight: 600; }
+    .sp-actions button:hover { opacity: 0.9; }
+    .sp-actions button.sec { background: var(--bg-card); border: 1px solid var(--border); color: var(--text); }
+    .sp-examples { display: flex; gap: 0.35rem; flex-wrap: wrap; font-size: 0.7rem; }
+    .sp-examples button { padding: 0.2rem 0.5rem; border-radius: 5px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-muted); cursor: pointer; font-family: inherit; }
+    .sp-examples button:hover { border-color: var(--primary); color: var(--text); }
+    @media (max-width: 400px) { .sp-row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/svg-to-png.html">SVG转PNG</a><a href="../tools/image-compressor.html">图片压缩</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>SVG 转 PNG 工具 / SVG to PNG Converter</h1>
+      <p>将SVG矢量图快速转换为PNG位图，支持自定义尺寸和背景色。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="sp-layout">
+        <div class="sp-field">
+          <label>SVG 代码</label>
+          <textarea id="spInput" placeholder="在此粘贴 SVG 代码..." oninput="convert()"></textarea>
+        </div>
+
+        <div>
+          <label style="font-size:0.75rem;color:var(--text-muted);font-weight:600;">示例 SVG</label>
+          <div class="sp-examples">
+            <button onclick="loadExample('circle')">圆形</button>
+            <button onclick="loadExample('star')">五角星</button>
+            <button onclick="loadExample('logo')">渐变徽标</button>
+          </div>
+        </div>
+
+        <div class="sp-row">
+          <div class="sp-field">
+            <label>输出宽度 (px)</label>
+            <input type="number" id="spWidth" value="200" min="16" max="4096" oninput="convert()">
+          </div>
+          <div class="sp-field">
+            <label>输出高度 (px)</label>
+            <input type="number" id="spHeight" value="200" min="16" max="4096" oninput="convert()">
+          </div>
+        </div>
+
+        <div class="sp-row">
+          <div class="sp-field">
+            <label>背景色 (透明留空)</label>
+            <input type="color" id="spBg" value="#ffffff" oninput="convert()">
+          </div>
+          <div class="sp-field">
+            <label>缩放倍数</label>
+            <input type="number" id="spScale" value="2" min="1" max="8" step="1" oninput="convert()">
+          </div>
+        </div>
+
+        <div class="sp-preview" id="spPreview">
+          <canvas id="spCanvas"></canvas>
+          <div class="sp-actions">
+            <button onclick="download()">下载 PNG</button>
+            <button class="sec" onclick="copyPngDataUrl()">复制 Data URL</button>
+          </div>
+          <div style="font-size:0.75rem;color:var(--text-muted);" id="spSizeInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线SVG转PNG工具</h2>
+      <p>免费的在线SVG到PNG格式转换工具，将SVG矢量代码实时渲染为PNG位图。支持自定义输出尺寸、背景色（可透明）和缩放倍数（1x-8x，适合高清输出）。内置示例SVG（圆形、五角星、渐变徽标）快速体验。转换后的PNG图片可一键下载或复制Data URL直接用于网页。适合前端开发者将图标从SVG转为兼容性更好的PNG格式、设计师导出矢量图稿为位图。所有转换在浏览器本地完成，SVG代码不会上传到服务器。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/svg-to-png.html">SVG转PNG</a> | <a href="../tools/svg-optimizer.html">SVG优化</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function $(id) { return document.getElementById(id); }
+    function showToast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2000); }
+
+    const EXAMPLES = {
+      circle: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">\n  <circle cx="50" cy="50" r="45" fill="#a78bfa" stroke="#7c3aed" stroke-width="3"/>\n  <text x="50" y="55" text-anchor="middle" fill="white" font-size="16" font-family="sans-serif">SVG</text>\n</svg>',
+      star: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">\n  <polygon points="50,5 61,35 95,35 68,55 79,90 50,70 21,90 32,55 5,35 39,35" fill="#fbbf24" stroke="#f59e0b" stroke-width="2"/>\n</svg>',
+      logo: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 100">\n  <defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#f472b6"/></linearGradient></defs>\n  <rect width="200" height="100" rx="16" fill="url(#g)"/>\n  <text x="100" y="55" text-anchor="middle" fill="white" font-size="28" font-family="sans-serif" font-weight="bold">AI</text>\n  <text x="100" y="80" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="12" font-family="sans-serif">Free Tools</text>\n</svg>'
+    };
+
+    function loadExample(name) {
+      $('spInput').value = EXAMPLES[name];
+      convert();
+    }
+
+    function convert() {
+      const svgText = $('spInput').value.trim();
+      const preview = $('spPreview');
+      const canvas = $('spCanvas');
+      const sizeInfo = $('spSizeInfo');
+
+      // Clear if no input
+      if (!svgText) {
+        const ctx = canvas.getContext('2d');
+        canvas.width = 0; canvas.height = 0;
+        sizeInfo.textContent = '';
+        return;
+      }
+
+      const w = parseInt($('spWidth').value) || 200;
+      const h = parseInt($('spHeight').value) || 200;
+      const scale = parseInt($('spScale').value) || 2;
+      const bg = $('spBg').value;
+
+      const finalW = w * scale;
+      const finalH = h * scale;
+
+      const blob = new Blob([svgText], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
+
+      const img = new Image();
+      img.onload = function() {
+        canvas.width = finalW;
+        canvas.height = finalH;
+        const ctx = canvas.getContext('2d');
+
+        // Background
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, finalW, finalH);
+
+        // Draw SVG scaled
+        ctx.drawImage(img, 0, 0, finalW, finalH);
+
+        URL.revokeObjectURL(url);
+
+        const sizeKB = (canvas.toDataURL('image/png').length * 0.75 / 1024).toFixed(1);
+        sizeInfo.textContent = finalW + '×' + finalH + 'px | ~' + sizeKB + ' KB';
+      };
+      img.onerror = function() {
+        sizeInfo.textContent = 'SVG渲染失败，请检查代码是否正确';
+        URL.revokeObjectURL(url);
+      };
+      img.src = url;
+    }
+
+    function download() {
+      const canvas = $('spCanvas');
+      if (!canvas.width || !canvas.height) { showToast('请先输入SVG代码'); return; }
+      const link = document.createElement('a');
+      link.download = 'svg-output-' + Date.now() + '.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      showToast('PNG已下载!');
+    }
+
+    function copyPngDataUrl() {
+      const canvas = $('spCanvas');
+      if (!canvas.width || !canvas.height) { showToast('请先输入SVG代码'); return; }
+      const dataUrl = canvas.toDataURL('image/png');
+      navigator.clipboard.writeText(dataUrl).then(() => showToast('Data URL已复制!')).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = dataUrl; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+        showToast('Data URL已复制!');
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadExample('star');
+    });
+  </script>
+</body>
+</html>

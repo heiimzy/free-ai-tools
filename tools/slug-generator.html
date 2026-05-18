@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>URL Slug生成器 - 在线网址友好别名生成 | Free AI Tools</title>
+  <meta name="description" content="免费在线URL Slug生成器，将中文、英文标题转换为SEO友好的网址别名。支持自定义分隔符、转小写、去除特殊字符，实时预览生成结果并一键复制。适合博客作者、SEO优化师和内容管理系统用户。">
+  <meta name="keywords" content="Slug生成器,URL别名生成,网址友好链接,标题转Slug,SEO友好URL,在线Slug工具,链接优化">
+  <link rel="canonical" href="https://heiimzy.github.io/free-ai-tools/tools/slug-generator.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .sg-layout { max-width: 520px; margin: 0 auto; display: grid; gap: 1rem; }
+    .sg-field { display: flex; flex-direction: column; gap: 0.3rem; }
+    .sg-field label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+    .sg-field input { padding: 0.55rem 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: inherit; font-size: 0.95rem; }
+    .sg-field input:focus { outline: none; border-color: var(--primary); }
+    .sg-field textarea { width: 100%; min-height: 80px; padding: 0.65rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: inherit; font-size: 0.9rem; resize: vertical; box-sizing: border-box; }
+    .sg-field textarea:focus { outline: none; border-color: var(--primary); }
+    .sg-result { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; word-break: break-all; font-family: monospace; font-size: 0.95rem; color: var(--primary); cursor: pointer; transition: 0.2s; min-height: 1.4em; }
+    .sg-result:hover { border-color: var(--primary); }
+    .sg-options { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .sg-opt { display: flex; align-items: center; gap: 0.4rem; font-size: 0.78rem; color: var(--text-muted); }
+    .sg-opt input[type="checkbox"] { width: auto; cursor: pointer; }
+    .sg-opt select { padding: 0.25rem 0.5rem; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); font-family: inherit; font-size: 0.75rem; }
+    .sg-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+    .sg-stats > div { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem; text-align: center; }
+    .sg-stats .num { font-size: 1rem; font-weight: 700; color: var(--primary); display: block; }
+    .sg-stats .label { font-size: 0.6rem; color: var(--text-muted); }
+    .sg-tips { font-size: 0.78rem; color: var(--text-muted); line-height: 1.6; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem 1rem; }
+    @media (max-width: 400px) { .sg-options { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <a href="../index.html" class="logo">Free AI Tools <span>免费</span></a>
+      <nav><a href="../index.html">首页</a><a href="../tools/slug-generator.html">Slug生成</a><a href="../tools/case-converter.html">大小写转换</a></nav>
+    </div>
+  </header>
+
+  <main class="tool-page container">
+    <div class="tool-header">
+      <h1>URL Slug 生成器 / Slug Generator</h1>
+      <p>将标题或文本转换为SEO友好的URL别名，支持中英文。</p>
+    </div>
+
+    <div class="tool-container">
+      <div class="sg-layout">
+        <div class="sg-field">
+          <label>输入标题或文本</label>
+          <textarea id="sgInput" oninput="generate()" placeholder="例如：How to Use AI Tools in 2026: A Complete Guide">How to Use AI Tools in 2026: A Complete Guide</textarea>
+        </div>
+
+        <div class="sg-options">
+          <div class="sg-opt"><input type="checkbox" id="sgLower" checked onchange="generate()"><label for="sgLower">转小写</label></div>
+          <div class="sg-opt">
+            <label for="sgSep">分隔符</label>
+            <select id="sgSep" onchange="generate()">
+              <option value="-">连字符 (-)</option>
+              <option value="_">下划线 (_)</option>
+              <option value=".">点号 (.)</option>
+              <option value="">无</option>
+            </select>
+          </div>
+          <div class="sg-opt"><input type="checkbox" id="sgTrimDashes" checked onchange="generate()"><label for="sgTrimDashes">去除首尾分隔符</label></div>
+          <div class="sg-opt"><input type="checkbox" id="sgNumbers" checked onchange="generate()"><label for="sgNumbers">保留数字</label></div>
+          <div class="sg-opt" style="grid-column:1/-1;"><input type="checkbox" id="sgChinese" checked onchange="generate()"><label for="sgChinese">保留中文字符（不转为拼音）</label></div>
+        </div>
+
+        <div>
+          <label style="font-size:0.75rem;color:var(--text-muted);font-weight:600;">生成的 Slug（点击复制）</label>
+          <div class="sg-result" id="sgResult" onclick="copySlug()">how-to-use-ai-tools-in-2026-a-complete-guide</div>
+        </div>
+
+        <div class="sg-stats">
+          <div><span class="num" id="sgLength">0</span><span class="label">字符长度</span></div>
+          <div><span class="num" id="sgWords">0</span><span class="label">单词数</span></div>
+        </div>
+
+        <div class="sg-tips">
+          <strong>💡 什么是 Slug？</strong> Slug 是 URL 中用于标识页面的可读别名，例如 <code>https://example.com/blog/how-to-use-ai-tools</code> 中的 <code>how-to-use-ai-tools</code>。好的 Slug 应简短、含关键词、使用连字符分隔。SEO 最佳实践：Slug 长度控制在 30-60 个字符，使用小写和连字符。所有处理在浏览器本地完成。
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-footer-seo">
+      <h2>在线URL Slug生成器</h2>
+      <p>免费的在线Slug生成工具，将文章标题或任意文本转换为SEO优化的网址别名。支持自定义分隔符（连字符/下划线/点号）、转小写、去除特殊字符、保留中文字符（保留非ASCII字符而非转为拼音），自动去除首尾分隔符和合并连续分隔符。实时显示Slug长度和单词数统计。适合博客作者生成文章永久链接、SEO优化师创建友好的URL结构、内容管理系统用户优化页面地址。所有转换在浏览器本地完成，无需服务器交互。</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Free AI Tools &copy; 2026 | <a href="../index.html">首页</a> | <a href="../tools/slug-generator.html">Slug生成</a> | <a href="../tools/find-replace.html">查找替换</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function $(id) { return document.getElementById(id); }
+    function showToast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2000); }
+
+    function generate() {
+      let text = $('sgInput').value;
+      if (!text) { $('sgResult').textContent = '(输入文本后将自动生成)'; $('sgLength').textContent = '0'; $('sgWords').textContent = '0'; return; }
+
+      const lower = $('sgLower').checked;
+      const sep = $('sgSep').value;
+      const trimDashes = $('sgTrimDashes').checked;
+      const keepNumbers = $('sgNumbers').checked;
+      const keepChinese = $('sgChinese').checked;
+
+      let slug = text.trim();
+
+      // Lowercase
+      if (lower) slug = slug.toLowerCase();
+
+      // Build regex: keep letters, spaces, Chinese chars, numbers
+      let allowed = 'a-z';
+      if (keepChinese) allowed += '\\u4e00-\\u9fff\\u3000-\\u303f\\uff00-\\uffef';
+      if (keepNumbers) allowed += '0-9';
+
+      // Replace anything not allowed with separator
+      const re = new RegExp('[^' + allowed + '\\s-]', 'g');
+      slug = slug.replace(re, ' ');
+
+      // Replace spaces and multiple separators with single separator
+      slug = slug.replace(/[\s-]+/g, sep);
+
+      // Remove leading/trailing separator
+      if (trimDashes && sep) {
+        const reTrim = new RegExp('^' + sep + '+|' + sep + '+$', 'g');
+        slug = slug.replace(reTrim, '');
+      }
+
+      if (!slug) slug = '(生成结果为空的文本)';
+
+      $('sgResult').textContent = slug;
+      $('sgLength').textContent = slug.length;
+      $('sgWords').textContent = slug.split(sep).filter(s => s).length;
+    }
+
+    function copySlug() {
+      const text = $('sgResult').textContent;
+      if (!text || text.startsWith('(')) return;
+      navigator.clipboard.writeText(text).then(() => showToast('Slug 已复制!')).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+        showToast('Slug 已复制!');
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', generate);
+  </script>
+</body>
+</html>
