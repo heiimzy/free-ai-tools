@@ -1,5 +1,33 @@
 [
   {
+    "id": "040",
+    "date": "2026-05-18",
+    "zh": {
+      "title": "今日AI日报：Anthropic CEO称软件将免费、腾讯Ardot公测、CLI-Anything 35.9k星——AI Agent基础设施大爆发",
+      "summary": "今日AI要闻：Anthropic CEO Dario Amodei访谈透露Claude功能几乎完全由AI自主开发，预测软件将走向免费；腾讯AI设计协作平台Ardot正式公测；CLI-Anything获35.9k GitHub星标，让所有软件支持AI Agent操控；阿里巴巴千问预告5月20日见'重量级新朋友'；Semble代码搜索工具为AI Agent节省98% Token；开源个人AI助手OpenHuman获14k星标。",
+      "tags": [
+        "今日AI",
+        "Anthropic",
+        "腾讯",
+        "AI Agent",
+        "阿里巴巴"
+      ],
+      "file": "posts/040-ai-news-may-2026-agent-tools-roundup.zh.html"
+    },
+    "en": {
+      "title": "AI News Today: Anthropic CEO Says Software Will Be Free, Tencent Ardot Launches, CLI-Anything 35.9k Stars — AI Daily",
+      "summary": "Today's AI stories: Anthropic CEO Dario Amodei reveals Claude features are almost entirely AI-developed, predicts software will become free; Tencent launches Ardot AI design collaboration platform; CLI-Anything hits 35.9k GitHub stars for making software agent-native; Semble cuts AI agent code tokens by 98%; Alibaba Qwen teases 'new heavyweight friend' for May 20 summit; OpenHuman personal AI assistant trends 14k stars; AI agents reshape cross-border e-commerce operations.",
+      "tags": [
+        "AI news",
+        "Anthropic",
+        "Tencent",
+        "AI agents",
+        "open source"
+      ],
+      "file": "posts/040-ai-news-may-2026-agent-tools-roundup.en.html"
+    }
+  },
+  {
     "id": "039",
     "date": "2026-05-18",
     "zh": {

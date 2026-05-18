@@ -8,6 +8,13 @@
     <lastBuildDate>Mon, 18 May 2026 23:30:00 GMT</lastBuildDate>
     <atom:link href="https://heiimzy.github.io/free-ai-tools/blog/rss.xml" rel="self" type="application/rss+xml"/>
     <item>
+      <title>今日AI日报：Anthropic CEO称软件将免费、腾讯Ardot公测、CLI-Anything 35.9k星——AI Agent基础设施大爆发</title>
+      <link>https://heiimzy.github.io/free-ai-tools/blog/posts/040-ai-news-may-2026-agent-tools-roundup.zh.html</link>
+      <description>今日AI要闻：Anthropic CEO Dario Amodei访谈透露Claude功能几乎完全由AI自主开发，预测软件将走向免费；腾讯AI设计协作平台Ardot正式公测；CLI-Anything获35.9k GitHub星标，让所有软件支持AI Agent操控；阿里巴巴千问预告5月20日见'重量级新朋友'；Semble代码搜索工具为AI Agent节省98% Token；开源个人AI助手OpenHuman获14k星标。</description>
+      <pubDate>Mon, 18 May 2026 23:30:00 GMT</pubDate>
+      <guid>https://heiimzy.github.io/free-ai-tools/blog/posts/040-ai-news-may-2026-agent-tools-roundup.zh.html</guid>
+    </item>
+    <item>
       <title>今日AI日报：开源模型大爆发（DeepSeek V4/Gemma 4/Kimi K2.6）、Claude调整第三方定价、Semble省98% Token</title>
       <link>https://heiimzy.github.io/free-ai-tools/blog/posts/039-ai-news-may-2026-live-roundup.zh.html</link>
       <description>今日AI要闻：Gemma 4/DeepSeek V4/Kimi K2.6等开源模型密集发布，Interconnects深度分析开源模型生态差距争议；Claude调整第三方工具API定价，6月15日生效；Semble开源代码搜索工具为AI Agent节省98% Token消耗；Google Gemini Intelligence上线；'AI不会让你的流程更快'爆款文章获529分引发热议；Notion开发者平台上线Markdown API。</description>
