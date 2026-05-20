@@ -248,11 +248,15 @@
 
     function filterPosts(cat) {
       if (cat === 'all') return allPosts;
-      const catLower = cat.toLowerCase();
-      return allPosts.filter(p => {
-        const tags = (p.en.tags || []).map(t => t.toLowerCase());
-        return tags.includes(catLower);
-      });
+      const words = {
+        'news': ['news', 'flash', 'security', 'safety'],
+        'tools': ['tools', 'guide', 'reviews', 'launch', 'coding', 'open-source'],
+        'monetization': ['monetization', 'side-hustle', 'business', 'economy', 'revenue', 'advertising', 'licensing'],
+        'productivity': ['productivity', 'workflow', 'automation', 'agents', 'enterprise'],
+      }[cat] || [cat];
+      return allPosts.filter(p =>
+        (p.en.tags || []).some(t => words.some(w => t.toLowerCase().includes(w)))
+      );
     }
 
     function render() {

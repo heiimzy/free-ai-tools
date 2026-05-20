@@ -252,7 +252,15 @@
 
     function filterPosts(cat) {
       if (cat === 'all') return allPosts;
-      return allPosts.filter(p => (p.zh.tags || []).includes(cat));
+      const words = {
+        '新闻': ['新闻', '今日', '快讯', '安全', '行业', '教育'],
+        '工具': ['工具', '评测', '选型', '编程', '模型', '开源'],
+        '变现': ['变现', '赚钱', '副业', '商业化', '收入', '广告', 'Token', '订阅'],
+        '效率': ['效率', '提效', '生产力', '工作流', '自动化', 'ROI', '智能体', '企业效率'],
+      }[cat] || [cat];
+      return allPosts.filter(p =>
+        (p.zh.tags || []).some(t => words.some(w => t.includes(w)))
+      );
     }
 
     function render() {
