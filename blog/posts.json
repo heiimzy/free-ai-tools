@@ -1,17 +1,57 @@
 [
   {
+    "id": "048",
+    "date": "2026-06-16",
+    "zh": {
+      "title": "⚡ 6月16日科技快讯：AI政策风险、科技板块活跃、世界杯科技含量超标",
+      "summary": "⚡ 最新科技动态：华尔街大佬警告AI热潮最大政策死穴是缩表、A股科技板块全线走强成长ETF涨超3%、港股互联网板块估值低位获资金布局、世界杯科技应用亮点纷呈。",
+      "tags": [
+        "科技新闻",
+        "AI政策",
+        "市场动态",
+        "港股互联网",
+        "世界杯科技"
+      ],
+      "file": "posts/048-tech-news-june-16-2026.zh.html"
+    },
+    "en": {
+      "title": "⚡ June 16 Tech News: AI Policy Risks, Active Tech Sector, World Cup Tech Overload",
+      "summary": "⚡ Latest tech updates: Wall Street warns AI boom's biggest policy risk is balance sheet reduction, A-share tech sector rallies with growth ETF up over 3%, Hong Kong internet stocks attract capital at low valuations, World Cup showcases tech innovations.",
+      "tags": [
+        "Tech News",
+        "AI Policy",
+        "Market",
+        "HK Internet",
+        "World Cup Tech"
+      ],
+      "file": "posts/048-tech-news-june-16-2026.en.html"
+    }
+  },
+  {
     "id": "047",
     "date": "2026-05-18",
     "zh": {
       "title": "⚡ 5月18日晚间快讯：国内首例128通道全植入式脑机接口临床试验启动、运营商集体进入「Token时刻」转型AI平台",
       "summary": "⚡ 最新快讯：国内首次128通道全植入式脑机接口开启临床试验，信号采集精度大幅提升；三大运营商集体进入Token时刻，从管道商转型AI平台，中国移动Token调用量增速超预期。",
-      "tags": ["实时快讯", "脑机接口", "AI基础设施", "运营商", "Token经济"],
+      "tags": [
+        "实时快讯",
+        "脑机接口",
+        "AI基础设施",
+        "运营商",
+        "Token经济"
+      ],
       "file": "posts/047-china-bci-telecom-token-may-2026.zh.html"
     },
     "en": {
       "title": "⚡ Flash Briefing May 18 Evening: China Launches First 128-Channel Fully Implanted BCI Clinical Trial, Telecom Operators Pivot to AI Token Platforms",
       "summary": "⚡ Flash briefing: China's first 128-channel fully implanted brain-computer interface clinical trial begins; China's three major telecom operators transform from pipeline providers to AI token platform companies, signaling a fundamental shift in business models.",
-      "tags": ["Flash", "BCI", "AI Infrastructure", "Telecom", "Token Economy"],
+      "tags": [
+        "Flash",
+        "BCI",
+        "AI Infrastructure",
+        "Telecom",
+        "Token Economy"
+      ],
       "file": "posts/047-china-bci-telecom-token-may-2026.en.html"
     }
   },
@@ -21,13 +61,25 @@
     "zh": {
       "title": "⚡ 5月18日快讯：SpaceX星舰V3周三首飞宣称完全可重复使用、智元WITA首个具身智能大模型备案、丁薛祥调研全国一体化算力网",
       "summary": "⚡ 最新快讯：SpaceX星舰V3周三首飞宣称完全可重复使用；智元WITA成为全国首例完成大模型备案的具身智能交互模型；丁薛祥调研算力网建设强调加快构建全国一体化算力网；三星管理层与工会重启谈判力求避免罢工；金发科技AI特种工程塑料销量占比近3成。",
-      "tags": ["实时快讯", "SpaceX", "具身智能", "算力网", "三星"],
+      "tags": [
+        "实时快讯",
+        "SpaceX",
+        "具身智能",
+        "算力网",
+        "三星"
+      ],
       "file": "posts/046-spacex-starship-embodied-ai-compute-may-2026.zh.html"
     },
     "en": {
       "title": "⚡ Flash Briefing May 18: SpaceX Starship V3 First Flight Wednesday — 'Fully Reusable', Zhiyuan WITA Gets China's First Embodied AI Model Filing, VP Ding Xuexiang Pushes National Compute Grid",
       "summary": "⚡ Flash briefing: SpaceX Starship V3 first flight set for Wednesday, Musk claims 'full reusability'; Zhiyuan Robot's WITA becomes China's first government-filed embodied AI model; Vice Premier Ding Xuexiang calls for accelerated national integrated compute network; Samsung management and union restart talks to avoid strike; Kingfa AI specialty plastics hit 30% of sales.",
-      "tags": ["Flash", "SpaceX", "Embodied AI", "Compute Grid", "Samsung"],
+      "tags": [
+        "Flash",
+        "SpaceX",
+        "Embodied AI",
+        "Compute Grid",
+        "Samsung"
+      ],
       "file": "posts/046-spacex-starship-embodied-ai-compute-may-2026.en.html"
     }
   },
@@ -37,13 +89,25 @@
     "zh": {
       "title": "⚡ 5月18日快讯：百度Q1 AI收入占比首次过半达136亿、商务部筹划“人工智能+消费”政策、张朝阳搜狐聚焦AI应用不做大模型",
       "summary": "⚡ 最新快讯：百度Q1营收321亿元AI收入136亿元占比首次过半，智能云同比增长79%；商务部正在抓紧筹划出台'人工智能+消费'政策体系；张朝阳称搜狐未入局大模型研发聚焦AI应用落地；腾讯音乐完成收购喜马拉雅；爱奇艺Q1总收入62.3亿元会员收入环比增长。",
-      "tags": ["实时快讯", "百度财报", "AI+消费", "张朝阳", "腾讯音乐"],
+      "tags": [
+        "实时快讯",
+        "百度财报",
+        "AI+消费",
+        "张朝阳",
+        "腾讯音乐"
+      ],
       "file": "posts/045-baidu-earnings-ai-consumer-policy-may-2026.zh.html"
     },
     "en": {
       "title": "⚡ Flash Briefing May 18: Baidu Q1 AI Revenue Hits Record 42% of Total, Ministry Plans 'AI + Consumption' Policy, Sohu CEO Skips Foundation Models",
       "summary": "Flash briefing: Baidu Q1 revenue 32.08B yuan with AI revenue at 13.6B yuan crossing 42% of total for the first time; China's Ministry of Commerce drafts 'AI + Consumption' policy framework; Sohu CEO Zhang Chaoyang says company won't build foundation models, focuses on AI applications; Tencent Music completes Ximalaya acquisition.",
-      "tags": ["Flash", "Baidu Earnings", "AI Policy", "Sohu", "Tencent Music"],
+      "tags": [
+        "Flash",
+        "Baidu Earnings",
+        "AI Policy",
+        "Sohu",
+        "Tencent Music"
+      ],
       "file": "posts/045-baidu-earnings-ai-consumer-policy-may-2026.en.html"
     }
   },
@@ -53,13 +117,25 @@
     "zh": {
       "title": "⚡ 5月18日快讯：轻工业全品类机器人第一股诞生、AI短期推通胀长期才通缩、海光CPU主频突破5.15GHz",
       "summary": "⚡ 最新快讯：轻工业全品类机器人第一股诞生；沃什称AI短期在通胀长期才通缩，降息门槛远高预期；长端利率失控上行AI牛市遇大考；海光信息新一代终端CPU单核主频达5.15GHz；华羽先翔完成亿元Pre-A+轮融资蚂蚁领投；华尔街大行集体上调铠侠目标价44%。",
-      "tags": ["实时快讯", "机器人IPO", "AI通胀", "海光CPU", "宏观点金"],
+      "tags": [
+        "实时快讯",
+        "机器人IPO",
+        "AI通胀",
+        "海光CPU",
+        "宏观点金"
+      ],
       "file": "posts/044-robot-ipo-ai-inflation-may-2026.zh.html"
     },
     "en": {
       "title": "⚡ Flash Briefing May 18: Robotics IPO Milestone, Warsh Says AI Inflationary Near-Term Deflationary Long-Term, Haiguang CPU Hits 5.15GHz",
       "summary": "Flash briefing: China's 'first lightweight full-category robotics IPO' marks sector milestone; Kevin Warsh warns AI is inflationary near-term but deflationary long-term, rate cut thresholds higher than expected; Haiguang Information's new CPU reaches 5.15GHz; Ant Group leads Huayu Xianxiang's $14M+ funding round; Wall Street raises Kioxia targets by 44%.",
-      "tags": ["Flash", "Robotics", "AI Economy", "Haiguang CPU", "Semiconductors"],
+      "tags": [
+        "Flash",
+        "Robotics",
+        "AI Economy",
+        "Haiguang CPU",
+        "Semiconductors"
+      ],
       "file": "posts/044-robot-ipo-ai-inflation-may-2026.en.html"
     }
   },
@@ -69,13 +145,26 @@
     "zh": {
       "title": "⚡ 5月18日晚间快讯：马斯克Neuralink首例失明治疗手术今年进行、英伟达周三财报定AI牛市方向、酷开发布企业AI操作系统",
       "summary": "⚡ 最新快讯：马斯克宣布Neuralink计划今年进行首例用于治疗失明的植入手术；英伟达周三财报决定AI牛市命运；酷开发布企业AI操作系统；摩根大通大幅上调存储芯片三巨头目标价；我国'逐日工程'太空无线充电取得重大进展；玻璃基板或开启后摩尔时代材料革命。",
-      "tags": ["实时快讯", "Neuralink", "英伟达", "脑机接口", "AI操作系统"],
+      "tags": [
+        "实时快讯",
+        "Neuralink",
+        "英伟达",
+        "脑机接口",
+        "AI操作系统"
+      ],
       "file": "posts/043-neuralink-nvidia-ai-os-may-2026.zh.html"
     },
     "en": {
       "title": "⚡ Flash Briefing May 18 Evening: Musk Says First Neuralink Blindness Surgery This Year, Nvidia Earnings to Decide AI Bull Market, Coocaa Launches Enterprise AI OS",
       "summary": "Flash briefing: Elon Musk announces Neuralink plans first blindness-restoring implant surgery this year; Nvidia Wednesday earnings seen as make-or-break for AI bull market; Coocaa launches enterprise AI operating system; JPMorgan hikes Samsung/SK Hynix/Kioxia targets on LTA valuation shift; China 'Sun-Chasing Project' achieves breakthrough for space-based wireless power transmission; glass substrates may revolutionize AI chip packaging.",
-      "tags": ["Flash", "Neuralink", "Nvidia", "BCI", "AI OS", "Semiconductors"],
+      "tags": [
+        "Flash",
+        "Neuralink",
+        "Nvidia",
+        "BCI",
+        "AI OS",
+        "Semiconductors"
+      ],
       "file": "posts/043-neuralink-nvidia-ai-os-may-2026.en.html"
     }
   },
@@ -85,13 +174,25 @@
     "zh": {
       "title": "⚡ 5月18日快讯：央行原副行长朱民呼吁AI监管政策、美伊推升油价、星宸激光雷达芯片2027量产",
       "summary": "⚡ 最新快讯：央行原副行长朱民称需要形成适当的政策来引领AI使用；美伊僵局推升油价全球债市抛售加剧；星宸科技车载激光雷达芯片预计2027年规模化量产；沪深两市成交额突破2.5万亿元；MLCC价格循环反转向上关键点。",
-      "tags": ["实时快讯", "AI政策", "朱民", "美伊局势", "激光雷达"],
+      "tags": [
+        "实时快讯",
+        "AI政策",
+        "朱民",
+        "美伊局势",
+        "激光雷达"
+      ],
       "file": "posts/042-ai-policy-market-may-2026.zh.html"
     },
     "en": {
       "title": "⚡ Flash Briefing May 18: China's Former Central Bank Governor Calls for AI Regulatory Framework, Iran Tensions Push Oil Higher, StarVision LiDAR Chip Targets 2027",
       "summary": "Flash briefing: Former PBoC VP Zhu Min calls for appropriate AI regulatory policies; US-Iran standoff drives oil prices up, global bond selloff intensifies; StarVision Semiconductor announces automotive LiDAR chip mass production targeted for 2027; Shanghai-Shenzhen market turnover breaks 2.5 trillion yuan; MLCC price cycle nears reversal inflection point.",
-      "tags": ["Flash", "AI Policy", "Geopolitics", "LiDAR", "Markets"],
+      "tags": [
+        "Flash",
+        "AI Policy",
+        "Geopolitics",
+        "LiDAR",
+        "Markets"
+      ],
       "file": "posts/042-ai-policy-market-may-2026.en.html"
     }
   },
@@ -101,13 +202,26 @@
     "zh": {
       "title": "⚡ 5月18日下午快讯：三星罢工倒计时内存飙涨、iPhone 17 Pro直降1000元、灵童机器人发布桌面人形机器人",
       "summary": "⚡ 今日快讯：三星18天罢工倒计时，买家恐慌性囤货内存价格恐暴涨；iPhone 17 Pro系列直降1000元引发抢购潮，华为小米同步跟降；铠侠NAND ASP指引远超预期；灵童机器人发布新一代桌面人形机器人；A股半导体板块午后走弱。",
-      "tags": ["实时快讯", "半导体", "消费电子", "三星", "A股"],
+      "tags": [
+        "实时快讯",
+        "半导体",
+        "消费电子",
+        "三星",
+        "A股"
+      ],
       "file": "posts/041-afternoon-semi-electronics-market-may-2026.zh.html"
     },
     "en": {
       "title": "⚡ Flash Briefing May 18: Samsung Strike Countdown Panics Memory Market, Apple Slashes iPhone 17 Pro ¥1000 in China, Kioxia Beats ASP Guidance",
       "summary": "Flash briefing: Samsung faces 18-day strike deadline as buyers stockpile DRAM/NAND; Apple cuts iPhone 17 Pro by ¥1000 in China, Huawei and Xiaomi follow; Kioxia NAND ASP guidance crushes expectations; Lingtong Robot launches desktop humanoid with 1000-unit global co-creation plan; China A-share semiconductor stocks slide.",
-      "tags": ["Flash", "Semiconductors", "Samsung", "Apple", "Kioxia", "Robotics"],
+      "tags": [
+        "Flash",
+        "Semiconductors",
+        "Samsung",
+        "Apple",
+        "Kioxia",
+        "Robotics"
+      ],
       "file": "posts/041-afternoon-semi-electronics-market-may-2026.en.html"
     }
   },
